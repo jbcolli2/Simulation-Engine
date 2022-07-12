@@ -2,7 +2,7 @@
 // Created by jcollin2 on 6/30/22.
 //
 
-//#include <glad/glad.h>
+#include <glad/glad.h>
 
 #include "SimEngine.h"
 
@@ -18,11 +18,11 @@ int SimEngine::StartUp(int width, int height)
         std::cout << "Failed to startup display manager\n";
         return 0;
     }
-//    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-//    {
-//        std::cout << "Failed to initialize GLAD" << std::endl;
-//        return 0;
-//    }
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return 0;
+    }
 
 
     m_sceneManager.StartUp();

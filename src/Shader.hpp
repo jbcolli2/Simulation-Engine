@@ -12,7 +12,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <OpenGL/gl3.h>
+//#include <OpenGL/gl3.h>
 
 #include <string>
 #include <stdio.h>

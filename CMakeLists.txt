@@ -35,12 +35,12 @@ MARK_AS_ADVANCED(COCOA_LIBRARY OpenGL_LIBRARY)
 # add glfw to library list
 set(LIBS ${LIBS} ${GLFW3_LIBRARY} ${OpenGL_LIBRARY} ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${CoreVideo_LIBRARY} )
 
-#set include directories
-include_directories(src include)
+
+
 
 # add glad to library list
-#add_library(GLAD include/glad/glad.c)
-#set(LIBS ${LIBS} GLAD)
+add_library(GLAD include/glad/glad.c)
+set(LIBS ${LIBS} GLAD)
 
 # Source files
 set(SRC_ENGINE src/SimEngine.cpp src/DisplayManager.cpp src/SceneManager.cpp src/Input.cpp)
@@ -51,3 +51,6 @@ add_compile_definitions(GL_SILENCE_DEPRECATION)
 
 add_executable(Sim_Engine src/RunSENG.cpp ${SRC_ENGINE} ${SRC_OBJECTS} ${SRC_RENDER} src/Util.cpp)
 target_link_libraries(Sim_Engine ${LIBS})
+
+
+include_directories(src include)

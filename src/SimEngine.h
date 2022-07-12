@@ -8,6 +8,7 @@
 
 #include <iostream>
 
+#include "Util.h"
 #include <GLFW/glfw3.h>
 
 #include "DisplayManager.h"
