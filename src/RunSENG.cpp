@@ -1,11 +1,21 @@
 #include <iostream>
 #include "SimEngine.h"
 
+
+using namespace seng;
+
 int main()
 {
     SimEngine engine{};
 
-    engine.Start(800, 600);
-    engine.Run();
-    engine.Stop();
+    if(engine.StartUp(800, 600))
+    {
+        engine.Run();
+    }
+    else
+    {
+        std::cout << "Failed to startup engine\n";
+    }
+
+    engine.ShutDown();
 }

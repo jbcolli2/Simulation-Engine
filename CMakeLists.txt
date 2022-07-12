@@ -1,34 +1,53 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.21)
 project(Sim_Engine)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 # tell where to find the find_package files
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
+
+link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # find the required packages
 set(GLM_ROOT_DIR ./)
 find_package(GLM REQUIRED)
 message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 set(GLFW3_ROOT ./)
-find_package(GLFW3 REQUIRED)
+find_package(GLFW3 3.3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 set(ASSIMP_INCLUDE_DIR ./)
 set(ASSIMP_LIBRARY ./)
 find_package(ASSIMP REQUIRED)
 message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
 
+#find_package(OpenGL REQUIRED)
+#message("OpenGL found in ${OpenGL_INCLUDE_DIR}")
+INCLUDE_DIRECTORIES(/System/Library/Frameworks)
+FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+FIND_LIBRARY(OpenGL_LIBRARY OpenGL)
+FIND_LIBRARY(IOKit_LIBRARY IOKit)
+FIND_LIBRARY(CoreVideo_LIBRARY CoreVideo)
+MARK_AS_ADVANCED(COCOA_LIBRARY OpenGL_LIBRARY)
+
 # add glfw to library list
-set(LIBS ${LIBS} ${GLFW3_LIBRARY})
+set(LIBS ${LIBS} ${GLFW3_LIBRARY} ${OpenGL_LIBRARY} ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${CoreVideo_LIBRARY} )
 
 #set include directories
-include_directories(${GLM_INCLUDE_DIR} ${GLFW3_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIR} src include)
+include_directories(src include)
 
 # add glad to library list
-add_library(GLAD include/glad/src/glad.c)
-set(LIBS ${LIBS} GLAD)
+#add_library(GLAD include/glad/glad.c)
+#set(LIBS ${LIBS} GLAD)
 
+# Source files
+set(SRC_ENGINE src/SimEngine.cpp src/DisplayManager.cpp src/SceneManager.cpp src/Input.cpp)
+set(SRC_OBJECTS src/Scene.cpp)
+set(SRC_RENDER src/Renderer.cpp)
 
-add_executable(Sim_Engine src/RunSENG.cpp src/SimEngine.cpp src/SimEngine.h)
+add_compile_definitions(GL_SILENCE_DEPRECATION)
+
+add_executable(Sim_Engine src/RunSENG.cpp ${SRC_ENGINE} ${SRC_OBJECTS} ${SRC_RENDER} src/Util.cpp)
 target_link_libraries(Sim_Engine ${LIBS})

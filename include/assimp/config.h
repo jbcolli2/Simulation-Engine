@@ -889,10 +889,10 @@ enum aiComponent
 #define AI_CONFIG_IMPORT_OGRE_TEXTURETYPE_FROM_FILENAME \
     "IMPORT_OGRE_TEXTURETYPE_FROM_FILENAME"
 
- /** @brief Specifies whether the Android JNI asset extraction is supported.
+ /** @brief Specifies whether the Android JNI assets extraction is supported.
   *
   * Turn on this option if you want to manage assets in native
-  * Android application without having to keep the internal directory and asset
+  * Android application without having to keep the internal directory and assets
   * manager pointer.
   */
  #define AI_CONFIG_ANDROID_JNI_ASSIMP_MANAGER_SUPPORT "AI_CONFIG_ANDROID_JNI_ASSIMP_MANAGER_SUPPORT"

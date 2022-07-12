@@ -137,7 +137,7 @@ enum aiPostProcessSteps
      * performance and a more optimized output data structure.
      * This step is also useful if you want to force Assimp to recompute
      * normals or tangents. The corresponding steps don't recompute them if
-     * they're already there (loaded from the source asset). By using this
+     * they're already there (loaded from the source assets). By using this
      * step you can make sure they are NOT there.
      *
      * This flag is a poor one, mainly because its purpose is usually
@@ -212,7 +212,7 @@ enum aiPostProcessSteps
     * attention to local transformations and the node hierarchy.
     * Animations are removed during this step.
     * This step is intended for applications without a scenegraph.
-    * The step CAN cause some problems: if e.g. a mesh of the asset
+    * The step CAN cause some problems: if e.g. a mesh of the assets
     * contains normals and another, using the same material index, does not,
     * they will be brought together, but the first meshes's part of
     * the normal list is zeroed. However, these artifacts are rare.
