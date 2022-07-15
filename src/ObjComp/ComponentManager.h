@@ -2,18 +2,18 @@
 // Created by Jeb Collins on 2/27/22.
 //
 
-#ifndef PECS_RENDERER_COMPONENTMANAGER_HPP
-#define PECS_RENDERER_COMPONENTMANAGER_HPP
+#ifndef seng_RENDERER_COMPONENTMANAGER_HPP
+#define seng_RENDERER_COMPONENTMANAGER_HPP
 
-#include "Util.hpp"
+#include "Misc/Util.h"
 
 #include <unordered_map>
 
 
-namespace pecs {
+namespace seng {
 class ComponentManager {
 private:
-    // hash table to store each component type name with its integer identifier
+    // hash table to store each component type name with its Signature
     static std::unordered_map<const char*, Signature> m_componentList;
     // Number of components registered
     static int numComponents;
@@ -39,9 +39,17 @@ public:
 
 
 /***************** GetSignature  ******************
- * @brief Static method that returns the signature of the given component in template
- *      parameter.
-***************************************///
+     * @brief Returns the signature for a particular component CompT.
+     *
+     *      If this CompT is not in m_componentList, i.e. if this is the
+     *      first time the component signature has been requested,
+     *      then ia new signature will be given to it and added to m_componentList.
+     *      Then this new signature will be returned.
+     *
+     * @tparam CompT Component type for which the signature is requested
+     *
+     * @returns Signature of CompT
+******************************************************************///
 template <typename CompT>
 Signature ComponentManager::GetSignature()
 {
@@ -77,5 +85,5 @@ Signature ComponentManager::GetSignature()
 
 
 
-} // end of pecs namespace
-#endif //PECS_RENDERER_COMPONENTMANAGER_HPP
+} // end of seng namespace
+#endif //seng_RENDERER_COMPONENTMANAGER_HPP

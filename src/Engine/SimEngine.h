@@ -8,13 +8,13 @@
 
 #include <iostream>
 
-#include "Util.h"
-#include <GLFW/glfw3.h>
+#include "Misc/Util.h"
+#include "GLFW/glfw3.h"
 
 #include "DisplayManager.h"
-#include "SceneManager.h"
-#include "Input.h"
-#include "Renderer.h"
+#include "Scene/SceneManager.h"
+#include "Engine/Input.h"
+#include "Rendering/Renderer.h"
 
 
 namespace seng

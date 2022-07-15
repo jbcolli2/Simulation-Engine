@@ -5,9 +5,9 @@
 #ifndef SIM_ENGINE_RENDERER_H
 #define SIM_ENGINE_RENDERER_H
 
-#include "Util.h"
-#include "SceneManager.h"
-#include "Shader.hpp"
+#include "Misc/Util.h"
+#include "Scene/SceneManager.h"
+#include "Rendering/Shader.hpp"
 
 
 

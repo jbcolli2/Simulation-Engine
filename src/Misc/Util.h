@@ -15,13 +15,24 @@
 #include <sstream>
 #include <iostream>
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
 
 
 
 namespace seng
 {
+
+
+//***********************************************************
+//       Component Information
+//***********************************************************
+constexpr int MAX_COMPONENTS = 32;
+using Signature = std::bitset<MAX_COMPONENTS>;
+
+
+
+
 /***************** loadFile2String  ******************
  * @brief Opens the file at @path and loads returns the contents as a string.
  *

@@ -8,11 +8,10 @@
 #ifndef Shader_h
 #define Shader_h
 
-#include "Util.h"
+#include "Misc/Util.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-//#include <OpenGL/gl3.h>
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 #include <string>
 #include <stdio.h>

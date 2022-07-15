@@ -1,9 +1,9 @@
 //
 // Created by jcollin2 on 7/1/22.
 //
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
-#include <Input.h>
+#include "Input.h"
 
 
 

@@ -5,8 +5,10 @@
 #ifndef SIM_ENGINE_SCENEMANAGER_H
 #define SIM_ENGINE_SCENEMANAGER_H
 
-#include "Scene.h"
-#include "Input.h"
+#include "Scene/Scene.h"
+#include "Engine/Input.h"
+
+#include "ObjComp/Object.h"
 
 namespace seng
 {

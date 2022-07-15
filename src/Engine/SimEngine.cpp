@@ -2,7 +2,7 @@
 // Created by jcollin2 on 6/30/22.
 //
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
 #include "SimEngine.h"
 

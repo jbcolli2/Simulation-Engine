@@ -43,14 +43,18 @@ add_library(GLAD include/glad/glad.c)
 set(LIBS ${LIBS} GLAD)
 
 # Source files
-set(SRC_ENGINE src/SimEngine.cpp src/DisplayManager.cpp src/SceneManager.cpp src/Input.cpp)
-set(SRC_OBJECTS src/Scene.cpp)
-set(SRC_RENDER src/Renderer.cpp)
+set(SRC_ENGINE src/Engine/SimEngine.cpp src/Engine/DisplayManager.cpp src/Scene/SceneManager.cpp src/Engine/Input.cpp)
+set(SRC_OBJECTS src/Scene/Scene.cpp src/ObjComp/Object.cpp src/ObjComp/Component.cpp src/ObjComp/ComponentManager.cpp)
+set(SRC_RENDER src/Rendering/Renderer.cpp)
 
 add_compile_definitions(GL_SILENCE_DEPRECATION)
 
-add_executable(Sim_Engine src/RunSENG.cpp ${SRC_ENGINE} ${SRC_OBJECTS} ${SRC_RENDER} src/Util.cpp)
+add_executable(Sim_Engine src/RunSENG.cpp ${SRC_ENGINE} ${SRC_OBJECTS} ${SRC_RENDER} src/Misc/Util.cpp)
 target_link_libraries(Sim_Engine ${LIBS})
 
 
 include_directories(src include)
+
+
+add_executable(Playground play/play.cpp ${SRC_OBJECTS})
+target_link_libraries(Playground ${LIBS})
