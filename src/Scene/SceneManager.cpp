@@ -2,8 +2,13 @@
 // Created by jcollin2 on 7/1/22.
 //
 
+#include "Misc/Util.h"
+
 #include "Scene/SceneManager.h"
 #include "ObjComp/Object.h"
+
+#include "Scene/Cube.h"
+#include "Scene/SolidMaterial.h"
 
 
 using namespace seng;
@@ -13,10 +18,22 @@ using namespace seng;
 ******************************************************************///
 int seng::SceneManager::StartUp()
 {
-    //***********************************************************
-    //       Create a bunch of objects and store them in the scene
-    //***********************************************************
-    Object obj{};
+    ///////////////// Create Meshes and Materials ///////////
+    Cube cubeMesh{};
+    SolidMaterial blueMat{};
+    blueMat.m_diffuse = glm::vec3(0.2f, 0.f, 0.9f);
+    cubeMesh.SetMaterial(&blueMat);
+
+
+
+
+    ///////////////// Create game objects ///////////////////////
+    Object cube{};
+    Renderable* tempRend = new Renderable();
+    tempRend->m_meshes.push_back(&cubeMesh);
+    cube.AddComponent(tempRend);
+
+    m_scene.AddObject(cube);
 
 
 

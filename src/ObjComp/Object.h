@@ -18,14 +18,7 @@ namespace seng
 {
 
 
-// ///////////// CLASS: Object   ////////////////
-/**
- \brief Most general 
 
- \param  -
-
- \returns
- */
 class Object
 {
 private:
@@ -100,7 +93,7 @@ public:
      * @return True if object has CompT attached, false otherwise.
     ******************************************************************/
     template<class CompT>
-    bool HasComponent();
+    bool HasComponent() const;
 
 
 
@@ -170,6 +163,8 @@ void Object::AddComponent(CompT* component)
     m_components.insert({typeid(CompT).name(), component});
 
     m_signature |= ComponentManager::GetSignature<CompT>();
+
+    component->parentObject = this;
 }
 
 
@@ -184,7 +179,7 @@ void Object::AddComponent(CompT* component)
  * @return True if object has CompT attached, false otherwise.
 ******************************************************************/
 template<typename CompT>
-bool Object::HasComponent()
+bool Object::HasComponent() const
 {
     return ((GetSignature() & ComponentManager::GetSignature<CompT>()) != 0);
 }

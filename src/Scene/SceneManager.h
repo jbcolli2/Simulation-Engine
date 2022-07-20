@@ -9,13 +9,15 @@
 #include "Engine/Input.h"
 
 #include "ObjComp/Object.h"
+#include "Rendering/Renderable.h"
+#include "ObjComp/Transform.h"
 
 namespace seng
 {
 class SceneManager
 {
 public:
-    Scene m_scene;
+    Scene m_scene{};
 
     /***************** StartUp  ******************
          * @brief Load the scene with objects.

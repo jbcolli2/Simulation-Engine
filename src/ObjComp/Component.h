@@ -8,17 +8,21 @@
 
 #include <unordered_map>
 
+#include "ObjComp/Object.h"
+
 namespace seng
 {
+
+class Object;
+
 class Component
 {
-private:
-
 public:
     Component() = default;
 
     virtual ~Component() = default;
 
+    Object* parentObject{nullptr};
 };
 
 
