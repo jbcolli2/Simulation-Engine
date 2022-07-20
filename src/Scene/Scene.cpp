@@ -7,11 +7,11 @@
 namespace seng
 {
 
-void Scene::AddObject(Object& object)
+void Scene::AddObject(Object* object)
 {
-    if(object.HasComponent<Renderable>())
+    if(object->HasComponent<Renderable>())
     {
-        m_renderables.push_back(&object);
+        m_renderables.push_back(object);
     }
 }
 

@@ -18,8 +18,16 @@ class Camera : public Component
 private:
     glm::vec3 m_camRight{1.f, 0.f,0.f}; // At beginning right is in pos x direction
     glm::vec3 m_camUp{0.f, 1.f, 0.f};  // Up is pos y, unless implement rolling
-
+    float m_yaw{0.f}, m_pitch{0.f};
     void setView();
+
+    /***************** angleToDirection  ******************
+     * @brief Convert pitch and yaw into cartesian direction.
+     *
+     * @param yaw horizontal angle of direction in degrees [-90, 90]
+     * @param pitch vertical angle of direction in degrees.  [-90, 90]
+    ******************************************************************///
+    void setDirection(float yaw, float pitch);
 public:
     glm::vec3 m_position{0.f, 0.f, 0.f};
     glm::vec3 m_direction{0.f, 0.f, -1.f};
@@ -30,6 +38,9 @@ public:
     glm::mat4 m_view{1.f};
 
 
+    /***************** Camera ctor  ******************
+     * @brief Set the right vector and then set view matrix.
+    ******************************************************************///
     Camera();
     Camera(const glm::vec3& position, const glm::vec3& direction);
 

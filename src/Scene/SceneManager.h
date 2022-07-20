@@ -12,6 +12,8 @@
 #include "Rendering/Renderable.h"
 #include "ObjComp/Transform.h"
 
+#include "Scene/Camera.h"
+
 namespace seng
 {
 class SceneManager

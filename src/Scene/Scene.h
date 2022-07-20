@@ -31,7 +31,7 @@ public:
      *
      * @param object Object to add.
     ******************************************************************///
-    void AddObject(Object& object);
+    void AddObject(Object* object);
 
 
     /***************** DrawScene  ******************

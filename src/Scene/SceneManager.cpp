@@ -28,12 +28,17 @@ int seng::SceneManager::StartUp()
 
 
     ///////////////// Create game objects ///////////////////////
-    Object cube{};
+    Object* cube = new Object();
     Renderable* tempRend = new Renderable();
     tempRend->m_meshes.push_back(&cubeMesh);
-    cube.AddComponent(tempRend);
+    cube->AddComponent(tempRend);
 
     m_scene.AddObject(cube);
+
+    Object* camera = new Object();
+    camera->AddComponent(new Camera());
+    m_scene.AddObject(camera);
+
 
 
 
