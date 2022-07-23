@@ -21,7 +21,6 @@ private:
 
     void FillVertexData();
 
-public:
 
     /***************** Cube ctor  ******************
      * @brief Fill the m_vertices vector with cube vertex data.
@@ -32,11 +31,7 @@ public:
      * @param material Pointer to material used with mesh.
     ******************************************************************///
     Cube(Material* material = nullptr);
-
-
-
-
-
+public:
     void SetMaterial(Material* material)
     {
         m_material = material;
@@ -90,7 +85,7 @@ public:
     /***************** Draw  ******************
      * @brief Binds VAO and calls glDraw... to draw the mesh.
     ******************************************************************///
-    void virtual Draw();
+    void virtual Draw(Shader& shader);
 };
 
 } // end namespace seng

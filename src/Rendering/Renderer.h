@@ -7,6 +7,7 @@
 
 #include "Misc/Util.h"
 #include "Scene/SceneManager.h"
+#include "Engine/DisplayManager.h"
 #include "Rendering/Shader.hpp"
 
 
@@ -18,10 +19,18 @@ class Renderer
 {
 private:
     float r{.8f}, g{.4f}, b{.4f};
+
+    unsigned int m_uboVP{0};
+
+    // Shader programs
+    Shader m_solidShader{};
+
+    // Managers
+    SceneManager* m_sceneManager;
 public:
     Renderer(){};
 
-    int StartUp(const SceneManager& sceneManager);
+    int StartUp(SceneManager* sceneManager);
     void ShutDown(){};
 
     void Render();

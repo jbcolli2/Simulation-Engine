@@ -28,11 +28,13 @@ public:
     std::vector<Mesh*> m_meshes;
     glm::mat4 m_model;
 
-    void Draw()
+    void Draw(Shader& shader)
     {
         for(Mesh* mesh : m_meshes)
         {
-            mesh->Draw();
+            mesh->SetupMaterial(shader);
+            shader.setUniformMatrix4f("model", m_model);
+            mesh->Draw(shader);
         }
     }
 

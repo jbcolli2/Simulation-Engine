@@ -6,7 +6,7 @@
 
 #include "DisplayManager.h"
 
-
+float seng::DisplayManager::m_aspectRatio = 4.f/3.f;
 
 /***************** DisplayManager::StartUp  ******************
      * @brief Initialize the window and context.
@@ -15,10 +15,13 @@
 ******************************************************************///
 int seng::DisplayManager::StartUp(int width, int height)
 {
+    m_aspectRatio = static_cast<float>(width)/height;
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 //    glfwWindowHint(GLFW_SAMPLES, 4);
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -37,6 +40,7 @@ int seng::DisplayManager::StartUp(int width, int height)
     glfwSetKeyCallback(m_window, ::seng::keyCallback);
     glfwSetCursorPosCallback(m_window, ::seng::cursorPositionCallback);
     glfwSetMouseButtonCallback(m_window, ::seng::mouseButtonCallback);
+
 
 
     return 1;

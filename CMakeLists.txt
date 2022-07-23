@@ -44,8 +44,8 @@ set(LIBS ${LIBS} GLAD)
 
 # Source files
 set(SRC_ENGINE src/Engine/SimEngine.cpp src/Engine/DisplayManager.cpp src/Scene/SceneManager.cpp src/Engine/Input.cpp)
-set(SRC_OBJECTS src/ObjComp/Object.cpp src/ObjComp/Component.cpp src/ObjComp/ComponentManager.cpp src/Scene/Mesh.h src/Scene/Material.h src/Scene/Cube.cpp src/Scene/Cube.h src/Scene/SolidMaterial.cpp src/Scene/SolidMaterial.h src/Scene/Scene.cpp src/Scene/Camera.h src/Scene/Camera.cpp)
-set(SRC_RENDER src/Rendering/Renderer.cpp)
+set(SRC_OBJECTS src/ObjComp/Object.cpp src/ObjComp/Component.cpp src/ObjComp/ComponentManager.cpp src/Scene/Mesh.h src/Scene/Material.h src/Scene/Cube.cpp src/Scene/Cube.h src/Scene/SolidMaterial.cpp src/Scene/SolidMaterial.h src/Scene/Scene.cpp src/Scene/Camera.h src/Scene/Camera.cpp src/Scene/System.h src/Scene/CameraController.cpp src/Scene/CameraController.h)
+set(SRC_RENDER src/Rendering/Renderer.cpp src/Rendering/Shader.cpp)
 
 add_compile_definitions(GL_SILENCE_DEPRECATION)
 
@@ -56,5 +56,5 @@ target_link_libraries(Sim_Engine ${LIBS})
 include_directories(src include)
 
 
-add_executable(Playground play/play.cpp ${SRC_OBJECTS})
+add_executable(Playground play/play.cpp src/Misc/Util.cpp)
 target_link_libraries(Playground ${LIBS})

@@ -27,7 +27,7 @@ int SimEngine::StartUp(int width, int height)
 
     m_sceneManager.StartUp();
 
-    if(!m_renderer.StartUp(m_sceneManager))
+    if(!m_renderer.StartUp(&m_sceneManager))
     {
         std::cout << "Failed to startup renderer\n";
         return 0;

@@ -12,12 +12,14 @@ namespace seng
 Camera::Camera()
 {
     setView();
+    m_proj = glm::perspective(m_fov, DisplayManager::m_aspectRatio, m_nearField, m_farField);
 }
 
 Camera::Camera(const glm::vec3& position, const glm::vec3& direction) :
     m_position(position), m_direction(direction)
 {
     setView();
+    m_proj = glm::perspective(m_fov, DisplayManager::m_aspectRatio, m_nearField, m_farField);
 }
 
 

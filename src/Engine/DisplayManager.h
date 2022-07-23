@@ -1,6 +1,7 @@
 //
 // Created by jcollin2 on 7/1/22.
 //
+#include <glad/glad.h>
 #include "GLFW/glfw3.h"
 
 #include "Input.h"
@@ -14,9 +15,16 @@
 
 namespace seng
 {
+
+void framebuffer_resize_callback(GLFWwindow* window, int width, int height);
+
+
 struct DisplayManager
 {
 public:
+    // Window dimensions
+    static float m_aspectRatio;
+
     GLFWwindow* m_window;
 
     /***************** StartUp  ******************

@@ -10,6 +10,9 @@
 #include "Rendering/Shader.hpp"
 #include "Rendering/Renderable.h"
 
+#include "Scene/Camera.h"
+#include "Scene/System.h"
+
 
 
 namespace seng
@@ -23,8 +26,31 @@ private:
     std::vector<Object*> m_lights{};
     std::vector<Object*> m_cameras{};
 
+    std::vector<System*> m_systems{};
+
 
 public:
+    /***************** StartUp  ******************
+     * @brief Call startup on all systems.
+    ******************************************************************///
+    void StartUp();
+
+    /***************** Update  ******************
+     * @brief Update all objects in the scene.  Mostly done through
+     *      calling update on all systems in the scene.
+     *
+     * @param deltaTime delta from last frame
+    ******************************************************************///
+    void Update(float deltaTime);
+
+    /***************** ShutDown  ******************
+     * @brief Clean up objects before they are deleted in SceneManager Shutdown.
+    ******************************************************************///
+    void ShutDown();
+
+
+
+
     /***************** AddObject  ******************
      * @brief Adds an object to the scene.  Sorts object into the correct object list of
      *      either renderables, a type of light, or camera.
@@ -39,6 +65,21 @@ public:
      *      already in use.
     ******************************************************************///
     void DrawScene(Shader& shader);
+
+    /***************** GetMainCamera  ******************
+     * @brief Return a pointer to the main camera in the scene.
+     *
+     * @returns Main camera
+    ******************************************************************///
+    Camera* GetMainCamera()
+    {
+        return m_cameras[0]->GetComponent<Camera>();
+    }
+
+    void AddSystem(System* system)
+    {
+        m_systems.push_back(system);
+    }
 }; // end class Scene
 
 

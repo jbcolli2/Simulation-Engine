@@ -7,6 +7,7 @@
 
 #include "Scene/Scene.h"
 #include "Engine/Input.h"
+#include "Engine/DisplayManager.h"
 
 #include "ObjComp/Object.h"
 #include "Rendering/Renderable.h"

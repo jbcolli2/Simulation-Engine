@@ -5,9 +5,12 @@
 #ifndef SIM_ENGINE_CAMERA_H
 #define SIM_ENGINE_CAMERA_H
 
+#include "Engine/DisplayManager.h"
+
 #include "ObjComp/Component.h"
 
-#include <glm/ext/matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 namespace seng
@@ -19,7 +22,6 @@ private:
     glm::vec3 m_camRight{1.f, 0.f,0.f}; // At beginning right is in pos x direction
     glm::vec3 m_camUp{0.f, 1.f, 0.f};  // Up is pos y, unless implement rolling
     float m_yaw{0.f}, m_pitch{0.f};
-    void setView();
 
     /***************** angleToDirection  ******************
      * @brief Convert pitch and yaw into cartesian direction.
@@ -29,6 +31,9 @@ private:
     ******************************************************************///
     void setDirection(float yaw, float pitch);
 public:
+    // TODO: Move back to private.
+    void setView();
+
     glm::vec3 m_position{0.f, 0.f, 0.f};
     glm::vec3 m_direction{0.f, 0.f, -1.f};
     float m_fov{45.f};  // Field of View
@@ -36,6 +41,7 @@ public:
     float m_farField{100.f};
 
     glm::mat4 m_view{1.f};
+    glm::mat4 m_proj{1.f};
 
 
     /***************** Camera ctor  ******************

@@ -17,7 +17,7 @@
 namespace seng
 {
 
-
+class Component;
 
 class Object
 {
