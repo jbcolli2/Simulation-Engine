@@ -15,10 +15,10 @@ namespace seng
 class SolidMaterial : public Material
 {
 private:
-    static std::string ambientUniformName;
-    static std::string diffuseUniformName;
-    static std::string specularUniformName;
-    static std::string roughnessUniformName;
+    const static std::string ambientUniformName;
+    const static std::string diffuseUniformName;
+    const static std::string specularUniformName;
+    const static std::string roughnessUniformName;
 public:
     // Color information
     glm::vec3 m_diffuse{1.f, 0.f, .3f};

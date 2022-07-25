@@ -22,8 +22,10 @@ private:
 
     unsigned int m_uboVP{0};
 
-    // Shader programs
+    ///////////////// Shader Programs ///////////////////////////////////////
     Shader m_solidShader{};
+    Shader m_phongShader{};
+    Shader* m_currentShader{};
 
     // Managers
     SceneManager* m_sceneManager;

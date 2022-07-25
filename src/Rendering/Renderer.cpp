@@ -15,7 +15,8 @@ int Renderer::StartUp(SceneManager* sceneManager)
     m_sceneManager = sceneManager;
 
     m_solidShader = Shader{"../assets/shaders/PosNormUVVert.glsl", "../assets/shaders/SolidColorFrag.glsl"};
-
+    m_phongShader = Shader{"../assets/shaders/PosNormUVVert.glsl", "../assets/shaders/LightFrag.glsl"};
+    m_currentShader = &m_phongShader;
 
     ///////////////// Uniform buffers for view/proj matrices ///////////////////////////////////////
     glGenBuffers(1, &m_uboVP);
@@ -35,9 +36,9 @@ int Renderer::StartUp(SceneManager* sceneManager)
 void Renderer::Render()
 {
     ///////////////// Clear color buffer ///////////////////////////////////////
-    glEnable(GL_DEPTH);
+    glEnable(GL_DEPTH_TEST);
     glClearColor(.1, .1, .1, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Camera* mainCamera = m_sceneManager->m_scene.GetMainCamera();
 
@@ -47,9 +48,9 @@ void Renderer::Render()
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(mainCamera->m_proj));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-    m_solidShader.startProgram();
-    m_sceneManager->m_scene.DrawScene(m_solidShader);
-    m_solidShader.stopProgram();
+    m_currentShader->startProgram();
+    m_sceneManager->m_scene.DrawScene(*m_currentShader);
+    m_currentShader->stopProgram();
 
 }
 

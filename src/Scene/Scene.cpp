@@ -32,7 +32,7 @@ void Scene::Update(float deltaTime)
 {
     for(System* system : m_systems)
     {
-        system->Update();
+        system->Update(deltaTime);
     }
 }
 
@@ -46,7 +46,7 @@ void Scene::ShutDown()
 {
     for(System* system : m_systems)
     {
-        system->ShutDown()
+        system->ShutDown();
     }
 }
 
@@ -65,6 +65,10 @@ void Scene::AddObject(Object* object)
     {
         m_cameras.push_back(object);
     }
+    if(object->HasComponent<DirLight>() || object->HasComponent<PointLight>())
+    {
+        m_lights.push_back(object);
+    }
 }
 
 
@@ -72,6 +76,14 @@ void Scene::AddObject(Object* object)
 
 void Scene::DrawScene(Shader& shader)
 {
+    GetMainCamera()->SetUniforms(shader);
+    for(Object* light : m_lights)
+    {
+        if(light->HasComponent<PointLight>())
+            light->GetComponent<PointLight>()->SetUniforms(shader);
+        if(light->HasComponent<DirLight>())
+            light->GetComponent<DirLight>()->SetUniforms(shader);
+    }
     for(Object* renderables : m_renderables)
     {
         renderables->GetComponent<Renderable>()->Draw(shader);

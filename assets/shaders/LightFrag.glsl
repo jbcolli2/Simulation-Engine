@@ -18,7 +18,12 @@ struct DirLight
 };
 
 uniform DirLight dirLight;
-uniform vec3 camPosition;
+uniform vec3 dirLightDirection;
+uniform vec3 dirLightColor;
+
+uniform vec3 diffuseMat;
+
+uniform vec3 cameraPosition;
 
 // Helper function declaration
 vec3 DirLightContrib(DirLight dirLight, vec3 fragPos, vec3 normal);
@@ -44,10 +49,10 @@ void main()
 
 vec3 DirLightContrib(DirLight dirLight, vec3 fragPos, vec3 normal)
 {
-    vec3 frag2Light = -dirLight.direction;
+    vec3 frag2Light = -dirLightDirection;
 
-    vec3 ambient = dirLight.ambientFactor*dirLight.diffuse;
-    vec3 diffuse = dot(normal, frag2Light)*dirLight.diffuse;
+    vec3 ambient = 0.2*diffuseMat;
+    vec3 diffuse = dot(normal, frag2Light)*dirLightColor*diffuseMat;
 
     return ambient + diffuse;
 }

@@ -6,7 +6,7 @@
 #define SIM_ENGINE_SYSTEM_H
 
 #include "Misc/Util.h"
-#include "ObjComp/Object.h"
+#include "Engine/Object.h"
 
 namespace seng
 {
@@ -17,9 +17,11 @@ protected:
     std::vector<Object*> m_objects{};
 
 public:
-    void virtual StartUp() = 0;
-    void virtual Update(float deltaTime) = 0;
-    void virtual ShutDown() = 0;
+    virtual void StartUp() = 0;
+
+    virtual void Update(float deltaTime) = 0;
+
+    virtual void ShutDown() = 0;
 
     void AddObject(Object* object)
     {

@@ -5,13 +5,15 @@
 #ifndef SIM_ENGINE_SCENE_H
 #define SIM_ENGINE_SCENE_H
 
-#include "ObjComp/Object.h"
+#include "Engine/Object.h"
 
 #include "Rendering/Shader.hpp"
-#include "Rendering/Renderable.h"
+#include "Components/Renderable.h"
 
-#include "Scene/Camera.h"
-#include "Scene/System.h"
+#include "Components/Camera.h"
+#include "Components/Lights.h"
+#include "Components/Lights.h"
+#include "Systems/System.h"
 
 
 
@@ -49,7 +51,9 @@ public:
     void ShutDown();
 
 
-
+    //***********************************************************
+    //       Adders
+    //***********************************************************
 
     /***************** AddObject  ******************
      * @brief Adds an object to the scene.  Sorts object into the correct object list of
@@ -59,12 +63,22 @@ public:
     ******************************************************************///
     void AddObject(Object* object);
 
+    void AddSystem(System* system)
+    {
+        m_systems.push_back(system);
+    }
 
     /***************** DrawScene  ******************
      * @brief Call draw methods in all renderable objects.  Assume shader program is
      *      already in use.
     ******************************************************************///
     void DrawScene(Shader& shader);
+
+
+
+    //***********************************************************
+    //       Getters/Setters
+    //***********************************************************
 
     /***************** GetMainCamera  ******************
      * @brief Return a pointer to the main camera in the scene.
@@ -76,10 +90,9 @@ public:
         return m_cameras[0]->GetComponent<Camera>();
     }
 
-    void AddSystem(System* system)
-    {
-        m_systems.push_back(system);
-    }
+    std::vector<Object*>& GetRenderables() {return m_renderables;};
+
+
 }; // end class Scene
 
 

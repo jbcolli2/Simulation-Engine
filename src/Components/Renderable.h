@@ -6,9 +6,9 @@
 #define PECS_RENDERER_RENDERABLE_HPP
 
 #include "Scene/Mesh.h"
-#include "ObjComp/Component.h"
+#include "Engine/Component.h"
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 #include <vector>
 
 namespace seng

@@ -78,7 +78,7 @@ struct Vert3x3x2f
  *      must first be bound before calling this function.
  *
  *      Uses GL_STATIC_DRAW for vertices.
- *      TODO: Should be changed for free meshes.  Pass in parameter or define different function.
+ *      TODO: Should be updateModelMatrix for free meshes.  Pass in parameter or define different function.
 ******************************************************************///
 template<class VertT>
 unsigned int loadDataToVBO(std::vector<VertT> vertices)

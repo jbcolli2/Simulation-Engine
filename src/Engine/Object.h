@@ -6,8 +6,7 @@
 #define seng_RENDERER_OBJECT_HPP
 
 #include "Misc/Util.h"
-#include "ObjComp/Component.h"
-#include "ObjComp/ComponentManager.h"
+#include "ComponentManager.h"
 
 
 #include <memory>
@@ -19,6 +18,19 @@ namespace seng
 
 class Component;
 
+
+class Transform
+{
+public:
+    glm::vec3 position{0.f, 0.f, 0.f};
+    glm::vec3 rotation{0.f, 0.f, 0.f};
+    glm::vec3 scale{1.f, 1.f, 1.f};
+    bool updateModelMatrix{false};
+};
+
+
+
+
 class Object
 {
 private:
@@ -28,12 +40,15 @@ private:
     // Signature listing what components are attached
     Signature m_signature;
 
-public:
+    // Transform for object
+    Transform m_transform;
 
+public:
+    // TODO: Implement rule of 5 for Object
     Object() = default;
 
     /***************** Object dtor  ******************
-         * @brief Loop through all components in the object and delete them.
+     * @brief Loop through all components in the object and delete them.
     ******************************************************************///
     ~Object();
 
@@ -41,6 +56,11 @@ public:
     //       Getters and Setters
     //***********************************************************
     Signature GetSignature() const {return m_signature;};
+    Transform& GetTransform() {m_transform.updateModelMatrix = true; return m_transform; };
+    void SetTransform(const Transform& transform) {m_transform = transform; m_transform.updateModelMatrix = true;};
+    void SetPosition(const glm::vec3& position) {m_transform.position = position; m_transform.updateModelMatrix = true;};
+    void SetRotation(const glm::vec3& rotation) {m_transform.rotation = rotation; m_transform.updateModelMatrix = true;};
+    void SetScale(const glm::vec3& scale) {m_transform.scale = scale; m_transform.updateModelMatrix = true;};
 
 
 

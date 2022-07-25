@@ -25,7 +25,7 @@ int SimEngine::StartUp(int width, int height)
     }
 
 
-    m_sceneManager.StartUp();
+    m_sceneManager.StartUp(&m_displayManager);
 
     if(!m_renderer.StartUp(&m_sceneManager))
     {

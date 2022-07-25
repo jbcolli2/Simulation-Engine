@@ -7,10 +7,10 @@
 namespace seng
 {
 
-std::string SolidMaterial::ambientUniformName{"ambient"};
-std::string SolidMaterial::diffuseUniformName{"diffuse"};
-std::string SolidMaterial::specularUniformName{"specular"};
-std::string SolidMaterial::roughnessUniformName{"roughness"};
+const std::string SolidMaterial::ambientUniformName{"ambientMat"};
+const std::string SolidMaterial::diffuseUniformName{"diffuseMat"};
+const std::string SolidMaterial::specularUniformName{"specularMat"};
+const std::string SolidMaterial::roughnessUniformName{"roughness"};
 
 
 /***************** SetupMaterial  ******************

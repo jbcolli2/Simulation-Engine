@@ -5,7 +5,12 @@
 #ifndef SIM_ENGINE_CAMERACONTROLLER_H
 #define SIM_ENGINE_CAMERACONTROLLER_H
 
-#include "Scene/System.h"
+#include "Misc/Util.h"
+
+#include "Engine/Input.h"
+
+#include "Systems/System.h"
+#include "Components/Camera.h"
 
 
 namespace seng
@@ -13,7 +18,16 @@ namespace seng
 
 class CameraController : public System
 {
+private:
+    DisplayManager* m_displayManager{};
+
+    glm::vec2 m_oldMousePosition;
+    float m_rotateSpeed{1.f};
+    float m_panSpeed{1.f};
+
+    Camera* m_camera{};
 public:
+    CameraController(DisplayManager* displayManager) : m_displayManager(displayManager){};
     void virtual StartUp() override;
     void virtual Update(float deltaTime) override;
     void virtual ShutDown() override{};

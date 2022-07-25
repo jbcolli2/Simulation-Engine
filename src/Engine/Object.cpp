@@ -2,7 +2,7 @@
 // Created by Jeb Collins on 2/25/22.
 //
 
-#include "ObjComp//Object.h"
+#include "Object.h"
 
 using namespace seng;
 

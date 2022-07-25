@@ -210,7 +210,7 @@ extern "C" {
  *  @{ */
 /*! @brief The major version number of the GLFW library.
  *
- *  This is incremented when the API is changed in non-compatible ways.
+ *  This is incremented when the API is updateModelMatrix in non-compatible ways.
  *  @ingroup init
  */
 #define GLFW_VERSION_MAJOR          3
@@ -1170,7 +1170,7 @@ GLFWAPI void glfwDefaultWindowHints(void);
 /*! @brief Sets the specified window hint to the desired value.
  *
  *  This function sets hints for the next call to @ref glfwCreateWindow.  The
- *  hints, once set, retain their values until changed by a call to @ref
+ *  hints, once set, retain their values until updateModelMatrix by a call to @ref
  *  glfwWindowHint or @ref glfwDefaultWindowHints, or until the library is
  *  terminated with @ref glfwTerminate.
  *

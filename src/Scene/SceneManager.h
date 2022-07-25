@@ -9,24 +9,29 @@
 #include "Engine/Input.h"
 #include "Engine/DisplayManager.h"
 
-#include "ObjComp/Object.h"
-#include "Rendering/Renderable.h"
-#include "ObjComp/Transform.h"
+#include "Engine/Object.h"
+#include "Components/Renderable.h"
 
-#include "Scene/Camera.h"
+#include "Components/Camera.h"
+#include "Components/Lights.h"
+
+#include "Systems/RenderableSystem.h"
 
 namespace seng
 {
 class SceneManager
 {
+private:
+    DisplayManager* m_displayManager;
 public:
+
     Scene m_scene{};
 
     /***************** StartUp  ******************
          * @brief Load the scene with objects.
          *      TODO: This will be deserialized from JSON file in future.
     ******************************************************************///
-    int StartUp();
+    int StartUp(DisplayManager* displayManager);
 
     /***************** ShutDown  ******************
          * @brief Clean up all objects in the scene.

@@ -8,7 +8,7 @@
 
 #include <unordered_map>
 
-#include "ObjComp/Object.h"
+#include "Object.h"
 
 namespace seng
 {
