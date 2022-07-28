@@ -2,8 +2,8 @@
 // Created by jcollin2 on 7/19/22.
 //
 
-#ifndef SIM_ENGINE_CUBE_H
-#define SIM_ENGINE_CUBE_H
+#ifndef SIM_ENGINE_PRIMITIVE_H
+#define SIM_ENGINE_PRIMITIVE_H
 
 #include "Misc/Util.h"
 
@@ -13,16 +13,41 @@
 namespace seng
 {
 
-class Cube : public Mesh
+enum class PrimitiveType
+{
+    CUBE,
+    PLANE,
+    SPHERE
+};
+
+
+
+
+//***********************************************************
+//       Vertex filling functions for Primitives
+//***********************************************************
+std::vector<Vert3x3x2f> GetCubeVertexList();
+std::vector<Vert3x3x2f> GetPlaneVertexList();
+std::vector<Vert3x3x2f> GetSphereVertexList();
+
+
+
+
+
+
+
+
+class Primitive : public Mesh
 {
 private:
     std::vector<Vert3x3x2f> m_vertices;
 
 
-    void FillVertexData();
+    void FillVertexData(PrimitiveType primitiveType);
 
 
-    /***************** Cube ctor  ******************
+
+    /***************** Primitive ctor  ******************
      * @brief Fill the m_vertices vector with cube vertex data.
      *
      *      Generate vao/vbo and set vertex attributes.
@@ -30,57 +55,28 @@ private:
      *
      * @param material Pointer to material used with mesh.
     ******************************************************************///
-    Cube(Material* material = nullptr);
+    Primitive(PrimitiveType primitiveType);
 public:
-    void SetMaterial(Material* material)
-    {
-        m_material = material;
-    };
-
-
-
-
-
-
-
-    //***********************************************************
-    //       Singleton methods
-    //***********************************************************
 
     /***************** GetInstance  ******************
-     * @brief Makes this a singleton class.  This allows only one Cube to exist, making sure
+     * @brief Makes this a singleton class.  This allows only one Primitive to exist, making sure
      *      all cubes being rendered use the same vao and we don't fill up the VRAM with duplicate
      *      vertex data.
      *
-     * @returns Reference to static Cube object.
+     * @returns Reference to static Primitive object.
     ******************************************************************///
-    static Cube& GetInstance()
+    static Primitive& GetInstance(PrimitiveType primitiveType)
     {
-        static Cube instance{};
+        static Primitive instance{primitiveType};
         return instance;
     };
 
 
 
 
-
-
-
-
-
     //***********************************************************
-    //       Virtual methods inherited from Mesh
+    //       Virtual methods from Mesh
     //***********************************************************
-
-    /***************** SetupMaterial  ******************
-     * @brief Calls the m_material SetupMaterial method to setup the shader and/or textures
-     *      for the draw call.
-     *
-     * @param shader Shader used for the draw.
-    ******************************************************************///
-    void virtual SetupMaterial(Shader& shader);
-
-
 
     /***************** Draw  ******************
      * @brief Binds VAO and calls glDraw... to draw the mesh.
@@ -88,6 +84,7 @@ public:
     void virtual Draw(Shader& shader);
 };
 
+
 } // end namespace seng
 
-#endif //SIM_ENGINE_CUBE_H
+#endif //SIM_ENGINE_PRIMITIVE_H

@@ -25,6 +25,11 @@ namespace seng
 class Renderable : public Component
 {
 public:
+    Renderable() = default;
+    Renderable(Mesh* mesh)
+    {
+        m_meshes.push_back(mesh);
+    }
     std::vector<Mesh*> m_meshes;
     glm::mat4 m_model;
 

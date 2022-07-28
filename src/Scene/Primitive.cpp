@@ -2,12 +2,12 @@
 // Created by jcollin2 on 7/19/22.
 //
 
-#include "Cube.h"
+#include "Primitive.h"
 
 namespace seng
 {
 
-/***************** Cube ctor  ******************
+/***************** Primitive ctor  ******************
  * @brief Fill the m_vertices vector with cube vertex data.
  *
  *      Generate vao/vbo and set vertex attributes.
@@ -15,13 +15,13 @@ namespace seng
  *
  * @param material Pointer to material used with mesh.
 ******************************************************************///
-Cube::Cube(Material *material)
+Primitive::Primitive(PrimitiveType primitiveType)
 {
-    m_material = material;
+    m_material = nullptr;
 
 
     ///////////////// Setup vertex data for cube ///////////////////////////////////////
-    FillVertexData();
+    FillVertexData(primitiveType);
 
     m_numVertices = m_vertices.size();
 
@@ -43,22 +43,13 @@ Cube::Cube(Material *material)
 
 
 
-/***************** SetupMaterial  ******************
- * @brief Calls the m_material SetupMaterial method to setup the shader and/or textures
- *      for the draw call.
- *
- * @param shader Shader used for the draw.
-******************************************************************///
-void Cube::SetupMaterial(Shader& shader)
-{
-    m_material->SetupMaterial(shader);
-}
+
 
 
 /***************** Draw  ******************
  * @brief Binds VAO and calls glDraw... to draw the mesh.
 ******************************************************************///
-void Cube::Draw(Shader& shader)
+void Primitive::Draw(Shader& shader)
 {
     glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
@@ -66,13 +57,45 @@ void Cube::Draw(Shader& shader)
 
 
 /***************** FillVertexData  ******************
- * @brief Fills m_vertices with data for a standard cube:
+ * @brief Use parameter to determine which free function to call to return the vertex list
+ *      for the primitive.
+ *
+ * @param primitiveType Type of primitive to create.
+ *
+ *
+ * Fills m_vertices with data for a standard cube:
  *      [-.5, .5] x [-.5, .5] x [-.5, .5]
  *      with normal and UV data.
 ******************************************************************///
-void Cube::FillVertexData()
+void Primitive::FillVertexData(PrimitiveType primitiveType)
 {
-    m_vertices = {
+    switch (primitiveType) {
+        case PrimitiveType::CUBE:
+            m_vertices = GetCubeVertexList();
+            break;
+        case PrimitiveType::PLANE:
+            m_vertices = GetPlaneVertexList();
+            break;
+        case PrimitiveType::SPHERE:
+            m_vertices = GetSphereVertexList();
+            break;
+        default:
+            break;
+    }
+}
+
+
+
+
+/***************** GetCubeVertexList  ******************
+ * @brief Free function that returns vector of Vert3x3x2f that represent a
+ *      cube [-0.5, 0.5] x [-0.5, 0.5] x [-0.5, 0.5].
+ *
+ * @returns Vertex list of cube.
+******************************************************************///
+std::vector<Vert3x3x2f> GetCubeVertexList()
+{
+    std::vector<Vert3x3x2f> verts = {
             Vert3x3x2f(-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f), // front
             Vert3x3x2f(0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f),
             Vert3x3x2f(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f),
@@ -121,7 +144,55 @@ void Cube::FillVertexData()
             Vert3x3x2f(-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f),
             Vert3x3x2f(-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f),
     };
+
+    return verts;
 }
+
+
+
+
+
+/***************** GetPlaneVertexList  ******************
+ * @brief Free function that returns vector of Vert3x3x2f that represent a
+ *      plane [-0.5, 0.5] x {0} x [-0.5, 0.5].  Plane lives on x-z plane.
+ *      Normal points in positive y direction.
+ *
+ * @returns Vertex list of plane.
+******************************************************************///
+std::vector<Vert3x3x2f> GetPlaneVertexList()
+{
+    std::vector<Vert3x3x2f> verts = {
+            Vert3x3x2f(-0.5f, -0.f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
+            Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
+            Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
+
+            Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
+            Vert3x3x2f(0.5f, -0.f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
+            Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
+    };
+
+    return verts;
+}
+
+
+
+std::vector<Vert3x3x2f> GetSphereVertexList()
+{
+    return std::vector<Vert3x3x2f>{};
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

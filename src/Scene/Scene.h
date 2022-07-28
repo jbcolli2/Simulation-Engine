@@ -32,6 +32,8 @@ private:
 
 
 public:
+    float m_ambientIntensity{.2f};
+
     /***************** StartUp  ******************
      * @brief Call startup on all systems.
     ******************************************************************///

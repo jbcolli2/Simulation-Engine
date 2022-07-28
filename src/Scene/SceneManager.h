@@ -16,6 +16,7 @@
 #include "Components/Lights.h"
 
 #include "Systems/RenderableSystem.h"
+#include "Systems/LightSystems.h"
 
 namespace seng
 {

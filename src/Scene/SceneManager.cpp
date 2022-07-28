@@ -7,7 +7,7 @@
 #include "Scene/SceneManager.h"
 #include "Engine/Object.h"
 
-#include "Scene/Cube.h"
+#include "Scene/Primitive.h"
 #include "Scene/SolidMaterial.h"
 #include "Systems/CameraController.h"
 
@@ -27,10 +27,16 @@ int seng::SceneManager::StartUp(DisplayManager* displayManager)
     //***********************************************************
 
     ///////////////// Create Meshes and Materials ///////////
-    Cube* cubeMesh = &Cube::GetInstance();
+    Primitive* cubeMesh = &Primitive::GetInstance(PrimitiveType::CUBE);
     SolidMaterial* blueMat = new SolidMaterial();
     blueMat->m_diffuse = glm::vec3(0.2f, 0.f, 0.9f);
+    blueMat->m_roughness = 16;
     cubeMesh->SetMaterial(blueMat);
+
+    Primitive* lightCubeMesh = &Primitive::GetInstance(PrimitiveType::CUBE);
+    SolidMaterial* whiteMat = new SolidMaterial();
+    whiteMat->m_diffuse = glm::vec3(1.f);
+    lightCubeMesh->SetMaterial(whiteMat);
 
 
 
@@ -55,7 +61,16 @@ int seng::SceneManager::StartUp(DisplayManager* displayManager)
     /////////////////    Create lights    ///////////////////////
     Object* dirLight = new Object();
     dirLight->AddComponent(new DirLight());
-    m_scene.AddObject(dirLight);
+    dirLight->GetComponent<DirLight>()->m_direction = glm::vec3(-.5, -.75, -.8);
+//    m_scene.AddObject(dirLight);
+
+    Object* ptLight = new Object();
+    Transform& transform = ptLight->GetTransform();
+    transform.scale = glm::vec3(.1f);
+    ptLight->AddComponent(new PointLight(glm::vec3(2.f, .5f, 0.f)));
+    ptLight->GetComponent<PointLight>()->m_specularIntensity = .3f;
+    ptLight->AddComponent(new Renderable(lightCubeMesh));
+    m_scene.AddObject(ptLight);
 
 
     //***********************************************************
@@ -72,6 +87,10 @@ int seng::SceneManager::StartUp(DisplayManager* displayManager)
         renderSystem->AddObject(renderObject);
     }
     m_scene.AddSystem(renderSystem);
+
+    MovePtLight* movePtLightSystem = new MovePtLight();
+    movePtLightSystem->AddObject(ptLight);
+    m_scene.AddSystem(movePtLightSystem);
 
 
 

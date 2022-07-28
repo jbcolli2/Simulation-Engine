@@ -12,7 +12,7 @@ namespace seng
 ******************************************************************///
 void Scene::StartUp()
 {
-
+    m_ambientIntensity = .2f;
     for(System* system : m_systems)
     {
         system->StartUp();

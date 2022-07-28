@@ -49,6 +49,7 @@ void Renderer::Render()
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     m_currentShader->startProgram();
+    m_currentShader->setUniform1f("ambientIntensity", m_sceneManager->m_scene.m_ambientIntensity);
     m_sceneManager->m_scene.DrawScene(*m_currentShader);
     m_currentShader->stopProgram();
 

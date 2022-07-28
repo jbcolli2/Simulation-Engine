@@ -25,7 +25,16 @@ protected:
 
 public:
     Mesh() = default;
-    void virtual SetupMaterial(Shader& shader) = 0;
+
+    void virtual SetMaterial(Material* material)
+    {
+        m_material = material;
+    };
+    void virtual SetupMaterial(Shader& shader)
+    {
+        m_material->SetupMaterial(shader);
+    };
+
     void virtual Draw(Shader& shader) = 0;
 
 };

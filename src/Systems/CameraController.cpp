@@ -70,6 +70,7 @@ void CameraController::Update(float deltaTime)
     if(input->KeyDown(GLFW_KEY_0))
     {
         m_camera->SetDirection(0.f, 0.f);
+        m_camera->m_position = glm::vec3(0.f);
     }
 }
 
