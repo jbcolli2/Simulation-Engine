@@ -5,7 +5,7 @@
 #ifndef seng_RENDERER_COMPONENTMANAGER_HPP
 #define seng_RENDERER_COMPONENTMANAGER_HPP
 
-#include "Misc/Util.h"
+#include "Misc/Common.h"
 
 #include <unordered_map>
 

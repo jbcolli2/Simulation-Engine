@@ -4,23 +4,27 @@
 
 #include <iostream>
 
-#include "Misc/Util.h"
-
+#include "Misc/Common.h"
+#include "Scene/GridMesh.h"
 
 
 
 
 using namespace seng;
 
+
+
+
+
+
+
 int main()
 {
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return 0;
-    }
-
-    std::string str = loadFile2String("../assets/shaders/PosNormUVVert.glsl");
-
+//    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
+//    {
+//        std::cout << "Failed to initialize GLAD" << std::endl;
+//        return 0;
+//    }
+    GridMesh grid{3,3};
 
 }

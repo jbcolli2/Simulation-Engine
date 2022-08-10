@@ -19,38 +19,29 @@ void MovePtLight::Update(float deltaTime)
     if(Input::GetInstance().KeyPress(GLFW_KEY_I))
     {
         pointLight->m_position.z -= speed;
-        trans.position.z -= speed;
     }
     if(Input::GetInstance().KeyPress(GLFW_KEY_K))
     {
         pointLight->m_position.z += speed;
-        trans.position.z += speed;
-
     }
     if(Input::GetInstance().KeyPress(GLFW_KEY_J))
     {
         pointLight->m_position.x -= speed;
-        trans.position.x -= speed;
-
     }
     if(Input::GetInstance().KeyPress(GLFW_KEY_L))
     {
         pointLight->m_position.x += speed;
-        trans.position.x += speed;
-
     }
     if(Input::GetInstance().KeyPress(GLFW_KEY_U))
     {
         pointLight->m_position.y -= speed;
-        trans.position.y -= speed;
-
     }
     if(Input::GetInstance().KeyPress(GLFW_KEY_O))
     {
         pointLight->m_position.y += speed;
-        trans.position.y += speed;
-
     }
+
+    trans.position = pointLight->m_position;
 }
 
 } // seng

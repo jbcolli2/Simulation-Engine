@@ -5,7 +5,7 @@
 #ifndef SIM_ENGINE_PRIMITIVE_H
 #define SIM_ENGINE_PRIMITIVE_H
 
-#include "Misc/Util.h"
+#include "Misc/Common.h"
 
 #include "Scene/Mesh.h"
 
@@ -42,11 +42,18 @@ class Primitive : public Mesh
 private:
     std::vector<Vert3x3x2f> m_vertices;
 
+    // Static VAO/VBO for each primitive
+    // Use same VAO for each primitive created in game
+    static unsigned int m_cubeVAO, m_cubeVBO;
+    static unsigned int m_planeVAO, m_planeVBO;
+    static unsigned int m_sphereVAO, m_sphereVBO;
+
 
     void FillVertexData(PrimitiveType primitiveType);
 
 
 
+public:
     /***************** Primitive ctor  ******************
      * @brief Fill the m_vertices vector with cube vertex data.
      *
@@ -56,20 +63,6 @@ private:
      * @param material Pointer to material used with mesh.
     ******************************************************************///
     Primitive(PrimitiveType primitiveType);
-public:
-
-    /***************** GetInstance  ******************
-     * @brief Makes this a singleton class.  This allows only one Primitive to exist, making sure
-     *      all cubes being rendered use the same vao and we don't fill up the VRAM with duplicate
-     *      vertex data.
-     *
-     * @returns Reference to static Primitive object.
-    ******************************************************************///
-    static Primitive& GetInstance(PrimitiveType primitiveType)
-    {
-        static Primitive instance{primitiveType};
-        return instance;
-    };
 
 
 

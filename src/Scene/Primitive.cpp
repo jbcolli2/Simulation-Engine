@@ -7,6 +7,16 @@
 namespace seng
 {
 
+unsigned int Primitive::m_cubeVAO{0};
+unsigned int Primitive::m_cubeVBO{0};
+unsigned int Primitive::m_planeVAO{0};
+unsigned int Primitive::m_planeVBO{0};
+unsigned int Primitive::m_sphereVAO{0};
+unsigned int Primitive::m_sphereVBO{0};
+
+
+
+
 /***************** Primitive ctor  ******************
  * @brief Fill the m_vertices vector with cube vertex data.
  *
@@ -20,7 +30,30 @@ Primitive::Primitive(PrimitiveType primitiveType)
     m_material = nullptr;
 
 
-    ///////////////// Setup vertex data for cube ///////////////////////////////////////
+
+    // Check to see if the vao/vbo for this primitive has already been created
+    //   if so, then just set vao/vbo to static vao/vbo and done!
+    if(primitiveType == PrimitiveType::CUBE && m_cubeVAO != 0)
+    {
+        m_vao = m_cubeVAO;
+        m_vbo = m_cubeVBO;
+        return;
+    }
+    if(primitiveType == PrimitiveType::PLANE && m_planeVAO != 0)
+    {
+        m_vao = m_planeVAO;
+        m_vbo = m_planeVBO;
+        return;
+    }
+    if(primitiveType == PrimitiveType::SPHERE && m_sphereVAO != 0)
+    {
+        m_vao = m_sphereVAO;
+        m_vbo = m_sphereVBO;
+        return;
+    }
+
+
+    ///////////////// Setup vertex data for primitive ///////////////////////////////////////
     FillVertexData(primitiveType);
 
     m_numVertices = m_vertices.size();
@@ -162,13 +195,13 @@ std::vector<Vert3x3x2f> GetCubeVertexList()
 std::vector<Vert3x3x2f> GetPlaneVertexList()
 {
     std::vector<Vert3x3x2f> verts = {
-            Vert3x3x2f(-0.5f, -0.f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
-            Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
-            Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
+            Vert3x3x2f(-0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f),
+            Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f),
+            Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f),
 
-            Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
-            Vert3x3x2f(0.5f, -0.f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
-            Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f),
+            Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f),
+            Vert3x3x2f(0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),
+            Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f),
     };
 
     return verts;

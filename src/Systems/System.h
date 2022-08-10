@@ -5,7 +5,7 @@
 #ifndef SIM_ENGINE_SYSTEM_H
 #define SIM_ENGINE_SYSTEM_H
 
-#include "Misc/Util.h"
+#include "Misc/Common.h"
 #include "Engine/Object.h"
 
 namespace seng

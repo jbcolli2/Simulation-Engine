@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-#include "Misc/Util.h"
+#include "Misc/Common.h"
 #include "GLFW/glfw3.h"
 
 #include "DisplayManager.h"

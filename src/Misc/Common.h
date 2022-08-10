@@ -2,8 +2,8 @@
 // Created by jcollin2 on 7/3/22.
 //
 
-#ifndef SIM_ENGINE_UTIL_H
-#define SIM_ENGINE_UTIL_H
+#ifndef SIM_ENGINE_COMMON_H
+#define SIM_ENGINE_COMMON_H
 
 
 #include <cstdint>
@@ -46,6 +46,87 @@ std::string loadFile2String(const char *path);
 
 
 
+
+
+/***************** Grid class  ******************
+ * @brief Basic 2D dynamic array.  Access elements through index method.
+ *      Array is fixed sized, and elements are dynamically allocated on the heap.
+******************************************************************///
+template <class T>
+class Grid
+{
+    T* m_data{nullptr};
+    int M,N;
+public:
+    Grid(int M=0, int N=0) : M(M), N(N) {m_data = new T[M*N];};
+    ~Grid() {delete[] m_data;};
+    /////////////////    Copy    ///////////////////////
+    Grid(const Grid& grid)
+    {
+        M = grid.M;
+        N = grid.N;
+        m_data = new T[M*N];
+        for(int ii = 0; ii < M; ++ii)
+        {
+            for(int jj = 0; jj < N; ++jj)
+            {
+                m_data[jj*M + ii] = grid.index(ii,jj);
+            }
+        }
+    };
+    Grid& operator=(const Grid& grid)
+    {
+        if(&grid == this)
+            return *this;
+
+        delete[] m_data;
+        M = grid.M;
+        N = grid.N;
+        m_data = new T[M*N];
+        for(int ii = 0; ii < M; ++ii)
+        {
+            for(int jj = 0; jj < N; ++jj)
+            {
+                m_data[jj*M + ii] = grid.index(ii,jj);
+            }
+        }
+
+        return *this;
+    };
+    /////////////////    Move    ///////////////////////
+    Grid(Grid&& grid)
+    {
+        M = grid.M;
+        N = grid.N;
+        m_data = grid.m_data;
+        grid.m_data = nullptr;
+    }
+    Grid& operator=(Grid&& grid)
+    {
+        if(&grid == this)
+            return *this;
+
+        delete[] m_data;
+
+        M = grid.M;
+        N = grid.N;
+        m_data = grid.m_data;
+        grid.m_data = nullptr;
+
+        return *this;
+    }
+
+    T& index(int ii, int jj) const;
+
+};
+
+
+template<class T>
+T& Grid<T>::index(int ii, int jj) const
+{
+    assert(ii >= 0 && ii < M && jj >= 0 && jj < N &&"Grid.index out of bounds");
+    return m_data[jj*M + ii];
+}
 
 
 
@@ -93,4 +174,4 @@ unsigned int loadDataToVBO(std::vector<VertT> vertices)
     return VBO;
 }
 
-#endif //SIM_ENGINE_UTIL_H
+#endif //SIM_ENGINE_COMMON_H

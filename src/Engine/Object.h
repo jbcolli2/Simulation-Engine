@@ -5,7 +5,7 @@
 #ifndef seng_RENDERER_OBJECT_HPP
 #define seng_RENDERER_OBJECT_HPP
 
-#include "Misc/Util.h"
+#include "Misc/Common.h"
 #include "ComponentManager.h"
 
 

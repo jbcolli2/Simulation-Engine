@@ -1,8 +1,8 @@
 //
-// Created by jcollin2 on 7/19/22.
+// Created by jcollin2 on 7/29/22.
 //
 
-#include "SolidMaterial.h"
+#include "Scene/Material.h"
 
 namespace seng
 {
@@ -30,4 +30,4 @@ void SolidMaterial::SetupMaterial(Shader& shader)
 }
 
 
-} // seng
+}
