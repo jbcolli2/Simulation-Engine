@@ -56,21 +56,21 @@ template <class T>
 class Grid
 {
     T* m_data{nullptr};
-    int M,N;
+    int N_x,N_y;
 public:
-    Grid(int M=0, int N=0) : M(M), N(N) {m_data = new T[M*N];};
+    Grid(int M=0, int N=0) : N_x(M), N_y(N) { m_data = new T[M * N];};
     ~Grid() {delete[] m_data;};
     /////////////////    Copy    ///////////////////////
     Grid(const Grid& grid)
     {
-        M = grid.M;
-        N = grid.N;
-        m_data = new T[M*N];
-        for(int ii = 0; ii < M; ++ii)
+        N_x = grid.N_x;
+        N_y = grid.N_y;
+        m_data = new T[N_x * N_y];
+        for(int ii = 0; ii < N_x; ++ii)
         {
-            for(int jj = 0; jj < N; ++jj)
+            for(int jj = 0; jj < N_y; ++jj)
             {
-                m_data[jj*M + ii] = grid.index(ii,jj);
+                m_data[jj * N_x + ii] = grid.index(ii, jj);
             }
         }
     };
@@ -80,14 +80,14 @@ public:
             return *this;
 
         delete[] m_data;
-        M = grid.M;
-        N = grid.N;
-        m_data = new T[M*N];
-        for(int ii = 0; ii < M; ++ii)
+        N_x = grid.N_x;
+        N_y = grid.N_y;
+        m_data = new T[N_x * N_y];
+        for(int ii = 0; ii < N_x; ++ii)
         {
-            for(int jj = 0; jj < N; ++jj)
+            for(int jj = 0; jj < N_y; ++jj)
             {
-                m_data[jj*M + ii] = grid.index(ii,jj);
+                m_data[jj * N_x + ii] = grid.index(ii, jj);
             }
         }
 
@@ -96,8 +96,8 @@ public:
     /////////////////    Move    ///////////////////////
     Grid(Grid&& grid)
     {
-        M = grid.M;
-        N = grid.N;
+        N_x = grid.N_x;
+        N_y = grid.N_y;
         m_data = grid.m_data;
         grid.m_data = nullptr;
     }
@@ -108,8 +108,8 @@ public:
 
         delete[] m_data;
 
-        M = grid.M;
-        N = grid.N;
+        N_x = grid.N_x;
+        N_y = grid.N_y;
         m_data = grid.m_data;
         grid.m_data = nullptr;
 
@@ -118,14 +118,17 @@ public:
 
     T& index(int ii, int jj) const;
 
+    int getNx() const {return N_x;};
+    int getNy() const {return N_y;};
+
 };
 
 
 template<class T>
 T& Grid<T>::index(int ii, int jj) const
 {
-    assert(ii >= 0 && ii < M && jj >= 0 && jj < N &&"Grid.index out of bounds");
-    return m_data[jj*M + ii];
+    assert(ii >= 0 && ii < N_x && jj >= 0 && jj < N_y && "Grid.index out of bounds");
+    return m_data[jj * N_x + ii];
 }
 
 

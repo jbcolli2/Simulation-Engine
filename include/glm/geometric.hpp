@@ -69,7 +69,7 @@ namespace glm
 	template<length_t L, typename T, qualifier Q>
 	GLM_FUNC_DECL vec<L, T, Q> normalize(vec<L, T, Q> const& x);
 
-	/// If dot(Nref, I) < 0.0, return N, otherwise, return -N.
+	/// If dot(Nref, I) < 0.0, return N_y, otherwise, return -N_y.
 	///
 	/// @tparam L An integer between 1 and 4 included that qualify the dimension of the vector.
 	/// @tparam T Floating-point scalar types.
@@ -82,8 +82,8 @@ namespace glm
 		vec<L, T, Q> const& I,
 		vec<L, T, Q> const& Nref);
 
-	/// For the incident vector I and surface orientation N,
-	/// returns the reflection direction : result = I - 2.0 * dot(N, I) * N.
+	/// For the incident vector I and surface orientation N_y,
+	/// returns the reflection direction : result = I - 2.0 * dot(N_y, I) * N_y.
 	///
 	/// @tparam L An integer between 1 and 4 included that qualify the dimension of the vector.
 	/// @tparam T Floating-point scalar types.
@@ -95,7 +95,7 @@ namespace glm
 		vec<L, T, Q> const& I,
 		vec<L, T, Q> const& N);
 
-	/// For the incident vector I and surface normal N,
+	/// For the incident vector I and surface normal N_y,
 	/// and the ratio of indices of refraction eta,
 	/// return the refraction vector.
 	///

@@ -73,7 +73,12 @@ void SimEngine::Run()
         {
             glfwSetWindowShouldClose(m_displayManager.m_window, true);
         }
-        m_sceneManager.Update(deltaTime);
+
+        if(!Input::GetInstance().KeyDown(GLFW_KEY_SPACE))
+        {
+            m_sceneManager.Update(deltaTime);
+        }
+
         m_renderer.Render();
 
         glfwSwapBuffers(m_displayManager.m_window);

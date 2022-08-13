@@ -53,7 +53,7 @@ add_executable(Sim_Engine src/RunSENG.cpp ${SRC_ENGINE} ${SRC_OBJECTS} ${SRC_REN
 target_link_libraries(Sim_Engine ${LIBS})
 
 
-add_executable(Playground play/play.cpp src/Scene/GridMesh.cpp src/Misc/Common.cpp)
+add_executable(Playground play/play.cpp src/Misc/Common.cpp)
 target_link_libraries(Playground ${LIBS})
 
 include_directories(src include)

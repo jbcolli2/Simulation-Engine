@@ -3,9 +3,9 @@
 //
 
 #include <iostream>
+#include <array>
 
 #include "Misc/Common.h"
-#include "Scene/GridMesh.h"
 
 
 
@@ -25,6 +25,12 @@ int main()
 //        std::cout << "Failed to initialize GLAD" << std::endl;
 //        return 0;
 //    }
-    GridMesh grid{3,3};
+
+
+    Grid<std::vector<std::array<int, 2>>> grid{5,5};
+
+    grid.index(1,1).push_back(std::array<int,2>{2,3});
+
+    std::cout << grid.index(1,1)[0][0] << " | " << grid.index(1,1)[0][1] << "\n";
 
 }

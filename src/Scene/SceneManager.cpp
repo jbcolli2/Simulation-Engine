@@ -13,6 +13,7 @@
 
 #include "Systems/CameraController.h"
 #include "Systems/FixedGridMesh.h"
+#include "Systems/ClothRod.h"
 
 
 namespace seng
@@ -47,8 +48,8 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     Primitive *planeMesh = new Primitive(PrimitiveType::PLANE);
     planeMesh->SetMaterial(whiteMat);
 
-    GridMesh *hemisphere = new GridMesh(10, 10);
-    hemisphere->SetMaterial(blueMat);
+    GridMesh *clothMesh = new GridMesh(10, 10);
+    clothMesh->SetMaterial(blueMat);
 
 
 
@@ -61,11 +62,11 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     cube->AddComponent(tempRend);
 //    m_scene.AddObject(cube);
 
-    Object *hemi = new Object();
+    Object *cloth = new Object();
     tempRend = new Renderable();
-    tempRend->m_meshes.push_back(hemisphere);
-    hemi->AddComponent(tempRend);
-    m_scene.AddObject(hemi);
+    tempRend->m_meshes.push_back(clothMesh);
+    cloth->AddComponent(tempRend);
+    m_scene.AddObject(cloth);
 
     Object *floor = new Object();
     floor->GetTransform().scale = glm::vec3(10.f, 1.f, 10.f);
@@ -77,20 +78,20 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     Object *camera = new Object();
     camera->AddComponent(new Camera());
     Camera *cam = camera->GetComponent<Camera>();
-    cam->SetDirection(-40, -30);
-    cam->m_position = glm::vec3(1.5f, 1.5f, 0.f);
+    cam->SetDirection(0, 0);
+    cam->m_position = glm::vec3(0.5f, 0.5f, 1.5f);
     m_scene.AddObject(camera);
 
     /////////////////    Create lights    ///////////////////////
     Object *dirLight = new Object();
     dirLight->AddComponent(new DirLight());
-    dirLight->GetComponent<DirLight>()->m_direction = glm::vec3(-.5, -.75, -.8);
-//    m_scene.AddObject(dirLight);
+    dirLight->GetComponent<DirLight>()->m_direction = glm::vec3(-.5, -.75, -.3);
+    m_scene.AddObject(dirLight);
 
     Object *ptLight = new Object();
     Transform& transform = ptLight->GetTransform();
     transform.scale = glm::vec3(.1f);
-    ptLight->AddComponent(new PointLight(glm::vec3(2.f, .5f, 0.f)));
+    ptLight->AddComponent(new PointLight(glm::vec3(1.f, .5f, 1.f)));
     ptLight->GetComponent<PointLight>()->m_specularIntensity = .3f;
     ptLight->AddComponent(new Renderable(lightCubeMesh));
     m_scene.AddObject(ptLight);
@@ -119,8 +120,8 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     //***********************************************************
     //       Mesh systems
     //***********************************************************
-    FixedGridMesh hemisphereSys(hemisphere);
-    hemisphereSys.StartUp();
+    ClothRod* clothRodSys = new ClothRod(clothMesh);
+    m_scene.AddSystem(clothRodSys);
 
     m_scene.StartUp();
 
@@ -138,6 +139,7 @@ void SceneManager::ShutDown()
 void SceneManager::Update(float deltaTime)
 {
     m_scene.Update(deltaTime);
+
 }
 
 
