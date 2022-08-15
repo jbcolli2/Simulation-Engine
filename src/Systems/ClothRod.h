@@ -38,8 +38,14 @@ struct Node
 class ClothRod : public System
 {
 private:
+    // Dimensions of the GridMesh
+    int m_Nx{0}, m_Ny{0};
     // Position data for each mass in the cloth
-    Grid<Node> m_masses;
+    std::vector<Node> m_masses;
+    // Adjacency data of each node.  Indices same as for m_masses, each entry holds vector of
+    //    index to adjacent nodes.
+   std::vector< std::vector<int> > m_adjNodes;
+   std::vector<int> m_shuffleIndex{};
 
     // Length of all axis-aligned rods connecting masses (assumed to be same among all masses)
     float m_rodLength{1.f};
@@ -48,16 +54,25 @@ private:
     // Value of acceleration due to gravity
     const glm::vec3 m_g{glm::vec3(0.f, -9.8f, 0.f)};
 
-    // pointer to the grid mesh
-    GridMesh* m_gridMesh;
-    // Dimensions of the GridMesh
-    int m_Nx{0}, m_Ny{0};
-
     // Number of iterations to use when updating the mass positions
     int m_updateIterations{5};
 
-    // Adjacency data of each node
-    Grid< std::vector< std::array<int,2> > > m_adjNodes;
+    // pointer to the grid mesh
+    GridMesh* m_gridMesh;
+
+
+    /***************** MatrixIdx2Vector  ******************
+     * @brief Convert matrix indices into vector indices for the cloth grid.  Vector
+     *      index starts at bottom left and fills in row first.
+     *
+     * @param ii,jj Matrix indices.  ii is x and jj is y.
+     *
+     * @returns Vector index of same spot on grid.
+    ******************************************************************///
+    int MatrixIdx2Vector(int ii, int jj)
+    {
+        return jj*m_Nx + ii;
+    }
 
 
 public:

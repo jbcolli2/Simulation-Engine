@@ -3,6 +3,7 @@
 //
 
 #include <array>
+#include <random>
 #include "Misc/Common.h"
 #include "Engine/Input.h"
 
@@ -18,64 +19,82 @@ namespace seng
 
 
 
+
 ClothRod::ClothRod(GridMesh* gridMesh) : m_gridMesh(gridMesh)
 {
     m_Nx = gridMesh->GetNx();
     m_Ny = gridMesh->GetNy();
 
-    m_masses = Grid<Node>(m_Nx, m_Ny);
+    m_masses = std::vector<Node>(m_Nx*m_Ny);
+
+    m_shuffleIndex = std::vector<int>(m_Nx*m_Ny);
+    for(int ii = 0; ii < m_shuffleIndex.size(); ++ii)
+    {
+        m_shuffleIndex[ii] = ii;
+    }
 
     /////////////  Fill in adjacency of the nodes  ///////////////////
-    m_adjNodes = Grid<std::vector< std::array<int, 2>>>{m_Nx, m_Ny};
+    m_adjNodes = std::vector< std::vector<int> >(m_Nx*m_Ny);
 
+    int index{-1};
     // Inner nodes
     for(int ii = 1; ii < m_Nx-1; ++ii)
     {
         for(int jj = 1; jj < m_Ny-1; ++jj)
         {
-            m_adjNodes.index(ii,jj).push_back(std::array<int,2>{ii, jj-1}); // W
-            m_adjNodes.index(ii,jj).push_back(std::array<int,2>{ii+1, jj}); // N
-            m_adjNodes.index(ii,jj).push_back(std::array<int,2>{ii, jj+1}); // E
-            m_adjNodes.index(ii,jj).push_back(std::array<int,2>{ii+1, jj}); // S
+            index = MatrixIdx2Vector(ii, jj);
+
+            m_adjNodes[index].push_back(MatrixIdx2Vector(ii, jj-1)); // S
+            m_adjNodes[index].push_back(MatrixIdx2Vector(ii+1, jj)); // E
+            m_adjNodes[index].push_back(MatrixIdx2Vector(ii, jj+1)); // N
+            m_adjNodes[index].push_back(MatrixIdx2Vector(ii-1, jj)); // W
         }
     }
 
     // Inner top and bottom
     for(int ii = 1; ii < m_Nx-1; ++ii)
     {
-        m_adjNodes.index(ii,0).push_back(std::array<int,2>{ii-1, 0}); // W
-        m_adjNodes.index(ii,0).push_back(std::array<int,2>{ii+1, 0}); // E
-        m_adjNodes.index(ii,0).push_back(std::array<int,2>{ii, 1}); // N
+        index = MatrixIdx2Vector(ii, 0);
+        m_adjNodes[index].push_back(MatrixIdx2Vector(ii-1, 0)); // W
+        m_adjNodes[index].push_back(MatrixIdx2Vector(ii+1, 0)); // E
+        m_adjNodes[index].push_back(MatrixIdx2Vector(ii, 1)); // N
 
-        m_adjNodes.index(ii,m_Ny-1).push_back(std::array<int,2>{ii-1, m_Ny-1}); // W
-        m_adjNodes.index(ii,m_Ny-1).push_back(std::array<int,2>{ii+1, m_Ny-1}); // E
-        m_adjNodes.index(ii,m_Ny-1).push_back(std::array<int,2>{ii, m_Ny-2}); // S
+        index = MatrixIdx2Vector(ii, m_Ny-1);
+        m_adjNodes[index].push_back(MatrixIdx2Vector(ii-1, m_Ny-1)); // W
+        m_adjNodes[index].push_back(MatrixIdx2Vector(ii+1, m_Ny-1)); // E
+        m_adjNodes[index].push_back(MatrixIdx2Vector(ii, m_Ny-2)); // S
     }
 
     // Inner left and right
     for(int jj = 1; jj < m_Ny-1; ++jj)
     {
-        m_adjNodes.index(0,jj).push_back(std::array<int,2>{0, jj+1}); // N
-        m_adjNodes.index(0,jj).push_back(std::array<int,2>{0, jj-1}); // S
-        m_adjNodes.index(0,jj).push_back(std::array<int,2>{1, jj}); // E
+        index = MatrixIdx2Vector(0, jj);
+        m_adjNodes[index].push_back(MatrixIdx2Vector(0, jj+1)); // N
+        m_adjNodes[index].push_back(MatrixIdx2Vector(0, jj-1)); // S
+        m_adjNodes[index].push_back(MatrixIdx2Vector(1, jj)); // E
 
-        m_adjNodes.index(m_Nx-1,jj).push_back(std::array<int,2>{m_Nx-1, jj+1}); // N
-        m_adjNodes.index(m_Nx-1,jj).push_back(std::array<int,2>{m_Nx-1, jj-1}); // S
-        m_adjNodes.index(m_Nx-1,jj).push_back(std::array<int,2>{m_Nx-2, jj}); // W
+        index = MatrixIdx2Vector(m_Nx-1, jj);
+        m_adjNodes[index].push_back(MatrixIdx2Vector(m_Nx-1, jj+1)); // N
+        m_adjNodes[index].push_back(MatrixIdx2Vector(m_Nx-1, jj-1)); // S
+        m_adjNodes[index].push_back(MatrixIdx2Vector(m_Nx-2, jj)); // W
     }
 
     // Corners
-    m_adjNodes.index(0,0).push_back(std::array<int,2>{0,1}); // N
-    m_adjNodes.index(0,0).push_back(std::array<int,2>{1,0}); // E
+    index = MatrixIdx2Vector(0,0);
+    m_adjNodes[index].push_back(MatrixIdx2Vector(0,1)); // N
+    m_adjNodes[index].push_back(MatrixIdx2Vector(1,0)); // E
 
-    m_adjNodes.index(m_Nx-1,0).push_back(std::array<int,2>{m_Nx-1,1}); // N
-    m_adjNodes.index(m_Nx-1,0).push_back(std::array<int,2>{m_Nx-2,0}); // W
+    index = MatrixIdx2Vector(m_Nx-1, 0);
+    m_adjNodes[index].push_back(MatrixIdx2Vector(m_Nx-1,1)); // N
+    m_adjNodes[index].push_back(MatrixIdx2Vector(m_Nx-2,0)); // W
 
-    m_adjNodes.index(0,m_Ny-1).push_back(std::array<int,2>{0,m_Ny-2}); // S
-    m_adjNodes.index(0,m_Ny-1).push_back(std::array<int,2>{1,m_Ny-1}); // E
+    index = MatrixIdx2Vector(0, m_Ny-1);
+    m_adjNodes[index].push_back(MatrixIdx2Vector(0,m_Ny-2)); // S
+    m_adjNodes[index].push_back(MatrixIdx2Vector(1,m_Ny-1)); // E
 
-    m_adjNodes.index(m_Nx-1,m_Ny-1).push_back(std::array<int,2>{m_Nx-1, m_Ny-2}); // S
-    m_adjNodes.index(m_Nx-1,m_Ny-1).push_back(std::array<int,2>{m_Nx-2, m_Ny-1}); // W
+    index = MatrixIdx2Vector(m_Nx-1, m_Ny-1);
+    m_adjNodes[index].push_back(MatrixIdx2Vector(m_Nx-1, m_Ny-2)); // S
+    m_adjNodes[index].push_back(MatrixIdx2Vector(m_Nx-2, m_Ny-1)); // W
 
 }
 
@@ -92,18 +111,20 @@ void ClothRod::StartUp()
 
     /////////////  Initialize the positions of the masses  ///////////////////
     float x{0.f},y{0.f},z{0.f};
+    int index{-1};
     for(int ii = 0; ii < m_Nx; ++ii)
     {
         y = 0.f;
         for(int jj = 0; jj < m_Ny; ++jj)
         {
-            m_masses.index(ii,jj).currentPosition.x = x;
-            m_masses.index(ii,jj).currentPosition.y = y;
-            m_masses.index(ii,jj).currentPosition.z = z;
+            index = MatrixIdx2Vector(ii, jj);
+            m_masses[index].currentPosition.x = x;
+            m_masses[index].currentPosition.y = y;
+            m_masses[index].currentPosition.z = z;
 
-            m_masses.index(ii,jj).prevPosition.x = x;
-            m_masses.index(ii,jj).prevPosition.y = y;
-            m_masses.index(ii,jj).prevPosition.z = z;
+            m_masses[index].prevPosition.x = x;
+            m_masses[index].prevPosition.y = y;
+            m_masses[index].prevPosition.z = z;
 
             // Increment y value by one rod length
             y += m_rodLength;
@@ -112,9 +133,9 @@ void ClothRod::StartUp()
         x += m_rodLength;
 
         // Now fix every third node at top of cloth
-        if(ii == 0 || ii== m_Nx-1 || ii == m_Nx - 4)
+        if(ii == 0 || ii== m_Nx-1)
         {
-            m_masses.index(ii, m_Ny - 1).fixedFlag = true;
+            m_masses[MatrixIdx2Vector(ii, m_Ny-1)].fixedFlag = true;
         }
 
     }
@@ -124,7 +145,7 @@ void ClothRod::StartUp()
     {
         for(int jj = 0; jj < m_Ny; ++jj)
         {
-            m_gridMesh->m_gridPos.index(ii,jj) = m_masses.index(ii,jj).currentPosition;
+            m_gridMesh->m_gridPos.index(ii,jj) = m_masses[MatrixIdx2Vector(ii,jj)].currentPosition;
         }
     }
 
@@ -154,73 +175,72 @@ void ClothRod::StartUp()
 ******************************************************************///
 void ClothRod::Update(float deltaTime)
 {
+    int index{-1};
     /////////////  Integrate F=ma with Verlet  ///////////////////
-    for(int ii = 0; ii < m_Nx; ++ii)
+    for(int nodeIdx = 0; nodeIdx < m_masses.size(); ++nodeIdx)
     {
-        for(int jj = 0; jj < m_Ny; ++jj)
-        {
-            if(m_masses.index(ii,jj).fixedFlag)
-                continue;
+        if(m_masses[nodeIdx].fixedFlag)
+            continue;
 
-            glm::vec3 forces = m_g;
-            if(Input::GetInstance().KeyPress(GLFW_KEY_SPACE) && ii > 1 && ii < m_Nx-2)
-                forces += glm::vec3(0.f, 0.f, 1.3f);
+        glm::vec3 forces = m_g;
+        if(Input::GetInstance().KeyPress(GLFW_KEY_SPACE) && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx < 1)
+            forces += glm::vec3(0.f, 0.f, 1.3f);
 
-            glm::vec3 oldCurrentPos = m_masses.index(ii,jj).currentPosition;
-            m_masses.index(ii,jj).currentPosition = 2.f*m_masses.index(ii,jj).currentPosition - m_masses.index(ii,jj).prevPosition
-                                                      + deltaTime*deltaTime*forces/m_mass;
-            m_masses.index(ii,jj).prevPosition = oldCurrentPos;
-        }
+        glm::vec3 oldCurrentPos = m_masses[nodeIdx].currentPosition;
+        m_masses[nodeIdx].currentPosition = 2.f*m_masses[nodeIdx].currentPosition - m_masses[nodeIdx].prevPosition;
+        m_masses[nodeIdx].currentPosition += deltaTime*deltaTime*forces/m_mass;
+
+        m_masses[nodeIdx].prevPosition = oldCurrentPos;
     }
 
 
 
     /////////////  Project contraints  ///////////////////
-    int adj_ii, adj_jj;
+    auto rd = std::random_device {};
+    auto rng = std::default_random_engine { rd() };
+    std::shuffle(m_shuffleIndex.begin(), m_shuffleIndex.end(), rng);
     Node* currentNode{nullptr};
     Node* adjNode{nullptr};
     for(int iter = 0; iter < m_updateIterations; ++iter)
     {
-        for(int ii = 0; ii < m_Nx; ++ii)
+        for(int nodeIdx = 0; nodeIdx < m_masses.size(); ++nodeIdx)
         {
-            for(int jj = 0; jj < m_Ny; ++jj)
-            {
-                currentNode = &m_masses.index(ii,jj);
-                if(currentNode->fixedFlag)
-                    continue;
+            currentNode = &m_masses[nodeIdx];
+            if(currentNode->fixedFlag)
+                continue;
 
 //                std::cout << "ii = " << ii << ", jj = " << jj << std::endl;
 //                std::cout << "Before Constraint\n----------------------------------------------\n";
 //                printClothPos(m_masses);
 
 
-                for(const auto& node : m_adjNodes.index(ii,jj))
-                {
-                    adj_ii = node[0];
-                    adj_jj = node[1];
-                    adjNode = &m_masses.index(adj_ii, adj_jj);
+            for(const auto& adjIdx : m_adjNodes[nodeIdx])
+            {
+                adjNode = &m_masses[adjIdx];
 
-                    glm::vec3 deltaDir = currentNode->currentPosition - adjNode->currentPosition;
-                    float deltaDirLength = glm::length(deltaDir);
-                    deltaDir /= deltaDirLength;
-                    float delta = (deltaDirLength - m_rodLength);
+                glm::vec3 deltaDir = currentNode->currentPosition - adjNode->currentPosition;
+                float deltaDirLength = glm::length(deltaDir);
+                deltaDir /= deltaDirLength;
+                float delta = (deltaDirLength - m_rodLength);
 
-                    currentNode->currentPosition -= 0.5f*delta*deltaDir;
-                    if(!adjNode->fixedFlag)
-                        adjNode->currentPosition += 0.5f*delta*deltaDir;
-                }
+                currentNode->currentPosition -= 0.5f*delta*deltaDir;
+                if(!adjNode->fixedFlag)
+                    adjNode->currentPosition += 0.5f*delta*deltaDir;
+            }
 
 //                std::cout << "After constraint\n-------------------------------------------\n";
 //                printClothPos(m_masses);
-            }
         }
     } // Iterations
 
+    
+    /////////////  Update Mesh Positions  ///////////////////
     for(int ii = 0; ii < m_Nx; ++ii)
     {
         for(int jj = 0; jj < m_Ny; ++jj)
         {
-            m_gridMesh->m_gridPos.index(ii,jj) = m_masses.index(ii,jj).currentPosition;
+            index = MatrixIdx2Vector(ii,jj);
+            m_gridMesh->m_gridPos.index(ii,jj) = m_masses[index].currentPosition;
         }
     }
 
