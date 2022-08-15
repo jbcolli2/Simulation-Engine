@@ -107,7 +107,12 @@ void ClothRod::StartUp()
     /////////////////    Setup cloth parameters    ///////////////////////
     m_mass = 1.f;
     m_rodLength = 1.f/glm::min(m_Nx-1, m_Ny-1);
-    m_updateIterations = 5;
+    m_updateIterations = 10;
+
+    auto rd = std::random_device {};
+    auto rng = std::default_random_engine { rd() };
+    std::shuffle(m_shuffleIndex.begin(), m_shuffleIndex.end(), rng);
+
 
     /////////////  Initialize the positions of the masses  ///////////////////
     float x{0.f},y{0.f},z{0.f};
@@ -183,7 +188,7 @@ void ClothRod::Update(float deltaTime)
             continue;
 
         glm::vec3 forces = m_g;
-        if(Input::GetInstance().KeyPress(GLFW_KEY_SPACE) && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx < 1)
+        if(Input::GetInstance().KeyPress(GLFW_KEY_SPACE) && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx > 1)
             forces += glm::vec3(0.f, 0.f, 1.3f);
 
         glm::vec3 oldCurrentPos = m_masses[nodeIdx].currentPosition;
@@ -196,15 +201,13 @@ void ClothRod::Update(float deltaTime)
 
 
     /////////////  Project contraints  ///////////////////
-    auto rd = std::random_device {};
-    auto rng = std::default_random_engine { rd() };
-    std::shuffle(m_shuffleIndex.begin(), m_shuffleIndex.end(), rng);
     Node* currentNode{nullptr};
     Node* adjNode{nullptr};
     for(int iter = 0; iter < m_updateIterations; ++iter)
     {
-        for(int nodeIdx = 0; nodeIdx < m_masses.size(); ++nodeIdx)
+        for(int ii = 0; ii < m_masses.size(); ++ii)
         {
+            int nodeIdx = m_shuffleIndex[ii];
             currentNode = &m_masses[nodeIdx];
             if(currentNode->fixedFlag)
                 continue;

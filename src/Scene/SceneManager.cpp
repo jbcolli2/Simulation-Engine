@@ -48,7 +48,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     Primitive *planeMesh = new Primitive(PrimitiveType::PLANE);
     planeMesh->SetMaterial(whiteMat);
 
-    GridMesh *clothMesh = new GridMesh(10, 10);
+    GridMesh *clothMesh = new GridMesh(30, 10);
     clothMesh->SetMaterial(blueMat);
 
 
