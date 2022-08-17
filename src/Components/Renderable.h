@@ -6,6 +6,7 @@
 #define PECS_RENDERER_RENDERABLE_HPP
 
 #include "Scene/Mesh.h"
+#include "Scene/PrimitiveMesh.h"
 #include "Scene/GridMesh.h"
 #include "Engine/Component.h"
 
@@ -16,17 +17,25 @@ namespace seng
 {
 
 
-class PrimitiveMesh;
 /***************** Primitive  ******************
  * @brief Component represents the object is a primitive shape.  Holds the
  *      mesh data for the shape.
 ******************************************************************///
-class Primitive : public Component
+class Cube : public Component
 {
 public:
     PrimitiveMesh* m_mesh{};
 
-    Primitive(PrimitiveMesh* mesh) : m_mesh(mesh) {};
+    Cube() : m_mesh(new PrimitiveMesh(PrimitiveType::CUBE)) {};
+};
+
+
+class Plane : public Component
+{
+public:
+    PrimitiveMesh* m_mesh{};
+
+    Plane() : m_mesh(new PrimitiveMesh(PrimitiveType::PLANE)) {};
 };
 
 

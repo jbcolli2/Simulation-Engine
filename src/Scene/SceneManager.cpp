@@ -57,17 +57,18 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     ///////////////// Create renderables ///////////////////////
     Object *cube = new Object();
     cube->GetTransform().position = glm::vec3(0.f, 0.f, -2.f);
-    cube->AddComponent(new Primitive(cubeMesh));
-    Renderable *tempRend = new Renderable();
-    tempRend->m_meshes.push_back(cubeMesh);
+    cube->AddComponent(new Cube());
+    cube->GetComponent<Cube>()->m_mesh->SetMaterial(blueMat);
+    Renderable *tempRend = new Renderable(cube->GetComponent<Cube>()->m_mesh);
     cube->AddComponent(tempRend);
-//    m_scene.AddObject(cube);
+    m_scene.AddObject(cube);
 
     Object *floor = new Object();
     floor->GetTransform().scale = glm::vec3(10.f, 1.f, 10.f);
     floor->GetTransform().position.y = -2.f;
-    floor->AddComponent(new Primitive(planeMesh));
-    floor->AddComponent(new Renderable(planeMesh));
+    floor->AddComponent(new Plane());
+    floor->GetComponent<Plane>()->m_mesh->SetMaterial(whiteMat);
+    floor->AddComponent(new Renderable(floor->GetComponent<Plane>()->m_mesh));
     m_scene.AddObject(floor);
 
     Object* cloth = new Object();
