@@ -69,6 +69,10 @@ void Scene::ShutDown()
     {
         system->ShutDown();
     }
+    for(System* system : m_physSystems)
+    {
+        system->ShutDown();
+    }
 }
 
 

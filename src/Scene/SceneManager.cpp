@@ -38,7 +38,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     blueMat->m_diffuse = glm::vec3(0.2f, 0.f, 0.9f);
     blueMat->m_roughness = 16;
     SolidMaterial *whiteMat = new SolidMaterial();
-    whiteMat->m_diffuse = glm::vec3(1.f);
+    whiteMat->m_diffuse = glm::vec3(0.5f, 0.6f, 0.5f);
 
 
     PrimitiveMesh *cubeMesh = new PrimitiveMesh(PrimitiveType::CUBE);
@@ -82,7 +82,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
 
     /////////////////    Create camera    ///////////////////////
     Object *camera = new Object();
-    camera->AddComponent(new Camera());
+    camera->AddComponent(new Camera(displayManager));
     Camera *cam = camera->GetComponent<Camera>();
     cam->SetDirection(0, 0);
     cam->m_position = glm::vec3(0.5f, 0.5f, 1.5f);
@@ -142,10 +142,10 @@ void SceneManager::ShutDown()
     m_scene.ShutDown();
 }
 
-void SceneManager::Update(float deltaTime)
+void SceneManager::Update(float deltaTime, float physDeltaTime)
 {
     m_scene.Update(deltaTime);
-    m_scene.UpdatePhysics(deltaTime);
+    m_scene.UpdatePhysics(physDeltaTime);
 
 }
 

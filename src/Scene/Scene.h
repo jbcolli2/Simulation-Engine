@@ -32,10 +32,12 @@ private:
     std::vector<System*> m_physSystems{};
 
     float m_physTimer{0.f};
-    float m_physTimeStep{.033f};
+
 
 
 public:
+    float m_physTimeStep{.033f};
+
     float m_ambientIntensity{.2f};
 
     /***************** StartUp  ******************

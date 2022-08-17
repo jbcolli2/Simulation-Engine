@@ -48,7 +48,7 @@ public:
          *
          * @param deltaTime Amount of game time that has elapsed since last frame.
     ******************************************************************///
-    void Update(float deltaTime);
+    void Update(float deltaTime, float physDeltaTime);
 
 }; //End SceneManager
 } //End namespace seng

@@ -6,7 +6,6 @@
 
 #include "DisplayManager.h"
 
-float seng::DisplayManager::m_aspectRatio = 4.f/3.f;
 
 /***************** DisplayManager::StartUp  ******************
      * @brief Initialize the window and context.

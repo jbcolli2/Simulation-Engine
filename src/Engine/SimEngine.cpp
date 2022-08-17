@@ -59,6 +59,7 @@ void SimEngine::Run()
     float currentFrame = 0.f;
     float lastFrame = 0.f;
     float deltaTime = 0.f;
+    float physDeltaTime = 0.f;
 
 
     while(!glfwWindowShouldClose(m_displayManager.m_window))
@@ -74,10 +75,10 @@ void SimEngine::Run()
             glfwSetWindowShouldClose(m_displayManager.m_window, true);
         }
 
-        if(!Input::GetInstance().KeyDown(GLFW_KEY_SPACE))
-        {
-            m_sceneManager.Update(deltaTime);
-        }
+        if(Input::GetInstance().KeyDown(GLFW_KEY_SPACE))
+            m_sceneManager.m_scene.m_physTimeStep = 0.033f;
+
+        m_sceneManager.Update(deltaTime, deltaTime);
 
         m_renderer.Render();
 

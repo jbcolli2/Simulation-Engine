@@ -23,7 +23,7 @@ struct DisplayManager
 {
 public:
     // Window dimensions
-    static float m_aspectRatio;
+    float m_aspectRatio{4.f/3.f};
 
     GLFWwindow* m_window;
 

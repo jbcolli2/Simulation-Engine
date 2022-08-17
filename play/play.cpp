@@ -14,8 +14,31 @@ using namespace seng;
 
 
 
+class Comp
+{
+    int intVal{-1};
+
+public:
+    Comp(int ii)
+    {
+        intVal = ii;
+        int jj = 8+intVal;
+    }
+
+    void print() {std::cout << intVal << std::endl; };
+};
 
 
+class Test
+{
+private:
+    Comp* m_comp;
+
+public:
+    Test(int compii) : m_comp(new Comp(compii)) {};
+
+    void print() {m_comp->print();};
+};
 
 
 int main()
@@ -27,10 +50,7 @@ int main()
 //    }
 
 
-    Grid<std::vector<std::array<int, 2>>> grid{5,5};
+    Test test(3);
 
-    grid.index(1,1).push_back(std::array<int,2>{2,3});
-
-    std::cout << grid.index(1,1)[0][0] << " | " << grid.index(1,1)[0][1] << "\n";
-
+    test.print();
 }

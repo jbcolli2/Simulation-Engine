@@ -8,7 +8,7 @@ int main()
 {
     SimEngine engine{};
 
-    if(engine.StartUp(800, 600))
+    if(engine.StartUp(1200, 1000))
     {
         engine.Run();
     }
