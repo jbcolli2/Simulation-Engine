@@ -2,22 +2,22 @@
 // Created by jcollin2 on 7/19/22.
 //
 
-#include "Primitive.h"
+#include "PrimitiveMesh.h"
 
 namespace seng
 {
 
-unsigned int Primitive::m_cubeVAO{0};
-unsigned int Primitive::m_cubeVBO{0};
-unsigned int Primitive::m_planeVAO{0};
-unsigned int Primitive::m_planeVBO{0};
-unsigned int Primitive::m_sphereVAO{0};
-unsigned int Primitive::m_sphereVBO{0};
+unsigned int PrimitiveMesh::m_cubeVAO{0};
+unsigned int PrimitiveMesh::m_cubeVBO{0};
+unsigned int PrimitiveMesh::m_planeVAO{0};
+unsigned int PrimitiveMesh::m_planeVBO{0};
+unsigned int PrimitiveMesh::m_sphereVAO{0};
+unsigned int PrimitiveMesh::m_sphereVBO{0};
 
 
 
 
-/***************** Primitive ctor  ******************
+/***************** PrimitiveMesh ctor  ******************
  * @brief Fill the m_vertices vector with cube vertex data.
  *
  *      Generate vao/vbo and set vertex attributes.
@@ -25,7 +25,7 @@ unsigned int Primitive::m_sphereVBO{0};
  *
  * @param material Pointer to material used with mesh.
 ******************************************************************///
-Primitive::Primitive(PrimitiveType primitiveType)
+PrimitiveMesh::PrimitiveMesh(PrimitiveType primitiveType)
 {
     m_material = nullptr;
 
@@ -82,7 +82,7 @@ Primitive::Primitive(PrimitiveType primitiveType)
 /***************** Draw  ******************
  * @brief Binds VAO and calls glDraw... to draw the mesh.
 ******************************************************************///
-void Primitive::Draw(Shader& shader)
+void PrimitiveMesh::Draw(Shader& shader)
 {
     glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
@@ -100,7 +100,7 @@ void Primitive::Draw(Shader& shader)
  *      [-.5, .5] x [-.5, .5] x [-.5, .5]
  *      with normal and UV data.
 ******************************************************************///
-void Primitive::FillVertexData(PrimitiveType primitiveType)
+void PrimitiveMesh::FillVertexData(PrimitiveType primitiveType)
 {
     switch (primitiveType) {
         case PrimitiveType::CUBE:

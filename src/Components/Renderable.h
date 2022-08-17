@@ -6,6 +6,7 @@
 #define PECS_RENDERER_RENDERABLE_HPP
 
 #include "Scene/Mesh.h"
+#include "Scene/GridMesh.h"
 #include "Engine/Component.h"
 
 #include "glm/glm.hpp"
@@ -15,6 +16,41 @@ namespace seng
 {
 
 
+class PrimitiveMesh;
+/***************** Primitive  ******************
+ * @brief Component represents the object is a primitive shape.  Holds the
+ *      mesh data for the shape.
+******************************************************************///
+class Primitive : public Component
+{
+public:
+    PrimitiveMesh* m_mesh{};
+
+    Primitive(PrimitiveMesh* mesh) : m_mesh(mesh) {};
+};
+
+
+
+
+
+class GridMesh;
+/***************** RodCloth  ******************
+ * @brief Holds data for cloth simulation using rods.
+******************************************************************///
+class RodCloth : public Component
+{
+public:
+    GridMesh* m_gridMesh{nullptr};
+    int m_numNodesX{-1}, m_numNodesY{-1};
+    float m_mass{1.f};
+
+    RodCloth(int Nx, int Ny)
+    {
+        m_gridMesh = new GridMesh(Nx, Ny);
+        m_numNodesX = Nx;
+        m_numNodesY = Ny;
+    }
+};
 
 
 /***************** Renderable Component  ******************

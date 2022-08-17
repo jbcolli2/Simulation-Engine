@@ -7,7 +7,7 @@
 #include "Scene/SceneManager.h"
 #include "Engine/Object.h"
 
-#include "Scene/Primitive.h"
+#include "Scene/PrimitiveMesh.h"
 #include "Scene/GridMesh.h"
 #include "Scene/Material.h"
 
@@ -41,11 +41,11 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     whiteMat->m_diffuse = glm::vec3(1.f);
 
 
-    Primitive *cubeMesh = new Primitive(PrimitiveType::CUBE);
+    PrimitiveMesh *cubeMesh = new PrimitiveMesh(PrimitiveType::CUBE);
     cubeMesh->SetMaterial(blueMat);
-    Primitive *lightCubeMesh = new Primitive(PrimitiveType::CUBE);
+    PrimitiveMesh *lightCubeMesh = new PrimitiveMesh(PrimitiveType::CUBE);
     lightCubeMesh->SetMaterial(whiteMat);
-    Primitive *planeMesh = new Primitive(PrimitiveType::PLANE);
+    PrimitiveMesh *planeMesh = new PrimitiveMesh(PrimitiveType::PLANE);
     planeMesh->SetMaterial(whiteMat);
 
     GridMesh *clothMesh = new GridMesh(30, 10);
@@ -57,22 +57,28 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     ///////////////// Create renderables ///////////////////////
     Object *cube = new Object();
     cube->GetTransform().position = glm::vec3(0.f, 0.f, -2.f);
+    cube->AddComponent(new Primitive(cubeMesh));
     Renderable *tempRend = new Renderable();
     tempRend->m_meshes.push_back(cubeMesh);
     cube->AddComponent(tempRend);
 //    m_scene.AddObject(cube);
 
-    Object *cloth = new Object();
-    tempRend = new Renderable();
-    tempRend->m_meshes.push_back(clothMesh);
-    cloth->AddComponent(tempRend);
-    m_scene.AddObject(cloth);
-
     Object *floor = new Object();
     floor->GetTransform().scale = glm::vec3(10.f, 1.f, 10.f);
     floor->GetTransform().position.y = -2.f;
+    floor->AddComponent(new Primitive(planeMesh));
     floor->AddComponent(new Renderable(planeMesh));
     m_scene.AddObject(floor);
+
+    Object* cloth = new Object();
+    cloth->AddComponent(new RodCloth(10,10));
+    cloth->GetComponent<RodCloth>()->m_gridMesh->SetMaterial(blueMat);
+    tempRend = new Renderable();
+    tempRend->m_meshes.push_back(cloth->GetComponent<RodCloth>()->m_gridMesh);
+    cloth->AddComponent(tempRend);
+    m_scene.AddObject(cloth);
+
+
 
     /////////////////    Create camera    ///////////////////////
     Object *camera = new Object();
@@ -104,7 +110,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     cameraController->AddObject(camera);
     m_scene.AddSystem(cameraController);
 
-    RenderableSystem *renderSystem = new RenderableSystem();
+    RenderableSystem* renderSystem = new RenderableSystem();
     std::vector<Object *>& sceneRenderables = m_scene.GetRenderables();
     for (Object *renderObject: sceneRenderables) {
         renderSystem->AddObject(renderObject);
@@ -120,8 +126,8 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     //***********************************************************
     //       Mesh systems
     //***********************************************************
-    ClothRod* clothRodSys = new ClothRod(clothMesh);
-    m_scene.AddSystem(clothRodSys);
+//    ClothRod* clothRodSys = new ClothRod(cloth->GetComponent<RodCloth>()->m_gridMesh);
+//    m_scene.AddSystem(clothRodSys);
 
     m_scene.StartUp();
 

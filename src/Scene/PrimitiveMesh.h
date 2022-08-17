@@ -2,8 +2,8 @@
 // Created by jcollin2 on 7/19/22.
 //
 
-#ifndef SIM_ENGINE_PRIMITIVE_H
-#define SIM_ENGINE_PRIMITIVE_H
+#ifndef SIM_ENGINE_PRIMITIVEMESH_H
+#define SIM_ENGINE_PRIMITIVEMESH_H
 
 #include "Misc/Common.h"
 
@@ -37,7 +37,7 @@ std::vector<Vert3x3x2f> GetSphereVertexList();
 
 
 
-class Primitive : public Mesh
+class PrimitiveMesh : public Mesh
 {
 private:
     std::vector<Vert3x3x2f> m_vertices;
@@ -54,7 +54,7 @@ private:
 
 
 public:
-    /***************** Primitive ctor  ******************
+    /***************** PrimitiveMesh ctor  ******************
      * @brief Fill the m_vertices vector with cube vertex data.
      *
      *      Generate vao/vbo and set vertex attributes.
@@ -62,7 +62,7 @@ public:
      *
      * @param material Pointer to material used with mesh.
     ******************************************************************///
-    Primitive(PrimitiveType primitiveType);
+    PrimitiveMesh(PrimitiveType primitiveType);
 
 
 
@@ -80,4 +80,4 @@ public:
 
 } // end namespace seng
 
-#endif //SIM_ENGINE_PRIMITIVE_H
+#endif //SIM_ENGINE_PRIMITIVEMESH_H

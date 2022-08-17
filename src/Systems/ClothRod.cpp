@@ -8,7 +8,7 @@
 #include "Engine/Input.h"
 
 
-
+#include "Components/Renderable.h"
 #include "Scene/GridMesh.h"
 
 #include "Systems/ClothRod.h"
@@ -20,8 +20,10 @@ namespace seng
 
 
 
-ClothRod::ClothRod(GridMesh* gridMesh) : m_gridMesh(gridMesh)
+ClothRod::ClothRod(GridMesh* gridMesh)
 {
+    m_gridMesh = gridMesh;
+
     m_Nx = gridMesh->GetNx();
     m_Ny = gridMesh->GetNy();
 
