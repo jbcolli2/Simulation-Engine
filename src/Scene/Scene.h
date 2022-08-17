@@ -29,6 +29,10 @@ private:
     std::vector<Object*> m_cameras{};
 
     std::vector<System*> m_systems{};
+    std::vector<System*> m_physSystems{};
+
+    float m_physTimer{0.f};
+    float m_physTimeStep{.033f};
 
 
 public:
@@ -46,6 +50,8 @@ public:
      * @param deltaTime delta from last frame
     ******************************************************************///
     void Update(float deltaTime);
+
+    void UpdatePhysics(float deltaTime);
 
     /***************** ShutDown  ******************
      * @brief Clean up objects before they are deleted in SceneManager Shutdown.
@@ -68,6 +74,11 @@ public:
     void AddSystem(System* system)
     {
         m_systems.push_back(system);
+    }
+
+    void AddPhysicsSystem(System* system)
+    {
+        m_physSystems.push_back(system);
     }
 
     /***************** DrawScene  ******************

@@ -17,6 +17,10 @@ void Scene::StartUp()
     {
         system->StartUp();
     }
+    for(System* system : m_physSystems)
+    {
+        system->StartUp();
+    }
 }
 
 
@@ -33,6 +37,23 @@ void Scene::Update(float deltaTime)
     for(System* system : m_systems)
     {
         system->Update(deltaTime);
+    }
+}
+
+
+
+void Scene::UpdatePhysics(float deltaTime)
+{
+    m_physTimer += deltaTime;
+
+    while(m_physTimer > m_physTimeStep)
+    {
+        for(System* system : m_physSystems)
+        {
+            system->Update(m_physTimeStep);
+        }
+
+        m_physTimer -= m_physTimeStep;
     }
 }
 

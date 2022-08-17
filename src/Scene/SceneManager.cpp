@@ -117,7 +117,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     }
     m_scene.AddSystem(renderSystem);
 
-    MovePtLight *movePtLightSystem = new MovePtLight();
+    MovePtLight* movePtLightSystem = new MovePtLight();
     movePtLightSystem->AddObject(ptLight);
     m_scene.AddSystem(movePtLightSystem);
 
@@ -126,8 +126,8 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     //***********************************************************
     //       Mesh systems
     //***********************************************************
-//    ClothRod* clothRodSys = new ClothRod(cloth->GetComponent<RodCloth>()->m_gridMesh);
-//    m_scene.AddSystem(clothRodSys);
+    ClothRod* clothRodSys = new ClothRod(cloth->GetComponent<RodCloth>()->m_gridMesh);
+    m_scene.AddPhysicsSystem(clothRodSys);
 
     m_scene.StartUp();
 
@@ -145,6 +145,7 @@ void SceneManager::ShutDown()
 void SceneManager::Update(float deltaTime)
 {
     m_scene.Update(deltaTime);
+    m_scene.UpdatePhysics(deltaTime);
 
 }
 
