@@ -38,16 +38,11 @@ GridMesh::GridMesh(int N_x, int N_y) : m_Nx(N_x), m_Ny(N_y)
     //******* VBO/VAO   ***************
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
-    m_vbo = loadDataToVBO(m_vertices);
+    glGenBuffers(1, &m_vbo);
+    loadDataToVBO(m_vbo, m_vertices, GL_DYNAMIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    SetVertexAttribs<Vert3x3x2f>();
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2 );
     glBindVertexArray(0);
 
 //    for(int ii = 0; ii < N_x; ++ii)

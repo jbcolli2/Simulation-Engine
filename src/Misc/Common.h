@@ -34,6 +34,9 @@ using Signature = std::bitset<MAX_COMPONENTS>;
 
 
 
+//***********************************************************
+//       I/O Methods
+//***********************************************************
 
 /***************** loadFile2String  ******************
  * @brief Opens the file at @path and loads returns the contents as a string.
@@ -147,7 +150,7 @@ struct Vert3x3x2f
             x(x), y(y), z(z), r(r), g(g), b(b), s(s), t(t) {};
 };
 
-} // End namespace seng
+
 
 
 
@@ -158,23 +161,39 @@ struct Vert3x3x2f
 //***********************************************************
 
 /***************** loadDataToVBO  ******************
- * @brief Generate a VBO and load vertex data into it.  Associated VAO
+ * @brief Load vertex data into passed vbo.  Associated VAO
  *      must first be bound before calling this function.
  *
- *      Uses GL_STATIC_DRAW for vertices.
- *      TODO: Should be updateModelMatrix for free meshes.  Pass in parameter or define different function.
+ *      Uses GL_STATIC_DRAW for vertices if drawStyle not passed.
 ******************************************************************///
 template<class VertT>
-unsigned int loadDataToVBO(std::vector<VertT> vertices)
+void loadDataToVBO(unsigned int VBO, const std::vector<VertT>& vertices, GLenum drawStyle=GL_STATIC_DRAW)
 {
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(VertT), &vertices[0], GL_STATIC_DRAW);
-
-
-    return VBO;
+    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(VertT), &vertices[0], drawStyle);
 }
+
+
+template<class ElementT>
+void loadDataToEBO(unsigned int EBO, const std::vector<ElementT>& elements, GLenum drawStyle=GL_STATIC_DRAW)
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size()*sizeof(ElementT), &elements[0], drawStyle);
+}
+
+
+
+/***************** SetVertexAttribs  ******************
+ * @brief Set the vertex attributes for a particular type of vertex data.  The desired
+ *      VAO must be bound before calling this.
+ *
+ * @tparam vertexType Pass in the vertex type to determine what attribute to set for the vertex buffer.
+******************************************************************///
+template <typename vertexType>
+void SetVertexAttribs();
+
+
+
+} // End namespace seng
 
 #endif //SIM_ENGINE_COMMON_H

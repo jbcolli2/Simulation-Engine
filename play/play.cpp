@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <array>
 
 #include "Misc/Common.h"
 
@@ -14,31 +13,14 @@ using namespace seng;
 
 
 
-class Comp
+template <typename T>
+void print();
+
+template<>
+void print<Vert3x3x2f>()
 {
-    int intVal{-1};
-
-public:
-    Comp(int ii)
-    {
-        intVal = ii;
-        int jj = 8+intVal;
-    }
-
-    void print() {std::cout << intVal << std::endl; };
-};
-
-
-class Test
-{
-private:
-    Comp* m_comp;
-
-public:
-    Test(int compii) : m_comp(new Comp(compii)) {};
-
-    void print() {m_comp->print();};
-};
+    std::cout << "It worked!\n";
+}
 
 
 int main()
@@ -50,7 +32,6 @@ int main()
 //    }
 
 
-    Test test(3);
-
-    test.print();
+    print<Vert3x3x2f>();
+    print<int>();
 }

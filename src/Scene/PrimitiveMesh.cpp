@@ -9,10 +9,13 @@ namespace seng
 
 unsigned int PrimitiveMesh::m_cubeVAO{0};
 unsigned int PrimitiveMesh::m_cubeVBO{0};
+unsigned int PrimitiveMesh::m_cubeEBO{0};
 unsigned int PrimitiveMesh::m_planeVAO{0};
 unsigned int PrimitiveMesh::m_planeVBO{0};
+unsigned int PrimitiveMesh::m_planeEBO{0};
 unsigned int PrimitiveMesh::m_sphereVAO{0};
 unsigned int PrimitiveMesh::m_sphereVBO{0};
+unsigned int PrimitiveMesh::m_sphereEBO{0};
 
 
 
@@ -37,40 +40,42 @@ PrimitiveMesh::PrimitiveMesh(PrimitiveType primitiveType)
     {
         m_vao = m_cubeVAO;
         m_vbo = m_cubeVBO;
+        m_ebo = m_cubeEBO;
         return;
     }
     if(primitiveType == PrimitiveType::PLANE && m_planeVAO != 0)
     {
         m_vao = m_planeVAO;
         m_vbo = m_planeVBO;
+        m_ebo = m_planeEBO;
         return;
     }
     if(primitiveType == PrimitiveType::SPHERE && m_sphereVAO != 0)
     {
         m_vao = m_sphereVAO;
         m_vbo = m_sphereVBO;
+        m_ebo = m_sphereEBO;
         return;
     }
 
 
     ///////////////// Setup vertex data for primitive ///////////////////////////////////////
     FillVertexData(primitiveType);
+    FillElementData(primitiveType);
 
     m_numVertices = m_vertices.size();
 
     //******* VBO/VAO   ***************
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
-    m_vbo = loadDataToVBO(m_vertices);
+    glGenBuffers(1, &m_vbo);
+    glGenBuffers(1, &m_ebo);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    loadDataToVBO(m_vbo, m_vertices);
+    loadDataToEBO(m_ebo, m_elements);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    SetVertexAttribs<Vert3x3x2f>();
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2 );
     glBindVertexArray(0);
 }
 
@@ -85,7 +90,7 @@ PrimitiveMesh::PrimitiveMesh(PrimitiveType primitiveType)
 void PrimitiveMesh::Draw(Shader& shader)
 {
     glBindVertexArray(m_vao);
-    glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
+    glDrawElements(GL_TRIANGLES, m_elements.size(), GL_UNSIGNED_INT, 0);
 }
 
 
@@ -96,9 +101,6 @@ void PrimitiveMesh::Draw(Shader& shader)
  * @param primitiveType Type of primitive to create.
  *
  *
- * Fills m_vertices with data for a standard cube:
- *      [-.5, .5] x [-.5, .5] x [-.5, .5]
- *      with normal and UV data.
 ******************************************************************///
 void PrimitiveMesh::FillVertexData(PrimitiveType primitiveType)
 {
@@ -111,6 +113,26 @@ void PrimitiveMesh::FillVertexData(PrimitiveType primitiveType)
             break;
         case PrimitiveType::SPHERE:
             m_vertices = GetSphereVertexList();
+            break;
+        default:
+            break;
+    }
+}
+
+
+
+
+void PrimitiveMesh::FillElementData(PrimitiveType primitiveType)
+{
+    switch (primitiveType) {
+        case PrimitiveType::CUBE:
+            m_elements = GetCubeElementList();
+            break;
+        case PrimitiveType::PLANE:
+            m_elements = GetPlaneElementList();
+            break;
+        case PrimitiveType::SPHERE:
+            m_elements = GetSphereElementList();
             break;
         default:
             break;
@@ -181,7 +203,17 @@ std::vector<Vert3x3x2f> GetCubeVertexList()
     return verts;
 }
 
+std::vector<unsigned int> GetCubeElementList()
+{
+    std::vector<unsigned int> elements(12*3);
 
+    for(int tri = 0; tri < 36; ++tri)
+    {
+        elements[tri] = tri;
+    }
+
+    return elements;
+}
 
 
 
@@ -195,23 +227,57 @@ std::vector<Vert3x3x2f> GetCubeVertexList()
 std::vector<Vert3x3x2f> GetPlaneVertexList()
 {
     std::vector<Vert3x3x2f> verts = {
-            Vert3x3x2f(-0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f),
-            Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f),
-            Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f),
-
-            Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f),
-            Vert3x3x2f(0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),
-            Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f),
+            Vert3x3x2f(-0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f), // bottom left
+            Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f),  // top left
+            Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f),  // bottom right
+            Vert3x3x2f(0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), // top right
     };
 
     return verts;
 }
 
 
+std::vector<unsigned int> GetPlaneElementList()
+{
+    std::vector<unsigned int> elements = {
+            0, 3, 1,
+            0, 2, 3
+    };
+
+    return elements;
+}
+
+
+
+
+
+
+
 
 std::vector<Vert3x3x2f> GetSphereVertexList()
 {
-    return std::vector<Vert3x3x2f>{};
+    const float PI = 3.1415926f;
+    const float H_ANGLE = PI / 180 * 72;    // 72 degree = 360 / 5
+    const float V_ANGLE = atanf(1.0f / 2);  // elevation = 26.565 degree
+
+    int i1, i2;                             // indices
+    float z, xy;                            // coords
+    float hAngle1 = -PI / 2 - H_ANGLE / 2;  // start from -126 deg at 1st row
+    float hAngle2 = -PI / 2;
+
+    std::vector<Vert3x3x2f> vertices(10 );    // array of 12 vertices (x,y,z)
+
+    // Top tris
+
+
+    return vertices;
+
+}
+
+
+std::vector<unsigned int> GetSphereElementList()
+{
+    return std::vector<unsigned int>(3);
 }
 
 

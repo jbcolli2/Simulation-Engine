@@ -27,8 +27,11 @@ enum class PrimitiveType
 //       Vertex filling functions for Primitives
 //***********************************************************
 std::vector<Vert3x3x2f> GetCubeVertexList();
+std::vector<unsigned int> GetCubeElementList();
 std::vector<Vert3x3x2f> GetPlaneVertexList();
+std::vector<unsigned int> GetPlaneElementList();
 std::vector<Vert3x3x2f> GetSphereVertexList();
+std::vector<unsigned int> GetSphereElementList();
 
 
 
@@ -40,16 +43,18 @@ std::vector<Vert3x3x2f> GetSphereVertexList();
 class PrimitiveMesh : public Mesh
 {
 private:
-    std::vector<Vert3x3x2f> m_vertices;
+    std::vector<Vert3x3x2f> m_vertices{}; // List of all vertices in the primitive
+    std::vector<unsigned int> m_elements{};
 
     // Static VAO/VBO for each primitive
     // Use same VAO for each primitive created in game
-    static unsigned int m_cubeVAO, m_cubeVBO;
-    static unsigned int m_planeVAO, m_planeVBO;
-    static unsigned int m_sphereVAO, m_sphereVBO;
+    static unsigned int m_cubeVAO, m_cubeVBO, m_cubeEBO;
+    static unsigned int m_planeVAO, m_planeVBO, m_planeEBO;
+    static unsigned int m_sphereVAO, m_sphereVBO, m_sphereEBO;
 
 
     void FillVertexData(PrimitiveType primitiveType);
+    void FillElementData(PrimitiveType primitiveType);
 
 
 
