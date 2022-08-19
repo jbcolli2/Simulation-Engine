@@ -57,9 +57,9 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     ///////////////// Create renderables ///////////////////////
     Object *cube = new Object();
     cube->GetTransform().position = glm::vec3(0.f, 0.f, -2.f);
-    cube->AddComponent(new Cube());
-    cube->GetComponent<Cube>()->m_mesh->SetMaterial(blueMat);
-    Renderable *tempRend = new Renderable(cube->GetComponent<Cube>()->m_mesh);
+    cube->AddComponent(new Sphere());
+    cube->GetComponent<Sphere>()->m_mesh->SetMaterial(blueMat);
+    Renderable *tempRend = new Renderable(cube->GetComponent<Sphere>()->m_mesh);
     cube->AddComponent(tempRend);
     m_scene.AddObject(cube);
 

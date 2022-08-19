@@ -39,6 +39,15 @@ public:
 };
 
 
+class Sphere : public Component
+{
+public:
+    PrimitiveMesh* m_mesh{};
+
+    Sphere() : m_mesh(new PrimitiveMesh(PrimitiveType::SPHERE)) {};
+};
+
+
 
 
 

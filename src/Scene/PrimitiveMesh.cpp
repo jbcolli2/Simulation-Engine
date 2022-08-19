@@ -61,7 +61,7 @@ PrimitiveMesh::PrimitiveMesh(PrimitiveType primitiveType)
 
     ///////////////// Setup vertex data for primitive ///////////////////////////////////////
     FillVertexData(primitiveType);
-    FillElementData(primitiveType);
+
 
     m_numVertices = m_vertices.size();
 
@@ -106,13 +106,13 @@ void PrimitiveMesh::FillVertexData(PrimitiveType primitiveType)
 {
     switch (primitiveType) {
         case PrimitiveType::CUBE:
-            m_vertices = GetCubeVertexList();
+            SetCubeVertexData(m_vertices, m_elements);
             break;
         case PrimitiveType::PLANE:
-            m_vertices = GetPlaneVertexList();
+            SetPlaneVertexData(m_vertices, m_elements);
             break;
         case PrimitiveType::SPHERE:
-            m_vertices = GetSphereVertexList();
+            SetSphereVertexData(m_vertices, m_elements);
             break;
         default:
             break;
@@ -122,33 +122,18 @@ void PrimitiveMesh::FillVertexData(PrimitiveType primitiveType)
 
 
 
-void PrimitiveMesh::FillElementData(PrimitiveType primitiveType)
-{
-    switch (primitiveType) {
-        case PrimitiveType::CUBE:
-            m_elements = GetCubeElementList();
-            break;
-        case PrimitiveType::PLANE:
-            m_elements = GetPlaneElementList();
-            break;
-        case PrimitiveType::SPHERE:
-            m_elements = GetSphereElementList();
-            break;
-        default:
-            break;
-    }
-}
 
 
 
 
-/***************** GetCubeVertexList  ******************
+
+/***************** SetCubeVertexData  ******************
  * @brief Free function that returns vector of Vert3x3x2f that represent a
  *      cube [-0.5, 0.5] x [-0.5, 0.5] x [-0.5, 0.5].
  *
  * @returns Vertex list of cube.
 ******************************************************************///
-std::vector<Vert3x3x2f> GetCubeVertexList()
+void SetCubeVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements)
 {
     std::vector<Vert3x3x2f> verts = {
             Vert3x3x2f(-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f), // front
@@ -200,51 +185,41 @@ std::vector<Vert3x3x2f> GetCubeVertexList()
             Vert3x3x2f(-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f),
     };
 
-    return verts;
-}
+    vertices = verts;
 
-std::vector<unsigned int> GetCubeElementList()
-{
-    std::vector<unsigned int> elements(12*3);
-
+    elements = std::vector<unsigned int>(12*3);
     for(int tri = 0; tri < 36; ++tri)
     {
         elements[tri] = tri;
     }
 
-    return elements;
 }
 
 
 
-/***************** GetPlaneVertexList  ******************
+
+/***************** SetPlaneVertexData  ******************
  * @brief Free function that returns vector of Vert3x3x2f that represent a
  *      plane [-0.5, 0.5] x {0} x [-0.5, 0.5].  Plane lives on x-z plane.
  *      Normal points in positive y direction.
  *
  * @returns Vertex list of plane.
 ******************************************************************///
-std::vector<Vert3x3x2f> GetPlaneVertexList()
+void SetPlaneVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements)
 {
-    std::vector<Vert3x3x2f> verts = {
+    vertices = std::vector<Vert3x3x2f>{
             Vert3x3x2f(-0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f), // bottom left
             Vert3x3x2f(-0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f),  // top left
             Vert3x3x2f(0.5f, -0.f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f),  // bottom right
             Vert3x3x2f(0.5f, -0.f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f), // top right
     };
 
-    return verts;
-}
-
-
-std::vector<unsigned int> GetPlaneElementList()
-{
-    std::vector<unsigned int> elements = {
-            0, 3, 1,
-            0, 2, 3
+    elements = std::vector<unsigned int>{
+        0, 3, 1,
+        0, 2, 3
     };
 
-    return elements;
+
 }
 
 
@@ -254,45 +229,164 @@ std::vector<unsigned int> GetPlaneElementList()
 
 
 
-std::vector<Vert3x3x2f> GetSphereVertexList()
+
+
+void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements)
 {
     const float PI = 3.1415926f;
     const float H_ANGLE = PI / 180 * 72;    // 72 degree = 360 / 5
     const float V_ANGLE = atanf(1.0f / 2);  // elevation = 26.565 degree
 
     int i1, i2;                             // indices
-    float z, xy;                            // coords
+    float y, xz;                            // coords
     float hAngle1 = -PI / 2 - H_ANGLE / 2;  // start from -126 deg at 1st row
     float hAngle2 = -PI / 2;
 
-    std::vector<Vert3x3x2f> vertices(10 );    // array of 12 vertices (x,y,z)
+    vertices = std::vector<Vert3x3x2f>(12 );    // array of 12 vertices (x,y,z)
 
-    // Top tris
+    // TODO: Set the UV for the sphere correctly.
+    // Top of sphere
+    vertices[0] = Vert3x3x2f(0, 1.f, 0.f, 0, 1.f, 0);
 
+    // Verts around the middle
+    y  = sinf(V_ANGLE);            // elevaton
+    xz = cosf(V_ANGLE);            // length on XY plane
+    for(int ii = 1; ii <= 5; ++ii)
+    {
+        vertices[ii] = Vert3x3x2f(xz * cosf(hAngle1), y, xz * sinf(hAngle1), xz * cosf(hAngle1), y, xz * sinf(hAngle1));      // top row
+        vertices[ii + 5] = Vert3x3x2f(xz * cosf(hAngle2), -y, xz * sinf(hAngle2), xz * cosf(hAngle2), -y, xz * sinf(hAngle2));      // bottom row
 
-    return vertices;
+        // next horizontal angles
+        hAngle1 += H_ANGLE;
+        hAngle2 += H_ANGLE;
+    }
+
+    // Bottom of sphere
+    vertices[11] = Vert3x3x2f(0, -1.f, 0, 0, -1.f, 0);
+
+    elements = std::vector<unsigned int>{
+            // Top
+            0, 1, 5,
+            0, 5, 4,
+            0, 4, 3,
+            0, 3, 2,
+            0, 2, 1,
+
+            // Upside down tris in middle
+            1, 2, 6,
+            2, 3, 7,
+            3, 4, 8,
+            4, 5, 9,
+            5, 1, 10,
+
+            // Rightside up tris in middle
+            10, 9, 5,
+            9, 8, 4,
+            8, 7, 3,
+            7, 6, 2,
+            6, 10, 1,
+
+            // Bottom
+            11, 6, 7,
+            11, 7, 8,
+            11, 8, 9,
+            11, 9, 10,
+            11, 10, 6
+    };
+
+    Subdivide(4, vertices, elements);
+
 
 }
 
 
-std::vector<unsigned int> GetSphereElementList()
+
+
+void Subdivide(int iterations, std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements)
 {
-    return std::vector<unsigned int>(3);
+    std::vector<Vert3x3x2f> baseVerts = vertices;
+    std::vector<unsigned int> baseElements = elements;
+    Vert3x3x2f v1{}, v2{}, v3{};
+    Vert3x3x2f newV1{}, newV2{}, newV3{};
+
+    for(int iters = 0; iters < iterations; ++iters)
+    {
+        std::vector<Vert3x3x2f> baseVerts = vertices;
+        std::vector<unsigned int> baseElements = elements;
+        vertices.clear();
+        elements.clear();
+
+        int index = 0;
+
+        for(int tri = 0; tri < baseElements.size(); tri += 3)
+        {
+            v1 = baseVerts[baseElements[tri]];
+            v2 = baseVerts[baseElements[tri + 1]];
+            v3 = baseVerts[baseElements[tri + 2]];
+
+            computeHalfVertex(v1, v2, newV1);
+            scaleToUnit(newV1);
+            computeHalfVertex(v2, v3, newV2);
+            scaleToUnit(newV2);
+            computeHalfVertex(v3, v1, newV3);
+            scaleToUnit(newV3);
+
+            vertices.push_back(v1);
+            vertices.push_back(newV1);
+            vertices.push_back(newV3);
+
+            vertices.push_back(newV1);
+            vertices.push_back(v2);
+            vertices.push_back(newV2);
+
+            vertices.push_back(newV1);
+            vertices.push_back(newV2);
+            vertices.push_back(newV3);
+
+            vertices.push_back(newV3);
+            vertices.push_back(newV2);
+            vertices.push_back(v3);
+
+            for(int ii = 0; ii < 12; ++ii)
+            {
+                elements.push_back(index + ii);
+            }
+
+            index += 12;
+
+        }
+
+    }
+
 }
 
 
 
+void computeHalfVertex(Vert3x3x2f& v1, Vert3x3x2f& v2, Vert3x3x2f& newV)
+{
+    newV.x = v1.x + v2.x;
+    newV.y = v1.y + v2.y;
+    newV.z = v1.z + v2.z;
+
+    newV.r = newV.x;
+    newV.g = newV.y;
+    newV.b = newV.z;
+}
 
 
 
+void scaleToUnit(Vert3x3x2f& v)
+{
+    float scale = 1.f/glm::sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
 
+    v.x *= scale;
+    v.y *= scale;
+    v.z *= scale;
 
-
-
-
-
-
-
+    v.r = v.x;
+    v.g = v.y;
+    v.b = v.z;
+}
 
 
 } // seng

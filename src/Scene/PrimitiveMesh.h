@@ -26,15 +26,14 @@ enum class PrimitiveType
 //***********************************************************
 //       Vertex filling functions for Primitives
 //***********************************************************
-std::vector<Vert3x3x2f> GetCubeVertexList();
-std::vector<unsigned int> GetCubeElementList();
-std::vector<Vert3x3x2f> GetPlaneVertexList();
-std::vector<unsigned int> GetPlaneElementList();
-std::vector<Vert3x3x2f> GetSphereVertexList();
-std::vector<unsigned int> GetSphereElementList();
+void SetCubeVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
+void SetPlaneVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
+void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
 
 
-
+void Subdivide(int iterations, std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
+void computeHalfVertex(Vert3x3x2f& v1, Vert3x3x2f& v2, Vert3x3x2f& newV);
+void scaleToUnit(Vert3x3x2f& v);
 
 
 
