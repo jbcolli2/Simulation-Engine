@@ -49,6 +49,8 @@ private:
 
     // Length of all axis-aligned rods connecting masses (assumed to be same among all masses)
     float m_rodLength{1.f};
+    float m_width{1.f};
+    float m_height{1.f};
     // Mass of all masses making up the cloth
     float m_mass{1.f};
     // Value of acceleration due to gravity

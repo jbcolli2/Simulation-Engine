@@ -304,15 +304,15 @@ void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned
 
 void Subdivide(int iterations, std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements)
 {
-    std::vector<Vert3x3x2f> baseVerts = vertices;
-    std::vector<unsigned int> baseElements = elements;
+    std::vector<Vert3x3x2f> baseVerts;
+    std::vector<unsigned int> baseElements;
     Vert3x3x2f v1{}, v2{}, v3{};
     Vert3x3x2f newV1{}, newV2{}, newV3{};
 
     for(int iters = 0; iters < iterations; ++iters)
     {
-        std::vector<Vert3x3x2f> baseVerts = vertices;
-        std::vector<unsigned int> baseElements = elements;
+        baseVerts = vertices;
+        baseElements = elements;
         vertices.clear();
         elements.clear();
 

@@ -107,9 +107,10 @@ ClothRod::ClothRod(GridMesh* gridMesh)
 void ClothRod::StartUp()
 {
     /////////////////    Setup cloth parameters    ///////////////////////
+//    m_mass = 100.f/(m_Nx*m_Ny);
     m_mass = 1.f;
     m_rodLength = 1.f/glm::min(m_Nx-1, m_Ny-1);
-    m_updateIterations = 10;
+    m_updateIterations = 50;
 
     auto rd = std::random_device {};
     auto rng = std::default_random_engine { rd() };
@@ -140,7 +141,7 @@ void ClothRod::StartUp()
         x += m_rodLength;
 
         // Now fix every third node at top of cloth
-        if(ii == 0 || ii== m_Nx-1)
+        if(ii % 9 == 0)
         {
             m_masses[MatrixIdx2Vector(ii, m_Ny-1)].fixedFlag = true;
         }
@@ -189,7 +190,7 @@ void ClothRod::Update(float deltaTime)
         if(m_masses[nodeIdx].fixedFlag)
             continue;
 
-        glm::vec3 forces = m_g;
+        glm::vec3 forces = m_mass*m_g;
         if(Input::GetInstance().KeyPress(GLFW_KEY_SPACE) && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx > 1)
             forces += glm::vec3(0.f, 0.f, 1.3f);
 

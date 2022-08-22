@@ -36,7 +36,7 @@ private:
 
 
 public:
-    float m_physTimeStep{.033f};
+    float m_physTimeStep{.016f};
 
     float m_ambientIntensity{.2f};
 

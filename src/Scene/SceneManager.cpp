@@ -48,7 +48,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     PrimitiveMesh *planeMesh = new PrimitiveMesh(PrimitiveType::PLANE);
     planeMesh->SetMaterial(whiteMat);
 
-    GridMesh *clothMesh = new GridMesh(30, 10);
+    GridMesh *clothMesh = new GridMesh(50, 50);
     clothMesh->SetMaterial(blueMat);
 
 
@@ -65,14 +65,14 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
 
     Object *floor = new Object();
     floor->GetTransform().scale = glm::vec3(10.f, 1.f, 10.f);
-    floor->GetTransform().position.y = -2.f;
+//    floor->GetTransform().position.y = -2.f;
     floor->AddComponent(new Plane());
     floor->GetComponent<Plane>()->m_mesh->SetMaterial(whiteMat);
     floor->AddComponent(new Renderable(floor->GetComponent<Plane>()->m_mesh));
     m_scene.AddObject(floor);
 
     Object* cloth = new Object();
-    cloth->AddComponent(new RodCloth(10,10));
+    cloth->AddComponent(new RodCloth(30,30));
     cloth->GetComponent<RodCloth>()->m_gridMesh->SetMaterial(blueMat);
     tempRend = new Renderable();
     tempRend->m_meshes.push_back(cloth->GetComponent<RodCloth>()->m_gridMesh);
