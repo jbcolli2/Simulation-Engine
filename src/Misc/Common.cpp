@@ -16,7 +16,7 @@ namespace seng
 /***************** loadFile2String  ******************
  * @brief Opens the file at @path and loads returns the contents as a string.
 ******************************************************************/
-std::string seng::loadFile2String(const char* path)
+std::string loadFile2String(const char* path)
 {
     std::ifstream file;
     try {

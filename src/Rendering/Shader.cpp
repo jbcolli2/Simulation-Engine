@@ -5,7 +5,6 @@
 //  Created by Jeb Collins on 7/28/21.
 //
 
-#define GL_SILENCE_DEPRECATION
 
 
 #include "Shader.hpp"

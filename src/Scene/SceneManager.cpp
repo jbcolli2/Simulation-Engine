@@ -48,8 +48,6 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     PrimitiveMesh *planeMesh = new PrimitiveMesh(PrimitiveType::PLANE);
     planeMesh->SetMaterial(whiteMat);
 
-    GridMesh *clothMesh = new GridMesh(50, 50);
-    clothMesh->SetMaterial(blueMat);
 
 
 
@@ -72,7 +70,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     m_scene.AddObject(floor);
 
     Object* cloth = new Object();
-    cloth->AddComponent(new RodCloth(30,30));
+    cloth->AddComponent(new RodCloth(20,20));
     cloth->GetComponent<RodCloth>()->m_gridMesh->SetMaterial(blueMat);
     tempRend = new Renderable();
     tempRend->m_meshes.push_back(cloth->GetComponent<RodCloth>()->m_gridMesh);

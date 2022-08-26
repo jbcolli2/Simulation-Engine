@@ -135,6 +135,26 @@ T& Grid<T>::index(int ii, int jj) const
 }
 
 
+/***************** Matrix2VectorIdx  ******************
+ * @brief Convert matrix indices into vector indices for the cloth grid.  Vector
+ *      index starts at bottom left and fills in row first.
+ *
+ * @param ii,jj Matrix indices.  ii is x and jj is y.
+ *
+ * @returns Vector index of same spot on grid.
+******************************************************************///
+inline int Matrix2VectorIdx(int ii, int jj, int Nx)
+{
+    return jj*Nx + ii;
+}
+
+inline void Vector2MatrixIdx(int vert, int Nx, int& ii, int& jj)
+{
+    ii = vert % Nx;
+    jj = vert/Nx;
+}
+
+
 
 //***********************************************************
 //       Mesh Data

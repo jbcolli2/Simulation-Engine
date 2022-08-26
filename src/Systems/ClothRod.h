@@ -49,8 +49,6 @@ private:
 
     // Length of all axis-aligned rods connecting masses (assumed to be same among all masses)
     float m_rodLength{1.f};
-    float m_width{1.f};
-    float m_height{1.f};
     // Mass of all masses making up the cloth
     float m_mass{1.f};
     // Value of acceleration due to gravity
@@ -62,19 +60,10 @@ private:
     // pointer to the grid mesh
     GridMesh* m_gridMesh;
 
-
-    /***************** MatrixIdx2Vector  ******************
-     * @brief Convert matrix indices into vector indices for the cloth grid.  Vector
-     *      index starts at bottom left and fills in row first.
-     *
-     * @param ii,jj Matrix indices.  ii is x and jj is y.
-     *
-     * @returns Vector index of same spot on grid.
-    ******************************************************************///
-    int MatrixIdx2Vector(int ii, int jj)
+    int mat2VecIdx(int ii, int jj)
     {
-        return jj*m_Nx + ii;
-    }
+        return Matrix2VectorIdx(ii, jj, m_Nx);
+    };
 
 
 public:
@@ -85,9 +74,17 @@ public:
     void Update(float deltaTime) override;
 
     void ShutDown() override;
-};
+}; // End ClothRod class
 
 
+
+
+
+
+
+//***********************************************************
+//       Debug ClothRod
+//***********************************************************
 
 #define X 0
 #define Y 1
