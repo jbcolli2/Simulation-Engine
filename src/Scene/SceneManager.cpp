@@ -70,7 +70,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     m_scene.AddObject(floor);
 
     Object* cloth = new Object();
-    cloth->AddComponent(new RodCloth(20,20));
+    cloth->AddComponent(new RodCloth(30,30));
     cloth->GetComponent<RodCloth>()->m_gridMesh->SetMaterial(blueMat);
     tempRend = new Renderable();
     tempRend->m_meshes.push_back(cloth->GetComponent<RodCloth>()->m_gridMesh);

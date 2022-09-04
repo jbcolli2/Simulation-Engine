@@ -110,7 +110,7 @@ void ClothRod::StartUp()
 //    m_mass = 100.f/(m_Nx*m_Ny);
     m_mass = 1.f;
     m_rodLength = 1.f/glm::min(m_Nx-1, m_Ny-1);
-    m_updateIterations = 50;
+    m_updateIterations = 15;
 
     auto rd = std::random_device {};
     auto rng = std::default_random_engine { rd() };
@@ -208,8 +208,8 @@ void ClothRod::Update(float deltaTime)
         {
             int nodeIdx = m_shuffleIndex[ii];
             currentNode = &m_masses[nodeIdx];
-            if(currentNode->fixedFlag)
-                continue;
+//            if(currentNode->fixedFlag)
+//                continue;
 
 
 
@@ -222,9 +222,19 @@ void ClothRod::Update(float deltaTime)
                 deltaDir /= deltaDirLength;
                 float delta = (deltaDirLength - m_rodLength);
 
+                if(currentNode->fixedFlag)
+                {
+                    adjNode->currentPosition += delta*deltaDir;
+                    continue;
+                }
+                if(adjNode->fixedFlag)
+                {
+                    currentNode->currentPosition -= delta*deltaDir;
+                    continue;
+                }
+
                 currentNode->currentPosition -= 0.5f*delta*deltaDir;
-                if(!adjNode->fixedFlag)
-                    adjNode->currentPosition += 0.5f*delta*deltaDir;
+                adjNode->currentPosition += 0.5f*delta*deltaDir;
             }
 
         }
