@@ -97,7 +97,6 @@ void GridMesh::Draw(Shader& shader)
     }
 
     glBindVertexArray(m_vao);
-//    glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
     glDrawElements(GL_TRIANGLES, m_elements.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }

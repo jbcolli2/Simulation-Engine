@@ -8,7 +8,7 @@
 #include "Engine/Input.h"
 
 
-#include "Components/Renderable.h"
+#include "Rendering/Mesh.h"
 #include "Scene/GridMesh.h"
 
 #include "Systems/ClothRod.h"

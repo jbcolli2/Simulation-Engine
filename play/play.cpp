@@ -9,7 +9,11 @@
 
 
 
-
+struct Material
+{
+    int id;
+    std::string name;
+};
 
 
 
@@ -23,20 +27,14 @@ int main()
 //        return 0;
 //    }
 
+    int test{-5};
 
-    std::unordered_map<int, std::string> cache = {{0, "hello"}};
-    std::cout << cache[0] << std::endl;
-    cache.insert({4, "four"});
-    std::cout << cache[4] << std::endl;
-//    cache[3] = "three";
-
-    auto iter = cache.find(3);
-    if(iter != cache.end())
+    void print(std::string s)
     {
-        std::cout << iter->second << std::endl;
+        std::cout << "s " << test << std::endl;
     }
 
-    cache[3] = "3";
-    std::cout << 2399%50<< std::endl;
+    print("test is ");
+
 
 }

@@ -6,8 +6,6 @@
 #define SIM_ENGINE_RENDERER_H
 
 #include "Misc/Common.h"
-#include "Scene/SceneManager.h"
-#include "Engine/DisplayManager.h"
 #include "Rendering/Shader.hpp"
 
 
@@ -15,11 +13,10 @@
 namespace seng
 {
 
+class SceneManager;
 class Renderer
 {
 private:
-    float r{.8f}, g{.4f}, b{.4f};
-
     unsigned int m_uboVP{0};
 
     ///////////////// Shader Programs ///////////////////////////////////////
@@ -28,9 +25,9 @@ private:
     Shader* m_currentShader{};
 
     // Managers
-    SceneManager* m_sceneManager;
+    SceneManager* m_sceneManager{nullptr};
 public:
-    Renderer(){};
+    Renderer() = default;
 
     int StartUp(SceneManager* sceneManager);
     void ShutDown(){};

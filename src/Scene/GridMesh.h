@@ -7,7 +7,7 @@
 
 #include "Misc/Common.h"
 
-#include "Scene/Mesh.h"
+#include "Rendering/MeshData.h"
 
 namespace seng
 {
@@ -21,7 +21,7 @@ namespace seng
 
 class Shader;
 
-class GridMesh : public Mesh
+class GridMesh : public MeshData
 {
 private:
     /***************** fillElements  ******************
@@ -212,7 +212,6 @@ public:
     ******************************************************************///
     void SetupForDraw();
 
-    void virtual Draw(Shader& shader) override;
 
 
 

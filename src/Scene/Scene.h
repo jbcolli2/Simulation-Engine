@@ -5,28 +5,27 @@
 #ifndef SIM_ENGINE_SCENE_H
 #define SIM_ENGINE_SCENE_H
 
-#include "Engine/Object.h"
 
-#include "Rendering/Shader.hpp"
-#include "Components/Renderable.h"
 
-#include "Components/Camera.h"
-#include "Components/Lights.h"
-#include "Components/Lights.h"
-#include "Systems/System.h"
-
+#include "Misc/Common.h"
 
 
 namespace seng
 {
 
-
+class Object;
+class Material;
+class System;
+class Shader;
+class Camera;
 class Scene
 {
 private:
-    std::vector<Object*> m_renderables{};
+    std::unordered_map<std::string, Material*> m_materialList{};
+
     std::vector<Object*> m_lights{};
     std::vector<Object*> m_cameras{};
+    std::vector<Object*> m_objects{};
 
     std::vector<System*> m_systems{};
     std::vector<System*> m_physSystems{};
@@ -73,6 +72,11 @@ public:
     ******************************************************************///
     void AddObject(Object* object);
 
+    void AddMaterial(const std::string& name, Material* material)
+    {
+        m_materialList[name] = material;
+    }
+
     void AddSystem(System* system)
     {
         m_systems.push_back(system);
@@ -83,11 +87,7 @@ public:
         m_physSystems.push_back(system);
     }
 
-    /***************** DrawScene  ******************
-     * @brief Call draw methods in all renderable objects.  Assume shader program is
-     *      already in use.
-    ******************************************************************///
-    void DrawScene(Shader& shader);
+
 
 
 
@@ -100,14 +100,10 @@ public:
      *
      * @returns Main camera
     ******************************************************************///
-    Camera* GetMainCamera()
-    {
-        return m_cameras[0]->GetComponent<Camera>();
-    }
-
-    std::vector<Object*>& GetRenderables() {return m_renderables;};
+    Camera* GetMainCamera();
 
 
+    friend class Renderer;
 }; // end class Scene
 
 

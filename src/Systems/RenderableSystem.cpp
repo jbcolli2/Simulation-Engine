@@ -19,7 +19,7 @@ void RenderableSystem::Update(float deltaTime)
         if(transform.updateModelMatrix)
         {
             // TODO: Create reference to m_model and just use that
-            Renderable* renderable = object->GetComponent<Renderable>();
+            Mesh* renderable = object->GetComponent<Mesh>();
 
             // TODO: create a constant identity mat4 rather than recreating it each time
             renderable->m_model = glm::translate(glm::mat4(1.f), transform.position);

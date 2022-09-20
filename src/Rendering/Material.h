@@ -6,14 +6,28 @@
 #define SIM_ENGINE_MATERIAL_H
 
 #include "Rendering/Shader.hpp"
+#include "Engine/Component.h"
 
 namespace seng
 {
+
+//class Material;
+//class Material : public Component
+//{
+//public:
+//    std::vector<std::unique_ptr<Material*>> m_materials{};
+//};
+
+
+
+
+
+
 class Material
 {
 
 public:
-    void virtual SetupMaterial(Shader& shader) = 0;
+    virtual void SetupMaterial(Shader& shader) = 0;
 };
 
 

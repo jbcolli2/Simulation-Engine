@@ -75,6 +75,17 @@ public:
     //***********************************************************
     //      Component Methods
     //***********************************************************
+    /***************** AddComponent  ******************
+     * @brief Add a component to the object.  If a component of that type already exists, then it
+     *  will not be added.
+     *  TODO: Modify if code changes to allow multiple of the same component to an object.
+     *
+     * @tparam CompT Component type
+     *
+     * @param component A pointer to the component being added.
+    ***************************************///
+    template <typename CompT>
+    void AddComponent(CompT* component);
 
     /***************** GetComponent  ******************
      * @brief Returns the component T if it exists in `m_components`.  For now
@@ -88,21 +99,6 @@ public:
     CompT* GetComponent();
 
 
-
-    /***************** AddComponent  ******************
-     * @brief Add a component to the object.  If a component of that type already exists, then it
-     *  will not be added.
-     *  TODO: Modify if code changes to allow multiple of the same component to an object.
-     *
-     * @tparam CompT Component type
-     *
-     * @param component A pointer to the component being added.
-    ***************************************///
-    template <typename CompT>
-    void AddComponent(CompT* component);
-
-
-
     /***************** HasComponent  ******************
      * @brief Returns true if passed object has component in its signature.
      *
@@ -114,8 +110,6 @@ public:
     ******************************************************************/
     template<class CompT>
     bool HasComponent() const;
-
-
 
     /***************** HasSignature  ******************
      * @brief Returns true if passed object contains a list of components

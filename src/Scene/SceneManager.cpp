@@ -7,14 +7,11 @@
 #include "Scene/SceneManager.h"
 #include "Engine/Object.h"
 
-#include "Scene/PrimitiveMesh.h"
-#include "Scene/GridMesh.h"
-#include "Scene/Material.h"
+#include "Rendering/Material.h"
 
-#include "Systems/CameraController.h"
-#include "Systems/FixedGridMesh.h"
-#include "Systems/ClothRod.h"
-
+#include "Components/MeshComponents.h"
+#include "Components/Lights.h"
+#include "Components/Camera.h"
 
 namespace seng
 {
@@ -34,48 +31,20 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     //***********************************************************
 
     ///////////////// Create Meshes and Materials ///////////
-    SolidMaterial *blueMat = new SolidMaterial();
+    SolidMaterial* blueMat = new SolidMaterial();
     blueMat->m_diffuse = glm::vec3(0.2f, 0.f, 0.9f);
     blueMat->m_roughness = 16;
+    m_scene.AddMaterial("Solid:Blue", blueMat);
     SolidMaterial *whiteMat = new SolidMaterial();
     whiteMat->m_diffuse = glm::vec3(0.5f, 0.6f, 0.5f);
+    m_scene.AddMaterial("Solid:While", whiteMat);
 
-
-    PrimitiveMesh *cubeMesh = new PrimitiveMesh(PrimitiveType::CUBE);
-    cubeMesh->SetMaterial(blueMat);
-    PrimitiveMesh *lightCubeMesh = new PrimitiveMesh(PrimitiveType::CUBE);
-    lightCubeMesh->SetMaterial(whiteMat);
-    PrimitiveMesh *planeMesh = new PrimitiveMesh(PrimitiveType::PLANE);
-    planeMesh->SetMaterial(whiteMat);
+    Object* obj = new Object();
+    obj->AddComponent(new Primitive(PrimitiveType::CUBE, blueMat));
+    m_scene.AddObject(obj);
 
 
 
-
-
-    ///////////////// Create renderables ///////////////////////
-    Object *cube = new Object();
-    cube->GetTransform().position = glm::vec3(0.f, 0.f, -2.f);
-    cube->AddComponent(new Sphere());
-    cube->GetComponent<Sphere>()->m_mesh->SetMaterial(blueMat);
-    Renderable *tempRend = new Renderable(cube->GetComponent<Sphere>()->m_mesh);
-    cube->AddComponent(tempRend);
-    m_scene.AddObject(cube);
-
-    Object *floor = new Object();
-    floor->GetTransform().scale = glm::vec3(10.f, 1.f, 10.f);
-//    floor->GetTransform().position.y = -2.f;
-    floor->AddComponent(new Plane());
-    floor->GetComponent<Plane>()->m_mesh->SetMaterial(whiteMat);
-    floor->AddComponent(new Renderable(floor->GetComponent<Plane>()->m_mesh));
-    m_scene.AddObject(floor);
-
-    Object* cloth = new Object();
-    cloth->AddComponent(new RodCloth(30,30));
-    cloth->GetComponent<RodCloth>()->m_gridMesh->SetMaterial(blueMat);
-    tempRend = new Renderable();
-    tempRend->m_meshes.push_back(cloth->GetComponent<RodCloth>()->m_gridMesh);
-    cloth->AddComponent(tempRend);
-    m_scene.AddObject(cloth);
 
 
 
@@ -98,7 +67,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     transform.scale = glm::vec3(.1f);
     ptLight->AddComponent(new PointLight(glm::vec3(1.f, .5f, 1.f)));
     ptLight->GetComponent<PointLight>()->m_specularIntensity = .3f;
-    ptLight->AddComponent(new Renderable(lightCubeMesh));
+    ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, whiteMat));
     m_scene.AddObject(ptLight);
 
 
@@ -123,7 +92,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
 
 
     //***********************************************************
-    //       Mesh systems
+    //       MeshData systems
     //***********************************************************
     ClothRod* clothRodSys = new ClothRod(cloth->GetComponent<RodCloth>()->m_gridMesh);
     m_scene.AddPhysicsSystem(clothRodSys);

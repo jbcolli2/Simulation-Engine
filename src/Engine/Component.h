@@ -18,11 +18,15 @@ class Object;
 class Component
 {
 public:
-    Component() = default;
+    Object* parentObject{nullptr};
 
+    Component() = default;
     virtual ~Component() = default;
 
-    Object* parentObject{nullptr};
+    virtual void StartUp(){};
+    virtual void Update(){};
+    virtual void FixedUpdate(){};
+    virtual void ShutDown(){};
 };
 
 

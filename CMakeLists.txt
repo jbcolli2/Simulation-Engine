@@ -44,7 +44,7 @@ set(LIBS ${LIBS} GLAD)
 
 # Source files
 set(SRC_ENGINE src/Engine/SimEngine.cpp src/Engine/DisplayManager.cpp src/Scene/SceneManager.cpp src/Engine/Input.cpp)
-set(SRC_OBJECTS src/Engine/Object.cpp src/Engine/ComponentManager.cpp src/Scene/Mesh.h src/Scene/Material.h src/Scene/PrimitiveMesh.cpp src/Scene/PrimitiveMesh.h src/Scene/Scene.cpp src/Components/Camera.h src/Components/Camera.cpp src/Systems/System.h src/Systems/CameraController.cpp src/Systems/CameraController.h src/Systems/RenderableSystem.cpp src/Systems/RenderableSystem.h src/Components/Lights.cpp src/Components/Lights.h src/Scene/Material.cpp src/Scene/GridMesh.cpp src/Scene/GridMesh.h src/Systems/FixedGridMesh.cpp src/Systems/FixedGridMesh.h src/Systems/ClothRod.cpp src/Systems/ClothRod.h)
+set(SRC_OBJECTS src/Engine/Object.cpp src/Engine/ComponentManager.cpp src/Rendering/Material.h src/Scene/Scene.cpp src/Components/Camera.h src/Components/Camera.cpp src/Systems/System.h src/Systems/CameraController.cpp src/Systems/CameraController.h src/Systems/RenderableSystem.cpp src/Systems/RenderableSystem.h src/Components/Lights.cpp src/Components/Lights.h src/Rendering/Material.cpp src/Scene/GridMesh.cpp src/Scene/GridMesh.h src/Systems/FixedGridMesh.cpp src/Systems/FixedGridMesh.h src/Systems/ClothRod.cpp src/Systems/ClothRod.h src/Components/MeshComponents.cpp src/Components/MeshComponents.h)
 set(SRC_RENDER src/Rendering/Renderer.cpp src/Rendering/Shader.cpp src/Systems/LightSystems.cpp src/Systems/LightSystems.h)
 
 add_compile_definitions(GL_SILENCE_DEPRECATION)

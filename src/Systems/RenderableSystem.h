@@ -7,7 +7,7 @@
 
 #include "Misc/Common.h"
 
-#include "Components/Renderable.h"
+#include "Rendering/Mesh.h"
 
 #include "Systems/System.h"
 

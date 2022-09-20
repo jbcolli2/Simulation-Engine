@@ -6,24 +6,17 @@
 #define SIM_ENGINE_SCENEMANAGER_H
 
 #include "Scene/Scene.h"
-#include "Engine/Input.h"
-#include "Engine/DisplayManager.h"
-
-#include "Engine/Object.h"
-#include "Components/Renderable.h"
-
-#include "Components/Camera.h"
-#include "Components/Lights.h"
-
-#include "Systems/RenderableSystem.h"
-#include "Systems/LightSystems.h"
 
 namespace seng
 {
+class DisplayManager;
 class SceneManager
 {
 private:
     DisplayManager* m_displayManager;
+
+
+
 public:
 
     Scene m_scene{};

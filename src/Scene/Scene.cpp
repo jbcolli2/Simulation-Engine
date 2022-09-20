@@ -4,6 +4,14 @@
 
 #include "Scene/Scene.h"
 
+#include "Engine/Object.h"
+#include "Systems/System.h"
+
+#include "Components/Lights.h"
+#include "Components/Camera.h"
+
+#include "Rendering/Mesh.h"
+
 namespace seng
 {
 
@@ -82,10 +90,7 @@ void Scene::ShutDown()
 
 void Scene::AddObject(Object* object)
 {
-    if(object->HasComponent<Renderable>())
-    {
-        m_renderables.push_back(object);
-    }
+    m_objects.push_back(object);
     if(object->HasComponent<Camera>())
     {
         m_cameras.push_back(object);
@@ -99,20 +104,23 @@ void Scene::AddObject(Object* object)
 
 
 
-void Scene::DrawScene(Shader& shader)
+
+
+
+
+
+/***************** GetMainCamera  ******************
+ * @brief Return a pointer to the main camera in the scene.
+ *
+ *      TODO: Update this to return a particular camera, not just
+ *          the first one in the vector.
+ *
+ * @returns Main camera
+******************************************************************///
+Camera* Scene::GetMainCamera()
 {
-    GetMainCamera()->SetUniforms(shader);
-    for(Object* light : m_lights)
-    {
-        if(light->HasComponent<PointLight>())
-            light->GetComponent<PointLight>()->SetUniforms(shader);
-        if(light->HasComponent<DirLight>())
-            light->GetComponent<DirLight>()->SetUniforms(shader);
-    }
-    for(Object* renderables : m_renderables)
-    {
-        renderables->GetComponent<Renderable>()->Draw(shader);
-    }
+    return m_cameras[0]->GetComponent<Camera>();
 }
+
 
 } // end namespace seng

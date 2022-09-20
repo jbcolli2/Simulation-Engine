@@ -1,96 +1,84 @@
 //
-// Created by jcollin2 on 7/19/22.
+// Created by jcollin2 on 9/4/22.
 //
 
-#include "PrimitiveMesh.h"
+#include "MeshComponents.h"
+#include "Rendering/Mesh.h"
 
 namespace seng
 {
 
-unsigned int PrimitiveMesh::m_cubeVAO{0};
-unsigned int PrimitiveMesh::m_cubeVBO{0};
-unsigned int PrimitiveMesh::m_cubeEBO{0};
-unsigned int PrimitiveMesh::m_planeVAO{0};
-unsigned int PrimitiveMesh::m_planeVBO{0};
-unsigned int PrimitiveMesh::m_planeEBO{0};
-unsigned int PrimitiveMesh::m_sphereVAO{0};
-unsigned int PrimitiveMesh::m_sphereVBO{0};
-unsigned int PrimitiveMesh::m_sphereEBO{0};
 
 
 
 
-/***************** PrimitiveMesh ctor  ******************
- * @brief Fill the m_vertices vector with cube vertex data.
+
+std::unordered_map<PrimitiveType, unsigned int> Primitive::m_vao =
+        {
+                {PrimitiveType::CUBE, 0},
+                {PrimitiveType::PLANE, 0},
+                {PrimitiveType::SPHERE, 0}
+        };
+std::unordered_map<PrimitiveType, unsigned int> Primitive::m_vbo =
+        {
+                {PrimitiveType::CUBE, 0},
+                {PrimitiveType::PLANE, 0},
+                {PrimitiveType::SPHERE, 0}
+        };
+std::unordered_map<PrimitiveType, unsigned int> Primitive::m_ebo =
+        {
+                {PrimitiveType::CUBE, 0},
+                {PrimitiveType::PLANE, 0},
+                {PrimitiveType::SPHERE, 0}
+        };
+std::unordered_map<PrimitiveType, unsigned int> Primitive::m_numVerts =
+        {
+                {PrimitiveType::CUBE, 0},
+                {PrimitiveType::PLANE, 0},
+                {PrimitiveType::SPHERE, 0}
+        };
+std::unordered_map<PrimitiveType, unsigned int> Primitive::m_numIndices =
+        {
+                {PrimitiveType::CUBE, 0},
+                {PrimitiveType::PLANE, 0},
+                {PrimitiveType::SPHERE, 0}
+        };
+
+
+
+
+/***************** StartUp  ******************
+ * @brief If parent object does not have Mesh component, create one.
  *
- *      Generate vao/vbo and set vertex attributes.
- *      Set Material if given.
+ *      If primitiveType vao has aleady been created, assign it and vbo/ebo to
+ *      the Mesh components first MeshData object.
  *
- * @param material Pointer to material used with mesh.
+ *      If vao not already created, create temp vertex data and generate the vbo/ebo
+ *      and create vao.  Then copy all these ids to the MeshData object.
+ *
+ *      Take Material from parent object and assign it to the MeshData object.
+ *
+ * @returns
 ******************************************************************///
-PrimitiveMesh::PrimitiveMesh(PrimitiveType primitiveType)
+void Primitive::StartUp()
 {
-    m_material = nullptr;
-
-
-
-    // Check to see if the vao/vbo for this primitive has already been created
-    //   if so, then just set vao/vbo to static vao/vbo and done!
-    if(primitiveType == PrimitiveType::CUBE && m_cubeVAO != 0)
+    if(!parentObject->HasComponent<Mesh>())
     {
-        m_vao = m_cubeVAO;
-        m_vbo = m_cubeVBO;
-        m_ebo = m_cubeEBO;
-        return;
+        parentObject->AddComponent(new Mesh());
     }
-    if(primitiveType == PrimitiveType::PLANE && m_planeVAO != 0)
+    Mesh* mesh = parentObject->GetComponent<Mesh>();
+    mesh->m_meshes.clear();
+    mesh->m_meshes.push_back(new MeshData());
+    MeshData& meshData = *mesh->m_meshes[0];
+    meshData.m_material = m_material;
+
+    // If Primitive already created, send data to mesh component
+    if(m_vao[m_primitiveType] == 0)
     {
-        m_vao = m_planeVAO;
-        m_vbo = m_planeVBO;
-        m_ebo = m_planeEBO;
-        return;
-    }
-    if(primitiveType == PrimitiveType::SPHERE && m_sphereVAO != 0)
-    {
-        m_vao = m_sphereVAO;
-        m_vbo = m_sphereVBO;
-        m_ebo = m_sphereEBO;
-        return;
+        FillVertexData(m_primitiveType);
     }
 
-
-    ///////////////// Setup vertex data for primitive ///////////////////////////////////////
-    FillVertexData(primitiveType);
-
-
-    m_numVertices = m_vertices.size();
-
-    //******* VBO/VAO   ***************
-    glGenVertexArrays(1, &m_vao);
-    glBindVertexArray(m_vao);
-    glGenBuffers(1, &m_vbo);
-    glGenBuffers(1, &m_ebo);
-
-    loadDataToVBO(m_vbo, m_vertices);
-    loadDataToEBO(m_ebo, m_elements);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-    SetVertexAttribs<Vert3x3x2f>();
-
-    glBindVertexArray(0);
-}
-
-
-
-
-
-
-/***************** Draw  ******************
- * @brief Binds VAO and calls glDraw... to draw the mesh.
-******************************************************************///
-void PrimitiveMesh::Draw(Shader& shader)
-{
-    glBindVertexArray(m_vao);
-    glDrawElements(GL_TRIANGLES, m_elements.size(), GL_UNSIGNED_INT, 0);
+    TransferToMeshData(m_primitiveType, meshData);
 }
 
 
@@ -99,24 +87,25 @@ void PrimitiveMesh::Draw(Shader& shader)
  *      for the primitive.
  *
  * @param primitiveType Type of primitive to create.
- *
- *
 ******************************************************************///
-void PrimitiveMesh::FillVertexData(PrimitiveType primitiveType)
+void Primitive::FillVertexData(PrimitiveType primitiveType)
 {
+    std::vector<Vert3x3x2f> vertices{};
+    std::vector<unsigned int> elements{};
     switch (primitiveType) {
         case PrimitiveType::CUBE:
-            SetCubeVertexData(m_vertices, m_elements);
+            SetCubeVertexData(vertices, elements);
             break;
         case PrimitiveType::PLANE:
-            SetPlaneVertexData(m_vertices, m_elements);
+            SetPlaneVertexData(vertices, elements);
             break;
         case PrimitiveType::SPHERE:
-            SetSphereVertexData(m_vertices, m_elements);
+            SetSphereVertexData(vertices, elements);
             break;
         default:
             break;
     }
+    GenAndLoadVAO(m_vao[primitiveType], m_vbo[primitiveType], m_ebo[primitiveType], vertices, elements);
 }
 
 
@@ -135,7 +124,7 @@ void PrimitiveMesh::FillVertexData(PrimitiveType primitiveType)
 ******************************************************************///
 void SetCubeVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements)
 {
-    std::vector<Vert3x3x2f> verts = {
+    vertices = std::vector<Vert3x3x2f>{
             Vert3x3x2f(-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f), // front
             Vert3x3x2f(0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f),
             Vert3x3x2f(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f),
@@ -185,7 +174,6 @@ void SetCubeVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned i
             Vert3x3x2f(-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f),
     };
 
-    vertices = verts;
 
     elements = std::vector<unsigned int>(12*3);
     for(int tri = 0; tri < 36; ++tri)
@@ -215,8 +203,8 @@ void SetPlaneVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned 
     };
 
     elements = std::vector<unsigned int>{
-        0, 3, 1,
-        0, 2, 3
+            0, 3, 1,
+            0, 2, 3
     };
 
 
@@ -387,6 +375,5 @@ void scaleToUnit(Vert3x3x2f& v)
     v.g = v.y;
     v.b = v.z;
 }
-
 
 } // seng

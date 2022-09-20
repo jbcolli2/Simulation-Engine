@@ -3,6 +3,14 @@
 //
 
 #include "Renderer.h"
+#include "Rendering/Mesh.h"
+
+#include "Components/Camera.h"
+#include "Components/Lights.h"
+
+#include "Engine/Object.h"
+
+#include "Scene/SceneManager.h"
 
 using namespace seng;
 
@@ -35,12 +43,13 @@ int Renderer::StartUp(SceneManager* sceneManager)
 
 void Renderer::Render()
 {
+    Scene& scene = m_sceneManager->m_scene;
     ///////////////// Clear color buffer ///////////////////////////////////////
     glEnable(GL_DEPTH_TEST);
     glClearColor(.1, .1, .1, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Camera* mainCamera = m_sceneManager->m_scene.GetMainCamera();
+    Camera* mainCamera = scene.m_cameras[0]->GetComponent<Camera>();
 
     // Fill UBO with view and proj matrices
     glBindBuffer(GL_UNIFORM_BUFFER, m_uboVP);
@@ -49,8 +58,28 @@ void Renderer::Render()
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     m_currentShader->startProgram();
-    m_currentShader->setUniform1f("ambientIntensity", m_sceneManager->m_scene.m_ambientIntensity);
-    m_sceneManager->m_scene.DrawScene(*m_currentShader);
+    /////////////  Set Camera and Lights in Shader  ///////////////////
+    m_currentShader->setUniform1f("ambientIntensity", scene.m_ambientIntensity);
+    for(Object* light : scene.m_lights)
+    {
+        if(light->HasComponent<PointLight>())
+        {
+            light->GetComponent<PointLight>()->SetUniforms(*m_currentShader);
+        }
+        if(light->HasComponent<DirLight>())
+        {
+            light->GetComponent<DirLight>()->SetUniforms(*m_currentShader);
+        }
+    }
+
+    /////////////  Draw all objects with a Mesh  ///////////////////
+    for(Object* obj : scene.m_objects)
+    {
+        if(obj->HasComponent<Mesh>())
+        {
+            m_currentShader->setUniformMatrix4f("model", )
+        }
+    }
     m_currentShader->stopProgram();
 
 }

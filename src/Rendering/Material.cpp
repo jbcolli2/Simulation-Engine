@@ -2,7 +2,7 @@
 // Created by jcollin2 on 7/29/22.
 //
 
-#include "Scene/Material.h"
+#include "Material.h"
 
 namespace seng
 {
