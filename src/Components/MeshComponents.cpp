@@ -106,6 +106,8 @@ void Primitive::FillVertexData(PrimitiveType primitiveType)
             break;
     }
     GenAndLoadVAO(m_vao[primitiveType], m_vbo[primitiveType], m_ebo[primitiveType], vertices, elements);
+    m_numVerts[primitiveType] = vertices.size();
+    m_numIndices[primitiveType] = elements.size();
 }
 
 

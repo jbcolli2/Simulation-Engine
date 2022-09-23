@@ -25,7 +25,7 @@ public:
     glm::vec3 position{0.f, 0.f, 0.f};
     glm::vec3 rotation{0.f, 0.f, 0.f};
     glm::vec3 scale{1.f, 1.f, 1.f};
-    bool updateModelMatrix{false};
+    bool updateModelMatrix{true};
 };
 
 
@@ -51,6 +51,21 @@ public:
      * @brief Loop through all components in the object and delete them.
     ******************************************************************///
     ~Object();
+
+    /***************** StartUp  ******************
+     * @brief Call StartUp on all components.
+    ******************************************************************///
+    void StartUp();
+
+
+
+    /***************** Update  ******************
+     * @brief Call Update on all Components
+     *
+     * @param deltaTime Frame delta.
+    ******************************************************************///
+    void Update(float deltaTime);
+
 
     //***********************************************************
     //       Getters and Setters

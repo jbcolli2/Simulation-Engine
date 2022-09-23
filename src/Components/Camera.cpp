@@ -25,6 +25,14 @@ Camera::Camera(const glm::vec3& position, const glm::vec3& direction, DisplayMan
 }
 
 
+
+
+
+
+
+
+
+
 void Camera::IncrementDirection(float yawInc, float pitchInc)
 {
     m_yaw += yawInc;
@@ -101,6 +109,85 @@ void Camera::computeCamRight()
     m_camRight = glm::normalize(glm::cross(m_direction, m_camUp));
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//***********************************************************
+//       CameraController
+//***********************************************************
+
+void CameraController::StartUp()
+{
+    glfwSetInputMode(m_dispManager.m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void CameraController::Update(float deltaTime)
+{
+    Input* input = &Input::GetInstance();
+
+    ///////////////// Rotate Camera ///////////////////////////////////////
+    if(m_oldMousePosition.x < 0.f)
+        m_oldMousePosition = input->MousePosition();
+
+    glm::vec2 newMousePosition = input->MousePosition();
+
+    glm::vec2 rotateDelta = (newMousePosition - m_oldMousePosition)*deltaTime*m_rotateSpeed;
+    rotateDelta.y = -rotateDelta.y;
+    m_oldMousePosition = newMousePosition;
+
+    m_camera.IncrementDirection(rotateDelta.x, rotateDelta.y);
+
+
+
+    ///////////////// Pan Camera ///////////////////////////////////////
+    float positionDelta = m_panSpeed*deltaTime;
+    if(input->KeyPress(GLFW_KEY_W))
+    {
+        m_camera.m_position += positionDelta*m_camera.GetDirection();
+    }
+    if(input->KeyPress(GLFW_KEY_S))
+    {
+        m_camera.m_position -= positionDelta*m_camera.GetDirection();
+    }
+    if(input->KeyPress(GLFW_KEY_A))
+    {
+        m_camera.m_position -= positionDelta*m_camera.GetRight();
+    }
+    if(input->KeyPress(GLFW_KEY_D))
+    {
+        m_camera.m_position += positionDelta*m_camera.GetRight();
+    }
+    if(input->KeyPress(GLFW_KEY_Q))
+    {
+        m_camera.m_position -= positionDelta*m_camera.GetUp();
+    }
+    if(input->KeyPress(GLFW_KEY_E))
+    {
+        m_camera.m_position += positionDelta*m_camera.GetUp();
+    }
+
+
+
+    ///////////////// Zero Camera ///////////////////////////////////////
+    if(input->KeyDown(GLFW_KEY_0))
+    {
+        m_camera.SetDirection(0.f, 0.f);
+        m_camera.m_position = glm::vec3(0.f);
+    }
+
+}
 
 
 

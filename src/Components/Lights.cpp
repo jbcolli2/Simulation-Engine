@@ -4,6 +4,8 @@
 
 #include "Lights.h"
 
+#include "Engine/Input.h"
+
 namespace seng
 {
 
@@ -18,10 +20,7 @@ const std::string PointLight::specIntensityUniformName{"pointLight.specularInten
 
 void PointLight::SetUniforms(Shader& shader)
 {
-    shader.setUniform3f(positionUniformName, m_position.x, m_position.y, m_position.z);
-    shader.setUniform3f(colorUniformName, m_color.r, m_color.g, m_color.b);
-    shader.setUniform1f(diffIntensityUniformName, m_diffuseIntensity);
-    shader.setUniform1f(specIntensityUniformName, m_specularIntensity);
+    shader.m_pointLightComp.SetUniform(*this);
 }
 
 
@@ -41,9 +40,52 @@ const std::string DirLight::specIntensityUniformName{"dirLight.specularIntensity
 
 void DirLight::SetUniforms(Shader& shader)
 {
-    shader.setUniform3f(directionUniformName, m_direction.x, m_direction.y, m_direction.z);
-    shader.setUniform3f(colorUniformName, m_color.r, m_color.g, m_color.b);
-    shader.setUniform1f(diffIntensityUniformName, m_diffuseIntensity);
-    shader.setUniform1f(specIntensityUniformName, m_specularIntensity);
+    shader.m_dirLightComp.SetUniform(*this);
+}
+
+
+
+
+
+
+
+
+//***********************************************************
+//       Move Point Light Methods
+//***********************************************************
+
+void MovePtLight::Update(float deltaTime)
+{
+    float speed = m_speed*deltaTime;
+    Transform& trans = parentObject->GetTransform();
+
+
+    if(Input::GetInstance().KeyPress(GLFW_KEY_I))
+    {
+        m_pointLight.m_position.z -= speed;
+    }
+    if(Input::GetInstance().KeyPress(GLFW_KEY_K))
+    {
+        m_pointLight.m_position.z += speed;
+    }
+    if(Input::GetInstance().KeyPress(GLFW_KEY_J))
+    {
+        m_pointLight.m_position.x -= speed;
+    }
+    if(Input::GetInstance().KeyPress(GLFW_KEY_L))
+    {
+        m_pointLight.m_position.x += speed;
+    }
+    if(Input::GetInstance().KeyPress(GLFW_KEY_U))
+    {
+        m_pointLight.m_position.y -= speed;
+    }
+    if(Input::GetInstance().KeyPress(GLFW_KEY_O))
+    {
+        m_pointLight.m_position.y += speed;
+    }
+
+    trans.position = m_pointLight.m_position;
+
 }
 } // seng

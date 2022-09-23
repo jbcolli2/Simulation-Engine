@@ -7,10 +7,6 @@
 namespace seng
 {
 
-const std::string SolidMaterial::ambientUniformName{"ambientMat"};
-const std::string SolidMaterial::diffuseUniformName{"diffuseMat"};
-const std::string SolidMaterial::specularUniformName{"specularMat"};
-const std::string SolidMaterial::roughnessUniformName{"roughness"};
 
 
 /***************** SetupMaterial  ******************
@@ -22,12 +18,36 @@ const std::string SolidMaterial::roughnessUniformName{"roughness"};
 ******************************************************************///
 void SolidMaterial::SetupMaterial(Shader& shader)
 {
-    shader.setUniform1f(ambientUniformName, m_ambient);
-    shader.setUniform3f(diffuseUniformName, m_diffuse.r, m_diffuse.g, m_diffuse.b);
-    shader.setUniform3f(specularUniformName, m_specular.r, m_specular.g, m_specular.b);
-    shader.setUniform1ui(roughnessUniformName, m_roughness);
+    shader.m_solidMatComp.SetUniform(*this);
 
 }
 
+
+
+
+
+
+
+
+
+//***********************************************************
+//       Texture Material
+//***********************************************************
+TextureMaterial::TextureMaterial(const std::string& path, unsigned int texUnit, const glm::vec3& specColor,
+                                 float roughness) :
+    m_specColor(specColor), m_roughness(roughness)
+{
+    m_diffTexture.m_fileName = path;
+    m_diffTexture.m_texUnit = texUnit;
+    m_diffTexture.m_tbo = GenAndLoadTBO(path);
+
+}
+
+void TextureMaterial::SetupMaterial(Shader& shader)
+{
+    glActiveTexture(GL_TEXTURE0 + m_diffTexture.m_texUnit);
+    glBindTexture(GL_TEXTURE_2D, m_diffTexture.m_tbo);
+    shader.m_textureMatComp.SetUniform(*this);
+}
 
 }

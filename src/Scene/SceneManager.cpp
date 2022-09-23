@@ -13,6 +13,7 @@
 #include "Components/Lights.h"
 #include "Components/Camera.h"
 
+
 namespace seng
 {
 
@@ -38,9 +39,12 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     SolidMaterial *whiteMat = new SolidMaterial();
     whiteMat->m_diffuse = glm::vec3(0.5f, 0.6f, 0.5f);
     m_scene.AddMaterial("Solid:While", whiteMat);
+    TextureMaterial* crateTex = new TextureMaterial("../assets/textures/container2.png", 0);
+    m_scene.AddMaterial("Tex:Crate", crateTex);
 
     Object* obj = new Object();
-    obj->AddComponent(new Primitive(PrimitiveType::CUBE, blueMat));
+//    obj->AddComponent(new Primitive(PrimitiveType::CUBE, blueMat));
+    obj->AddComponent(new Primitive(PrimitiveType::CUBE, crateTex));
     m_scene.AddObject(obj);
 
 
@@ -54,6 +58,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     Camera *cam = camera->GetComponent<Camera>();
     cam->SetDirection(0, 0);
     cam->m_position = glm::vec3(0.5f, 0.5f, 1.5f);
+    camera->AddComponent(new CameraController(*m_displayManager, *cam));
     m_scene.AddObject(camera);
 
     /////////////////    Create lights    ///////////////////////
@@ -68,34 +73,22 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     ptLight->AddComponent(new PointLight(glm::vec3(1.f, .5f, 1.f)));
     ptLight->GetComponent<PointLight>()->m_specularIntensity = .3f;
     ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, whiteMat));
+    ptLight->AddComponent(new MovePtLight(*ptLight->GetComponent<PointLight>()));
     m_scene.AddObject(ptLight);
 
 
     //***********************************************************
     //       Add Systems to Scene
     //***********************************************************
-    CameraController* cameraController = new CameraController(m_displayManager);
-    cameraController->AddObject(camera);
-    m_scene.AddSystem(cameraController);
 
-    RenderableSystem* renderSystem = new RenderableSystem();
-    std::vector<Object *>& sceneRenderables = m_scene.GetRenderables();
-    for (Object *renderObject: sceneRenderables) {
-        renderSystem->AddObject(renderObject);
-    }
-    m_scene.AddSystem(renderSystem);
-
-    MovePtLight* movePtLightSystem = new MovePtLight();
-    movePtLightSystem->AddObject(ptLight);
-    m_scene.AddSystem(movePtLightSystem);
 
 
 
     //***********************************************************
     //       MeshData systems
     //***********************************************************
-    ClothRod* clothRodSys = new ClothRod(cloth->GetComponent<RodCloth>()->m_gridMesh);
-    m_scene.AddPhysicsSystem(clothRodSys);
+//    ClothRod* clothRodSys = new ClothRod(cloth->GetComponent<RodCloth>()->m_gridMesh);
+//    m_scene.AddPhysicsSystem(clothRodSys);
 
     m_scene.StartUp();
 

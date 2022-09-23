@@ -24,8 +24,8 @@ public:
     virtual ~Component() = default;
 
     virtual void StartUp(){};
-    virtual void Update(){};
-    virtual void FixedUpdate(){};
+    virtual void Update(float deltaTime){};
+    virtual void FixedUpdate(float deltaTime){};
     virtual void ShutDown(){};
 };
 

@@ -4,6 +4,7 @@
 
 #include "Renderer.h"
 #include "Rendering/Mesh.h"
+#include "Rendering/Material.h"
 
 #include "Components/Camera.h"
 #include "Components/Lights.h"
@@ -77,7 +78,13 @@ void Renderer::Render()
     {
         if(obj->HasComponent<Mesh>())
         {
-            m_currentShader->setUniformMatrix4f("model", )
+            Mesh* mesh = obj->GetComponent<Mesh>();
+            mesh->UpdateModelMatrix();
+            m_currentShader->setUniformMatrix4f("model", mesh->m_model);
+            for(MeshData* meshdata : mesh->m_meshes)
+            {
+                meshdata->Render(*m_currentShader);
+            }
         }
     }
     m_currentShader->stopProgram();

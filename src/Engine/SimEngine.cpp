@@ -75,8 +75,6 @@ void SimEngine::Run()
             glfwSetWindowShouldClose(m_displayManager.m_window, true);
         }
 
-        if(Input::GetInstance().KeyDown(GLFW_KEY_SPACE))
-            m_sceneManager.m_scene.m_physTimeStep = 0.033f;
 
         m_sceneManager.Update(deltaTime, deltaTime);
 

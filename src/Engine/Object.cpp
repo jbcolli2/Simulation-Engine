@@ -3,6 +3,7 @@
 //
 
 #include "Object.h"
+#include "Engine/Component.h"
 
 using namespace seng;
 
@@ -15,6 +16,23 @@ Object::~Object()
     for (const auto it : m_components)
     {
         delete it.second;
+    }
+}
+
+
+void Object::StartUp()
+{
+    for(auto& component : m_components)
+    {
+        component.second->StartUp();
+    }
+}
+
+void Object::Update(float deltaTime)
+{
+    for(auto& component : m_components)
+    {
+        component.second->Update(deltaTime);
     }
 }
 

@@ -9,10 +9,13 @@
 
 
 
-struct Material
+class Move
 {
-    int id;
-    std::string name;
+private:
+    float speed{1.f};
+
+public:
+    float& Speed() {return speed;};
 };
 
 

@@ -7,9 +7,115 @@
 
 
 
-#include "Shader.hpp"
+#include "Shader.h"
+#include "Components/Lights.h"
+
+#include "Rendering/Material.h"
 
 using namespace seng;
+
+
+//***********************************************************
+//       PointLight Shader Implementation
+//***********************************************************
+const std::string PointLightShader::m_flagStr = "usePointLight";
+const std::string PointLightShader::m_positionStr = "pointLight.position";
+const std::string PointLightShader::m_colorStr = "pointLight.color";
+const std::string PointLightShader::m_diffuseIntensityStr = "pointLight.diffIntensity";
+const std::string PointLightShader::m_specIntensityStr = "pointLight.specIntensity";
+
+
+void PointLightShader::SetUniform(const PointLight& light)
+{
+    m_shader.setUniform1i(m_flagStr, 1);
+    m_shader.setUniform3f(m_positionStr, light.m_position.x, light.m_position.y, light.m_position.z);
+    m_shader.setUniform3f(m_colorStr, light.m_color.r, light.m_color.g, light.m_color.b);
+    m_shader.setUniform1f(m_diffuseIntensityStr, light.m_diffuseIntensity);
+    m_shader.setUniform1f(m_specIntensityStr, light.m_specularIntensity);
+}
+
+
+
+
+//***********************************************************
+//       Direction Light Shader Code
+//***********************************************************
+const std::string DirLightShader::m_flagStr = "useDirLight";
+const std::string DirLightShader::m_directionStr = "dirLight.direction";
+const std::string DirLightShader::m_colorStr = "dirLight.color";
+const std::string DirLightShader::m_diffuseIntensityStr = "dirLight.diffIntensity";
+const std::string DirLightShader::m_specIntensityStr = "dirLight.specIntensity";
+
+
+void DirLightShader::SetUniform(const DirLight& light)
+{
+    m_shader.setUniform1i(m_flagStr, 1);
+    m_shader.setUniform3f(m_directionStr, light.m_direction.x, light.m_direction.y, light.m_direction.z);
+    m_shader.setUniform3f(m_colorStr, light.m_color.r, light.m_color.g, light.m_color.b);
+    m_shader.setUniform1f(m_diffuseIntensityStr, light.m_diffuseIntensity);
+    m_shader.setUniform1f(m_specIntensityStr, light.m_specularIntensity);
+}
+
+
+
+
+//***********************************************************
+//       Solid Material Shader Code
+//***********************************************************
+const std::string SolidMatShader::m_flagStr = "useSolidMaterial";
+const std::string SolidMatShader::m_diffColorStr = "solidMat.diffuse";
+const std::string SolidMatShader::m_specColorStr = "solidMat.specular";
+const std::string SolidMatShader::m_roughnessStr = "solidMat.roughness";
+
+
+void SolidMatShader::SetUniform(const SolidMaterial& material)
+{
+    m_shader.setUniform1ui(m_flagStr, 1);
+    m_shader.setUniform3f(m_diffColorStr, material.m_diffuse.x, material.m_diffuse.y, material.m_diffuse.z);
+    m_shader.setUniform3f(m_specColorStr, material.m_specular.r, material.m_specular.g, material.m_specular.b);
+    m_shader.setUniform1f(m_roughnessStr, material.m_roughness);
+}
+
+
+
+//***********************************************************
+//       Texture Material Shader Code
+//***********************************************************
+const std::string TextureMatShader::m_flagStr = "useTextureMaterial";
+const std::string TextureMatShader::m_diffTexUnitStr = "textureMat.diffuse";
+const std::string TextureMatShader::m_specColorStr = "textureMat.specular";
+const std::string TextureMatShader::m_roughnessStr = "textureMat.roughness";
+
+
+void TextureMatShader::SetUniform(const TextureMaterial& material)
+{
+    m_shader.setUniform1ui(m_flagStr, 1);
+    m_shader.setUniform1i(m_diffTexUnitStr, material.m_diffTexture.m_texUnit);
+    m_shader.setUniform3f(m_specColorStr, material.m_specColor.r, material.m_specColor.g, material.m_specColor.b);
+    m_shader.setUniform1f(m_roughnessStr, material.m_roughness);
+}
+
+
+
+//***********************************************************
+//       Shader Code
+//***********************************************************
+const std::string Shader::m_ambientStr = "ambientIntensity";
+const std::string Shader::m_camPositionStr = "camPosition";
+
+
+void Shader::SetAmbientUniform(float ambient)
+{
+    setUniform1f(m_ambientStr, ambient);
+}
+
+void Shader::SetCamPositionUniform(glm::vec3 camPosition)
+{
+    setUniform3f(m_camPositionStr, camPosition.x, camPosition.y, camPosition.z);
+}
+
+
+
 
 /***************** Shader Ctor  ******************
  * @brief - Loads in the shader source code to a string.
@@ -125,10 +231,66 @@ void Shader::makeProgram(const std::string& vertShaderSource,
         glGetProgramInfoLog(m_program, 512, NULL, infoLog);
         std::cout << "ShaderProgram::Linker::Fail  " << infoLog << std::endl;
     }
-
+    glDetachShader(m_program, vertShader);
     glDeleteShader(vertShader);
+    glDetachShader(m_program, fragShader);
     glDeleteShader(fragShader);
+
+    if(!geomShaderSource.empty())
+    {
+        glDetachShader(m_program, geomShader);
+        glDeleteShader(geomShader);
+    }
 }
+
+
+void Shader::deepCopy(Shader& other)
+{
+    m_program = other.m_program;
+    m_vertShaderPath = other.m_vertShaderPath;
+    m_fragShaderPath = other.m_fragShaderPath;
+    m_geomShaderPath = other.m_geomShaderPath;
+
+    m_beingUsed = other.m_beingUsed;
+
+    m_uniforms = other.m_uniforms;
+}
+
+Shader::Shader(Shader&& other)
+{
+    deepCopy(other);
+    other.m_program = 0;
+    other.m_uniforms.clear();
+    other.m_vertShaderPath = "";
+    other.m_geomShaderPath = "";
+    other.m_fragShaderPath = "";
+    other.m_beingUsed = false;
+}
+
+Shader& Shader::operator=(Shader&& other)
+{
+    // Check self assignment
+    if(this == &other)
+    {
+        return *this;
+    }
+
+    deepCopy(other);
+    other.m_program = 0;
+    other.m_uniforms.clear();
+    other.m_vertShaderPath = "";
+    other.m_geomShaderPath = "";
+    other.m_fragShaderPath = "";
+    other.m_beingUsed = false;
+
+    return *this;
+}
+
+Shader::~Shader()
+{
+    glDeleteShader(m_program);
+}
+
 
 
 

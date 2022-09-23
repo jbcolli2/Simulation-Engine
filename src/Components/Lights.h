@@ -7,7 +7,7 @@
 
 #include "Engine/Component.h"
 
-#include "Rendering/Shader.hpp"
+#include "Rendering/Shader.h"
 
 
 namespace seng
@@ -75,6 +75,41 @@ public:
      * @param shader The shader in use that has uniforms to set.
     ******************************************************************///
     void SetUniforms(Shader& shader);
+};
+
+
+
+
+
+
+
+
+
+//***********************************************************
+//       Move Point Light Component
+//***********************************************************
+class MovePtLight : public Component
+{
+private:
+    float m_speed;                  // Speed at which light is moved
+
+    PointLight& m_pointLight;        // Ref to the light being moved
+
+public:
+    MovePtLight(PointLight& pointLight, float speed = 1.f) :
+    m_pointLight{pointLight}, m_speed{speed}    {};
+
+    void Update(float deltaTime) override;
+
+
+
+    //***********************************************************
+    //       Getter/Setter
+    //***********************************************************
+    void Speed(float speed)
+    {
+        m_speed = speed;
+    }
 };
 
 } // seng

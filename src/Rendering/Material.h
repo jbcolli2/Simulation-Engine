@@ -5,19 +5,18 @@
 #ifndef SIM_ENGINE_MATERIAL_H
 #define SIM_ENGINE_MATERIAL_H
 
-#include "Rendering/Shader.hpp"
+#include "Rendering/Shader.h"
 #include "Engine/Component.h"
 
 namespace seng
 {
 
-//class Material;
-//class Material : public Component
-//{
-//public:
-//    std::vector<std::unique_ptr<Material*>> m_materials{};
-//};
-
+struct Texture
+{
+    unsigned int m_tbo{0};
+    std::string m_fileName{""};
+    unsigned int m_texUnit{0};
+};
 
 
 
@@ -35,15 +34,9 @@ public:
 
 class SolidMaterial : public Material
 {
-private:
-    const static std::string ambientUniformName;
-    const static std::string diffuseUniformName;
-    const static std::string specularUniformName;
-    const static std::string roughnessUniformName;
 public:
     // Color information
     glm::vec3 m_diffuse{1.f, 0.f, .3f};
-    float m_ambient = .2f;
     glm::vec3 m_specular{1.f, 1.f, 1.f};
     unsigned int m_roughness{1};
 
@@ -53,8 +46,8 @@ public:
     ******************************************************************///
     SolidMaterial() = default;
 
-    SolidMaterial(float ambient, const glm::vec3& diffuse, const glm::vec3& specular, unsigned int roughness) :
-            m_ambient(ambient), m_diffuse(diffuse), m_specular(specular), m_roughness(roughness) {};
+    SolidMaterial(const glm::vec3& diffuse, const glm::vec3& specular, unsigned int roughness) :
+            m_diffuse(diffuse), m_specular(specular), m_roughness(roughness) {};
 
 
     /***************** SetupMaterial  ******************
@@ -67,6 +60,29 @@ public:
     void SetupMaterial(Shader& shader) override;
 
 };
+
+
+
+
+
+
+
+class TextureMaterial : public Material
+{
+public:
+    Texture m_diffTexture{};
+    glm::vec3 m_specColor{1.f};
+    float m_roughness{1.f};
+
+
+    TextureMaterial() = default;
+    TextureMaterial(const std::string& path, unsigned int texUnit, const glm::vec3& specColor = glm::vec3(1.f),
+                    float roughness = 1.f);
+
+
+    void SetupMaterial(Shader &shader) override;
+};
+
 } //end namespace seng
 
 

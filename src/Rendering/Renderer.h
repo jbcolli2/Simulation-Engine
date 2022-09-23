@@ -6,7 +6,7 @@
 #define SIM_ENGINE_RENDERER_H
 
 #include "Misc/Common.h"
-#include "Rendering/Shader.hpp"
+#include "Rendering/Shader.h"
 
 
 

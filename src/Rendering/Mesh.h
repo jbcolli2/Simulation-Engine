@@ -5,11 +5,13 @@
 #ifndef PECS_RENDERER_RENDERABLE_HPP
 #define PECS_RENDERER_RENDERABLE_HPP
 
-#include "Scene/PrimitiveMesh.h"
-#include "Scene/GridMesh.h"
 #include "Engine/Component.h"
 
+#include "Rendering/Shader.h"
+
 #include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <vector>
 
 namespace seng
@@ -31,6 +33,9 @@ public:
     // Ctor
     MeshData() = default;
 
+    void Render(Shader& shader);
+
+
 };
 
 
@@ -40,24 +45,24 @@ public:
 
 
 
-class GridMesh;
-/***************** RodCloth  ******************
- * @brief Holds data for cloth simulation using rods.
-******************************************************************///
-class RodCloth : public Component
-{
-public:
-    GridMesh* m_gridMesh{nullptr};
-    int m_numNodesX{-1}, m_numNodesY{-1};
-    float m_mass{1.f};
-
-    RodCloth(int Nx, int Ny)
-    {
-        m_gridMesh = new GridMesh(Nx, Ny);
-        m_numNodesX = Nx;
-        m_numNodesY = Ny;
-    }
-};
+//class GridMesh;
+///***************** RodCloth  ******************
+// * @brief Holds data for cloth simulation using rods.
+//******************************************************************///
+//class RodCloth : public Component
+//{
+//public:
+//    GridMesh* m_gridMesh{nullptr};
+//    int m_numNodesX{-1}, m_numNodesY{-1};
+//    float m_mass{1.f};
+//
+//    RodCloth(int Nx, int Ny)
+//    {
+//        m_gridMesh = new GridMesh(Nx, Ny);
+//        m_numNodesX = Nx;
+//        m_numNodesY = Ny;
+//    }
+//};
 
 
 /***************** Mesh Component  ******************
@@ -71,6 +76,22 @@ public:
     Mesh() = default;
     std::vector<MeshData*> m_meshes;
     glm::mat4 m_model;
+
+    /***************** UpdateModelMatrix  ******************
+     * @brief If the Transform has changed, update the model matrix with Transform data
+    ******************************************************************///
+    void UpdateModelMatrix()
+    {
+        Transform& transform = parentObject->GetTransform();
+        if(transform.updateModelMatrix)
+        {
+            m_model = glm::translate(glm::mat4(1.f), transform.position);
+            m_model = glm::rotate(m_model, glm::radians(transform.rotation.x), glm::vec3(1.f, 0.f, 0.f));
+            m_model = glm::rotate(m_model, glm::radians(transform.rotation.y), glm::vec3(0.f, 1.f, 0.f));
+            m_model = glm::rotate(m_model, glm::radians(transform.rotation.z), glm::vec3(0.f, 0.f, 1.f));
+            m_model = glm::scale(m_model, transform.scale);
+        }
+    }
 };
 
 

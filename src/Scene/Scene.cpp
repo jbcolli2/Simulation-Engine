@@ -21,6 +21,10 @@ namespace seng
 void Scene::StartUp()
 {
     m_ambientIntensity = .2f;
+    for(Object* object : m_objects)
+    {
+        object->StartUp();
+    }
     for(System* system : m_systems)
     {
         system->StartUp();
@@ -42,6 +46,12 @@ void Scene::StartUp()
 ******************************************************************///
 void Scene::Update(float deltaTime)
 {
+    for(Object* object : m_objects)
+    {
+        object->Update(deltaTime);
+    }
+
+
     for(System* system : m_systems)
     {
         system->Update(deltaTime);

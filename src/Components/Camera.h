@@ -9,7 +9,7 @@
 
 #include "Engine/Component.h"
 
-#include "Rendering/Shader.hpp"
+#include "Rendering/Shader.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -83,6 +83,40 @@ public:
     glm::vec3& GetUp() {return m_camUp;};
 };
 
+
+
+
+
+
+
+
+class CameraController : public Component
+{
+private:
+    Camera& m_camera;           // the Camera component that is being controlled.  Must be passed in through ctor.
+
+    float m_panSpeed;           // speed camera moves through space
+    float m_rotateSpeed;        // speed camera changes view direction
+
+    glm::vec2 m_oldMousePosition;   // prev mouse position to compute mouse position delta on each frame for rotating camera
+
+    DisplayManager& m_dispManager;  // Need access to window to hide/show mouse cursor
+public:
+    /***************** CameraController ctor  ******************
+     * @brief Pass in Camera component and initialize members.
+     *
+     *      oldMousePosition set to golden value outside of valid range to indicate not yet set.
+    ******************************************************************///
+    CameraController(DisplayManager& displayManager, Camera& camera, float panSpeed = 1.f, float rotateSpeed = 1.f) :
+    m_camera(camera), m_panSpeed(panSpeed), m_rotateSpeed(rotateSpeed), m_oldMousePosition(glm::vec2(-1.f)),
+    m_dispManager(displayManager){};
+
+    /***************** StartUp  ******************
+     * @brief Hide the cursor.
+    ******************************************************************///
+    void StartUp() override;
+    void Update(float deltaTime) override;
+};
 
 
 } // end namespace seng

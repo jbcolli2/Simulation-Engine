@@ -247,6 +247,10 @@ void GenAndLoadVAO(unsigned int& vao, unsigned int& vbo, unsigned int& ebo, cons
 
 
 
+unsigned int GenAndLoadTBO(const std::string& filename, bool sRGB = false);
+
+
+
 
 } // End namespace seng
 

@@ -23,6 +23,89 @@
 
 namespace seng
 {
+class PointLight;
+class Shader;
+class PointLightShader
+{
+private:
+    const static std::string m_flagStr;
+    const static std::string m_positionStr;
+    const static std::string m_colorStr;
+    const static std::string m_diffuseIntensityStr;
+    const static std::string m_specIntensityStr;
+
+    Shader& m_shader;
+
+public:
+    explicit PointLightShader(Shader& shader) : m_shader(shader) {};
+    void SetUniform(const PointLight& light);
+};
+
+
+
+
+class DirLight;
+class DirLightShader
+{
+private:
+    const static std::string m_flagStr;
+    const static std::string m_directionStr;
+    const static std::string m_colorStr;
+    const static std::string m_diffuseIntensityStr;
+    const static std::string m_specIntensityStr;
+
+    Shader& m_shader;
+
+public:
+    explicit DirLightShader(Shader& shader) : m_shader(shader) {};
+    void SetUniform(const DirLight& light);
+};
+
+
+
+
+
+class SolidMaterial;
+class SolidMatShader
+{
+private:
+    const static std::string m_flagStr;
+    const static std::string m_diffColorStr;
+    const static std::string m_specColorStr;
+    const static std::string m_roughnessStr;
+
+    Shader& m_shader;
+
+public:
+    explicit SolidMatShader(Shader& shader) : m_shader(shader) {};
+    void SetUniform(const SolidMaterial& material);
+};
+
+
+
+class TextureMaterial;
+class TextureMatShader
+{
+private:
+    const static std::string m_flagStr;
+    const static std::string m_diffTexUnitStr;
+    const static std::string m_specColorStr;
+    const static std::string m_roughnessStr;
+
+    Shader& m_shader;
+
+public:
+    explicit TextureMatShader(Shader& shader) : m_shader(shader) {};
+    void SetUniform(const TextureMaterial& material);
+};
+
+
+
+
+
+
+
+
 class Shader
 {
 private:
@@ -38,24 +121,64 @@ private:
     // hash table for location of uniforms
     std::unordered_map<const char *, unsigned int> m_uniforms{};
 
-public:
-    // Default Ctor
-    Shader()
-    {};
-    /***************** Shader Ctor  ******************
-     * @brief - Loads in the shader source code to a string.
-     *      - Compile the source code and link into a program.
-     * 
-     * @param vsPath Full path to vertex shader file
-     * @param gsPath Full path to geometry shader file
-     * @param fsPath Full path to fragment shader file
-    ******************************************************************///
+    const static std::string m_ambientStr;
+    const static std::string m_camPositionStr;
 
+    /***************** deepCopy  ******************
+     * @brief Copy over all but components for move semantics.
+     *
+     * @param other Shader with members to copy into this.
+    ******************************************************************///
+    void deepCopy(Shader& other);
+
+public:
+    //***********************************************************
+    //       Shader Components
+    //***********************************************************
+    PointLightShader m_pointLightComp{*this};
+    DirLightShader m_dirLightComp{*this};
+    SolidMatShader m_solidMatComp{*this};
+    TextureMatShader m_textureMatComp{*this};
+
+
+    void SetAmbientUniform(float ambient);
+    void SetCamPositionUniform(glm::vec3 camPosition);
+
+
+    /***************** Shader Ctor  ******************
+      * @brief - Loads in the shader source code to a string.
+      *      - Compile the source code and link into a program.
+      *
+      * @param vsPath Full path to vertex shader file
+      * @param gsPath Full path to geometry shader file
+      * @param fsPath Full path to fragment shader file
+     ******************************************************************///
+    Shader() {};
     // Ctor with vertex and frag shaders
     Shader(std::string vsPath, std::string fsPath);
 
     // Ctor with vertex, geometry and frag shaders
     Shader(std::string vsPath, std::string gsPath, std::string fsPath);
+
+    /***************** Move Ctors and Assignments  ******************
+     * @brief Need to copy everything except the components b/c they can't be
+     *      copied.  They need to continue to reference this Shader object,
+     *      since references can't be changed.  We just want to update this
+     *      Shader objects, but have components still use it.  Once copied, the
+     *      `other` needs to delete itself
+     *
+     *      No copy ctor or assignment b/c can't have two pointing to same
+     *      Shader program.
+    ******************************************************************///
+    Shader(const Shader& other) = delete;
+    Shader& operator=(const Shader& other) = delete;
+    Shader(Shader&& other);
+    Shader& operator=(Shader&& other);
+    
+    /***************** Shader Dtor  ******************
+     * @brief Delete the program.
+    ******************************************************************///
+    ~Shader();
 
 
     void startProgram()
@@ -73,6 +196,8 @@ public:
     // Returns true if program is being used currently
     bool InUse()
     { return m_beingUsed; };
+
+
 
 
     //***********************************************************
