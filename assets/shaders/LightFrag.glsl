@@ -20,10 +20,10 @@ uniform bool useDirLight;
 uniform bool usePointLight;
 
 
-float specularAngleCoeff(vec3 frag2Light, vec3 cam2Frag, vec3 normal, float roughness)
+float specularAngleCoeff(vec3 light2Frag, vec3 frag2Cam, vec3 normal, float roughness)
 {
-    vec3 reflectLightOnFrag = normalize(reflect(frag2Light, normal));
-    return  pow(max(dot(reflectLightOnFrag, cam2Frag), 0.0), roughness);
+    vec3 reflectLightOnFrag = normalize(reflect(light2Frag, normal));
+    return pow(max(dot(reflectLightOnFrag, frag2Cam), 0.0), roughness);
 }
 
 
@@ -99,13 +99,16 @@ void main()
     vec3 diff, spec;
     float rough;
 
+//    vec3 I = normalize(reflect(normalize(fragIn.FragPos - pointLight.position), normal));
+//    FragColor = cam2Frag;
+//    return;
     if(useSolidMaterial)
     {
         diff = solidMat.diffuse;
         spec = solidMat.specular;
         rough = solidMat.roughness;
     }
-    if(useTextureMaterial)
+    else if(useTextureMaterial)
     {
         diff = vec3(texture(textureMat.diffuse, fragIn.TexCoord));
         spec = textureMat.specular;
@@ -131,12 +134,12 @@ void main()
 
 vec3 DirLightContrib(DirLight dirLight, vec3 cam2Frag, vec3 normal, vec3 diff, vec3 spec, float rough)
 {
-    vec3 frag2Light = -dirLight.direction;
+    vec3 light2Frag = normalize(dirLight.direction);
 
-    float phongAngleCoeff = max(dot(normal, frag2Light), 0.0);
+    float phongAngleCoeff = max(dot(normal, -light2Frag), 0.0);
     vec3 diffuseColor = phongAngleCoeff*dirLight.color*diff;
 
-    float specCoeff = specularAngleCoeff(frag2Light, cam2Frag, normal, rough);
+    float specCoeff = specularAngleCoeff(light2Frag, -cam2Frag, normal, rough);
     vec3 specularColor = specCoeff*dirLight.color*spec;
 
     return dirLight.diffIntensity*diffuseColor + dirLight.specIntensity*specularColor;
@@ -148,11 +151,11 @@ vec3 DirLightContrib(DirLight dirLight, vec3 cam2Frag, vec3 normal, vec3 diff, v
 vec3 PointLightContrib(PointLight pointLight, vec3 light2Frag, vec3 cam2Frag, vec3 normal, vec3 diff, vec3 spec, float rough)
 {
 
-    light2Frag = normalize(light2Frag);
+    light2Frag = light2Frag;
     float phongAngleCoeff = max(dot(normal, -light2Frag), 0.0);
     vec3 diffuseColor = phongAngleCoeff*pointLight.color*diff;
 
-    float specCoeff = specularAngleCoeff(-light2Frag, cam2Frag, normal, rough);
+    float specCoeff = specularAngleCoeff(light2Frag, -cam2Frag, normal, rough);
     vec3 specularColor = specCoeff*pointLight.color*spec;
 
     return pointLight.diffIntensity*diffuseColor + pointLight.specIntensity*specularColor;

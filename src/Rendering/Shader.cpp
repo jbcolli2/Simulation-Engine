@@ -76,6 +76,10 @@ void SolidMatShader::SetUniform(const SolidMaterial& material)
     m_shader.setUniform1f(m_roughnessStr, material.m_roughness);
 }
 
+void SolidMatShader::ResetUniform()
+{
+    m_shader.setUniform1ui(m_flagStr, 0);
+}
 
 
 //***********************************************************
@@ -95,6 +99,10 @@ void TextureMatShader::SetUniform(const TextureMaterial& material)
     m_shader.setUniform1f(m_roughnessStr, material.m_roughness);
 }
 
+void TextureMatShader::ResetUniform()
+{
+    m_shader.setUniform1ui(m_flagStr, 0);
+}
 
 
 //***********************************************************

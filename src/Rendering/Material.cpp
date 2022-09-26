@@ -19,15 +19,13 @@ namespace seng
 void SolidMaterial::SetupMaterial(Shader& shader)
 {
     shader.m_solidMatComp.SetUniform(*this);
-
 }
 
 
-
-
-
-
-
+void SolidMaterial::ResetMaterial(Shader& shader)
+{
+    shader.m_solidMatComp.ResetUniform();
+}
 
 
 //***********************************************************
@@ -48,6 +46,13 @@ void TextureMaterial::SetupMaterial(Shader& shader)
     glActiveTexture(GL_TEXTURE0 + m_diffTexture.m_texUnit);
     glBindTexture(GL_TEXTURE_2D, m_diffTexture.m_tbo);
     shader.m_textureMatComp.SetUniform(*this);
+}
+
+
+void TextureMaterial::ResetMaterial(Shader& shader)
+{
+    shader.m_textureMatComp.ResetUniform();
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 }

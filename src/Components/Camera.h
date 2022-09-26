@@ -99,6 +99,7 @@ private:
     float m_rotateSpeed;        // speed camera changes view direction
 
     glm::vec2 m_oldMousePosition;   // prev mouse position to compute mouse position delta on each frame for rotating camera
+    bool m_oldMouseSet;
 
     DisplayManager& m_dispManager;  // Need access to window to hide/show mouse cursor
 public:
@@ -108,8 +109,8 @@ public:
      *      oldMousePosition set to golden value outside of valid range to indicate not yet set.
     ******************************************************************///
     CameraController(DisplayManager& displayManager, Camera& camera, float panSpeed = 1.f, float rotateSpeed = 1.f) :
-    m_camera(camera), m_panSpeed(panSpeed), m_rotateSpeed(rotateSpeed), m_oldMousePosition(glm::vec2(-1.f)),
-    m_dispManager(displayManager){};
+    m_camera(camera), m_panSpeed(panSpeed), m_rotateSpeed(rotateSpeed),
+    m_dispManager(displayManager), m_oldMouseSet(false) {};
 
     /***************** StartUp  ******************
      * @brief Hide the cursor.

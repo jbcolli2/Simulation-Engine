@@ -61,6 +61,7 @@ void Renderer::Render()
     m_currentShader->startProgram();
     /////////////  Set Camera and Lights in Shader  ///////////////////
     m_currentShader->setUniform1f("ambientIntensity", scene.m_ambientIntensity);
+    m_currentShader->setUniform3f("cameraPosition", mainCamera->m_position.x, mainCamera->m_position.y, mainCamera->m_position.z);
     for(Object* light : scene.m_lights)
     {
         if(light->HasComponent<PointLight>())

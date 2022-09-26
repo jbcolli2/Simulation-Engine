@@ -22,6 +22,7 @@ void MeshData::Render(Shader& shader)
     {
         glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
     }
+    m_material->ResetMaterial(shader);
 }
 
 

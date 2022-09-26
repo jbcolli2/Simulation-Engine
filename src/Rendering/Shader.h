@@ -79,6 +79,7 @@ private:
 public:
     explicit SolidMatShader(Shader& shader) : m_shader(shader) {};
     void SetUniform(const SolidMaterial& material);
+    void ResetUniform();
 };
 
 
@@ -97,6 +98,7 @@ private:
 public:
     explicit TextureMatShader(Shader& shader) : m_shader(shader) {};
     void SetUniform(const TextureMaterial& material);
+    void ResetUniform();
 };
 
 

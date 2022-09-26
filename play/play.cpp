@@ -11,11 +11,19 @@
 
 class Move
 {
-private:
+protected:
     float speed{1.f};
 
 public:
     float& Speed() {return speed;};
+    void virtual Print() {std::cout << "Speed = " << speed << std::endl;}
+};
+
+
+class D : public Move
+{
+public:
+    void Print() override {std::cout << "Derived speed";};
 };
 
 
@@ -30,14 +38,9 @@ int main()
 //        return 0;
 //    }
 
-    int test{-5};
-
-    void print(std::string s)
-    {
-        std::cout << "s " << test << std::endl;
-    }
-
-    print("test is ");
+    D derived{};
+    std::cout << "Speed is " << derived.Speed() << std::endl;
+    derived.Print();
 
 
 }

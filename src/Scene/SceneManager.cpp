@@ -26,7 +26,27 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
 {
     m_displayManager = displayManager;
 
+    return 1;
+}
 
+void SceneManager::ShutDown()
+{
+    //***********************************************************
+    //       Possibly do nothing until serialization is implemented.
+    //***********************************************************
+    m_scene.ShutDown();
+}
+
+void SceneManager::Update(float deltaTime, float physDeltaTime)
+{
+    m_scene.Update(deltaTime);
+    m_scene.UpdatePhysics(physDeltaTime);
+
+}
+
+
+int PrimScene1::StartUp(DisplayManager* displayManager)
+{
     //***********************************************************
     //       Add objects to Scene
     //***********************************************************
@@ -40,10 +60,10 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     whiteMat->m_diffuse = glm::vec3(0.5f, 0.6f, 0.5f);
     m_scene.AddMaterial("Solid:While", whiteMat);
     TextureMaterial* crateTex = new TextureMaterial("../assets/textures/container2.png", 0);
+    crateTex->m_roughness = 16;
     m_scene.AddMaterial("Tex:Crate", crateTex);
 
     Object* obj = new Object();
-//    obj->AddComponent(new Primitive(PrimitiveType::CUBE, blueMat));
     obj->AddComponent(new Primitive(PrimitiveType::CUBE, crateTex));
     m_scene.AddObject(obj);
 
@@ -58,7 +78,7 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     Camera *cam = camera->GetComponent<Camera>();
     cam->SetDirection(0, 0);
     cam->m_position = glm::vec3(0.5f, 0.5f, 1.5f);
-    camera->AddComponent(new CameraController(*m_displayManager, *cam));
+    camera->AddComponent(new CameraController(*displayManager, *cam));
     m_scene.AddObject(camera);
 
     /////////////////    Create lights    ///////////////////////
@@ -72,7 +92,8 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     transform.scale = glm::vec3(.1f);
     ptLight->AddComponent(new PointLight(glm::vec3(1.f, .5f, 1.f)));
     ptLight->GetComponent<PointLight>()->m_specularIntensity = .3f;
-    ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, whiteMat));
+    ptLight->GetComponent<PointLight>()->m_diffuseIntensity = .5f;
+    ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, blueMat));
     ptLight->AddComponent(new MovePtLight(*ptLight->GetComponent<PointLight>()));
     m_scene.AddObject(ptLight);
 
@@ -93,20 +114,6 @@ int seng::SceneManager::StartUp(DisplayManager *displayManager)
     m_scene.StartUp();
 
     return 1;
-}
-
-void SceneManager::ShutDown()
-{
-    //***********************************************************
-    //       Possibly do nothing until serialization is implemented.
-    //***********************************************************
-    m_scene.ShutDown();
-}
-
-void SceneManager::Update(float deltaTime, float physDeltaTime)
-{
-    m_scene.Update(deltaTime);
-    m_scene.UpdatePhysics(physDeltaTime);
 
 }
 

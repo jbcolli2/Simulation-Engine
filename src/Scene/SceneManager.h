@@ -25,7 +25,7 @@ public:
          * @brief Load the scene with objects.
          *      TODO: This will be deserialized from JSON file in future.
     ******************************************************************///
-    int StartUp(DisplayManager* displayManager);
+    virtual int StartUp(DisplayManager* displayManager);
 
     /***************** ShutDown  ******************
          * @brief Clean up all objects in the scene.
@@ -44,6 +44,21 @@ public:
     void Update(float deltaTime, float physDeltaTime);
 
 }; //End SceneManager
+
+
+
+
+
+
+class PrimScene1 : public SceneManager
+{
+public:
+    int StartUp(DisplayManager* displayManager) override;
+};
+
+
+
+
 } //End namespace seng
 
 

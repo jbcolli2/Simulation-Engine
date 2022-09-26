@@ -138,8 +138,11 @@ void CameraController::Update(float deltaTime)
     Input* input = &Input::GetInstance();
 
     ///////////////// Rotate Camera ///////////////////////////////////////
-    if(m_oldMousePosition.x < 0.f)
+    if(!m_oldMouseSet)
+    {
         m_oldMousePosition = input->MousePosition();
+        m_oldMouseSet = true;
+    }
 
     glm::vec2 newMousePosition = input->MousePosition();
 

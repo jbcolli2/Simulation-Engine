@@ -27,6 +27,7 @@ class Material
 
 public:
     virtual void SetupMaterial(Shader& shader) = 0;
+    virtual void ResetMaterial(Shader& shader){};
 };
 
 
@@ -59,6 +60,15 @@ public:
     ******************************************************************///
     void SetupMaterial(Shader& shader) override;
 
+
+    /***************** ResetMaterial  ******************
+     * @brief Reset flags for solid material.
+     *
+     * @param shader Shader objects containing flag uniforms.
+    ******************************************************************///
+    void ResetMaterial(Shader& shader) override;
+
+
 };
 
 
@@ -81,6 +91,9 @@ public:
 
 
     void SetupMaterial(Shader &shader) override;
+
+
+    void ResetMaterial(Shader& shader) override;
 };
 
 } //end namespace seng
