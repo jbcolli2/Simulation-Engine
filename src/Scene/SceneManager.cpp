@@ -57,15 +57,27 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     blueMat->m_roughness = 16;
     m_scene.AddMaterial("Solid:Blue", blueMat);
     SolidMaterial *whiteMat = new SolidMaterial();
-    whiteMat->m_diffuse = glm::vec3(0.5f, 0.6f, 0.5f);
+    whiteMat->m_diffuse = glm::vec3(.7f, 0.7f, 0.7f);
     m_scene.AddMaterial("Solid:While", whiteMat);
     TextureMaterial* crateTex = new TextureMaterial("../assets/textures/container2.png", 0);
     crateTex->m_roughness = 16;
     m_scene.AddMaterial("Tex:Crate", crateTex);
 
-    Object* obj = new Object();
-    obj->AddComponent(new Primitive(PrimitiveType::CUBE, crateTex));
+
+
+
+    //***********************************************************
+    //       Renderable Objects
+    //***********************************************************
+    Object* obj;
+    obj = new Object();
+    obj->AddComponent(new Primitive(PrimitiveType::SPHERE, blueMat));
+    obj->GetTransform().position = glm::vec3(-.5f, -.5f, -1.f);
+    obj->GetTransform().scale = glm::vec3(.3f);
     m_scene.AddObject(obj);
+
+    obj = new Object();
+    obj->AddComponent(new RodCloth(blueMat));
 
 
 
@@ -93,7 +105,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     ptLight->AddComponent(new PointLight(glm::vec3(1.f, .5f, 1.f)));
     ptLight->GetComponent<PointLight>()->m_specularIntensity = .3f;
     ptLight->GetComponent<PointLight>()->m_diffuseIntensity = .5f;
-    ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, blueMat));
+    ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, whiteMat));
     ptLight->AddComponent(new MovePtLight(*ptLight->GetComponent<PointLight>()));
     m_scene.AddObject(ptLight);
 

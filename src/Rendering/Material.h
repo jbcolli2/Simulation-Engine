@@ -26,6 +26,8 @@ class Material
 {
 
 public:
+    virtual ~Material() = default;
+
     virtual void SetupMaterial(Shader& shader) = 0;
     virtual void ResetMaterial(Shader& shader){};
 };

@@ -11,6 +11,7 @@
 #include "Components/Camera.h"
 
 #include "Rendering/Mesh.h"
+#include "Rendering/Material.h"
 
 namespace seng
 {
@@ -90,6 +91,15 @@ void Scene::ShutDown()
     for(System* system : m_physSystems)
     {
         system->ShutDown();
+    }
+
+    for(Object* object : m_objects)
+    {
+        delete object;
+    }
+    for(auto& material : m_materialList)
+    {
+        delete material.second;
     }
 }
 
