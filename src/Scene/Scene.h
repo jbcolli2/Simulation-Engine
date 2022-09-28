@@ -5,30 +5,27 @@
 #ifndef SIM_ENGINE_SCENE_H
 #define SIM_ENGINE_SCENE_H
 
-
-
 #include "Misc/Common.h"
+
+#include "Rendering/Material.h"
+
 
 
 namespace seng
 {
-
 class Object;
-class Material;
 class System;
 class Shader;
 class Camera;
+class Material;
 class Scene
 {
 private:
-    std::unordered_map<std::string, Material*> m_materialList{};
+    std::unordered_map<std::string, std::unique_ptr<Material>> m_materialList;
 
     std::vector<Object*> m_lights{};
     std::vector<Object*> m_cameras{};
-    std::vector<Object*> m_objects{};
-
-    std::vector<System*> m_systems{};
-    std::vector<System*> m_physSystems{};
+    std::vector<std::unique_ptr<Object>> m_objects;
 
     float m_physTimer{0.f};
 
@@ -38,6 +35,13 @@ public:
     float m_physTimeStep{.016f};
 
     float m_ambientIntensity{.2f};
+
+    /***************** Scene Ctor  ******************
+     * @brief Initialize all variables, but especially m_materialList and m_objects.
+     *      Initialize them in ctor so that we do not have to include Object and Material
+     *      dependencies in the Scene header file.
+    ******************************************************************///
+    Scene();
 
     /***************** StartUp  ******************
      * @brief Call startup on all systems.
@@ -57,7 +61,7 @@ public:
     /***************** ShutDown  ******************
      * @brief Clean up objects before they are deleted in SceneManager Shutdown.
     ******************************************************************///
-    void ShutDown();
+    void ShutDown(){};
 
 
     //***********************************************************
@@ -70,22 +74,29 @@ public:
      *
      * @param object Object to add.
     ******************************************************************///
-    void AddObject(Object* object);
+    void AddObject(std::unique_ptr<Object>&& object);
 
-    void AddMaterial(const std::string& name, Material* material)
-    {
-        m_materialList[name] = material;
-    }
 
-    void AddSystem(System* system)
-    {
-        m_systems.push_back(system);
-    }
+    /***************** AddMaterial  ******************
+     * @brief Material is passed as r-reference b/c type information is not retained for
+     *      materials.  Materials are fully defined at their creation and then ownership is passed
+     *      to the scene.
+     *
+     * @param name String identifier for the material
+     * @param material Previous owner of the material, pointer that owned it during creation so as to
+     *          setup the material while type information is known.  Once ownership is transfered to the
+     *          scene, type info is gone and the material can no longer be changed.
+    ******************************************************************///
+    void AddMaterial(const std::string& name, std::unique_ptr<Material>&& material);
+    /***************** AddMaterial  ******************
+     * @brief Add material by passing in r-value pointer (i.e. new SolidMaterial()).
+     *
+     * @param name string id
+     * @param material r-value pointer to material (new Material())
+    ******************************************************************///
+    void AddMaterial(const std::string& name, Material*&& material);
 
-    void AddPhysicsSystem(System* system)
-    {
-        m_physSystems.push_back(system);
-    }
+
 
 
 
@@ -100,7 +111,16 @@ public:
      *
      * @returns Main camera
     ******************************************************************///
-    Camera* GetMainCamera();
+    Camera& GetMainCamera();
+    
+    /***************** GetMaterial  ******************
+     * @brief Return raw pointer to material by string id.
+     * 
+     * @param id String id of material
+     * 
+     * @returns Raw pointer to material owned by scene.
+    ******************************************************************///
+    Material* GetMaterial(std::string id);
 
 
     friend class Renderer;

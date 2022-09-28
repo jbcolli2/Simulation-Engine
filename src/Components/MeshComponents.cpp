@@ -66,10 +66,10 @@ void Primitive::StartUp()
     {
         parentObject->AddComponent(new Mesh());
     }
-    Mesh* mesh = parentObject->GetComponent<Mesh>();
-    mesh->m_meshes.clear();
-    mesh->m_meshes.push_back(new MeshData());
-    MeshData& meshData = *mesh->m_meshes[0];
+    Mesh& mesh = parentObject->GetComponent<Mesh>();
+    mesh.m_meshes.clear();
+    mesh.m_meshes.push_back(new MeshData());
+    MeshData& meshData = *mesh.m_meshes[0];
     meshData.m_material = m_material;
 
     // If Primitive already created, send data to mesh component

@@ -50,39 +50,39 @@ void Renderer::Render()
     glClearColor(.1, .1, .1, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Camera* mainCamera = scene.m_cameras[0]->GetComponent<Camera>();
+    Camera& mainCamera = scene.m_cameras[0]->GetComponent<Camera>();
 
     // Fill UBO with view and proj matrices
     glBindBuffer(GL_UNIFORM_BUFFER, m_uboVP);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(mainCamera->m_view));
-    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(mainCamera->m_proj));
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(mainCamera.m_view));
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(mainCamera.m_proj));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
     m_currentShader->startProgram();
     /////////////  Set Camera and Lights in Shader  ///////////////////
     m_currentShader->setUniform1f("ambientIntensity", scene.m_ambientIntensity);
-    m_currentShader->setUniform3f("cameraPosition", mainCamera->m_position.x, mainCamera->m_position.y, mainCamera->m_position.z);
+    m_currentShader->setUniform3f("cameraPosition", mainCamera.m_position.x, mainCamera.m_position.y, mainCamera.m_position.z);
     for(Object* light : scene.m_lights)
     {
         if(light->HasComponent<PointLight>())
         {
-            light->GetComponent<PointLight>()->SetUniforms(*m_currentShader);
+            light->GetComponent<PointLight>().SetUniforms(*m_currentShader);
         }
         if(light->HasComponent<DirLight>())
         {
-            light->GetComponent<DirLight>()->SetUniforms(*m_currentShader);
+            light->GetComponent<DirLight>().SetUniforms(*m_currentShader);
         }
     }
 
     /////////////  Draw all objects with a Mesh  ///////////////////
-    for(Object* obj : scene.m_objects)
+    for(auto& obj : scene.m_objects)
     {
         if(obj->HasComponent<Mesh>())
         {
-            Mesh* mesh = obj->GetComponent<Mesh>();
-            mesh->UpdateModelMatrix();
-            m_currentShader->setUniformMatrix4f("model", mesh->m_model);
-            for(MeshData* meshdata : mesh->m_meshes)
+            Mesh& mesh = obj->GetComponent<Mesh>();
+            mesh.UpdateModelMatrix();
+            m_currentShader->setUniformMatrix4f("model", mesh.m_model);
+            for(MeshData* meshdata : mesh.m_meshes)
             {
                 meshdata->Render(*m_currentShader);
             }
