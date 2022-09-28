@@ -13,10 +13,6 @@ using namespace seng;
 ******************************************************************///
 Object::~Object()
 {
-    for (const auto it : m_components)
-    {
-        delete it.second;
-    }
 }
 
 
@@ -33,6 +29,14 @@ void Object::Update(float deltaTime)
     for(auto& component : m_components)
     {
         component.second->Update(deltaTime);
+    }
+}
+
+void Object::FixedUpdate(float deltaTime)
+{
+    for(auto& component : m_components)
+    {
+        component.second->FixedUpdate(deltaTime);
     }
 }
 

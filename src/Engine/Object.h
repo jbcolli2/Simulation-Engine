@@ -35,7 +35,7 @@ class Object
 {
 private:
     // all the components that make up the object
-    std::unordered_map<const char*, Component*> m_components{};
+    std::unordered_map<const char*, std::unique_ptr<Component>> m_components;
 
     // Signature listing what components are attached
     Signature m_signature;
@@ -65,6 +65,13 @@ public:
      * @param deltaTime Frame delta.
     ******************************************************************///
     void Update(float deltaTime);
+
+    /***************** Update  ******************
+     * @brief Call FixedUpdate on all Components
+     *
+     * @param deltaTime Fixed frame delta.
+    ******************************************************************///
+    void FixedUpdate(float deltaTime);
 
 
     //***********************************************************
@@ -100,7 +107,9 @@ public:
      * @param component A pointer to the component being added.
     ***************************************///
     template <typename CompT>
-    void AddComponent(CompT* component);
+    void AddComponent(std::unique_ptr<CompT>&& component);
+    template <typename CompT>
+    void AddComponent(CompT*&& component);
 
     /***************** GetComponent  ******************
      * @brief Returns the component T if it exists in `m_components`.  For now
@@ -111,7 +120,7 @@ public:
      * @returns Pointer to CompT component attached to object.
     ******************************************************************///
     template <typename CompT>
-    CompT* GetComponent();
+    CompT& GetComponent();
 
 
     /***************** HasComponent  ******************
@@ -164,14 +173,14 @@ we assume there only exists one of each component in an object.
  * @returns Pointer to CompT component attached to object.
 ******************************************************************///
 template <typename CompT>
-CompT* Object::GetComponent()
+CompT& Object::GetComponent()
 {
     auto compMapEntry = m_components.find(typeid(CompT).name());
     // Be sure that object actually has the component before trying to return it
     assert(compMapEntry != m_components.end() && "SENG Error: Component not found in Object::GetComponent");
-    CompT* component = dynamic_cast<CompT*>(compMapEntry->second);
+    CompT* component = dynamic_cast<CompT*>(compMapEntry->second.get());
 
-    return component;
+    return *component;
 }
 
 
@@ -187,14 +196,25 @@ CompT* Object::GetComponent()
  * @param component A pointer to the component being added.
 ***************************************///
 template <typename CompT>
-void Object::AddComponent(CompT* component)
+void Object::AddComponent(std::unique_ptr<CompT>&& component)
 {
-    m_components.insert({typeid(CompT).name(), component});
+    component->parentObject = this;
+    m_components.insert({typeid(CompT).name(), std::move(component)});
 
     m_signature |= ComponentManager::GetSignature<CompT>();
-
-    component->parentObject = this;
 }
+
+/***************** AddComponent  ******************
+ * @brief Same as above, but pass in r-value pointer to Component (new Primitive(...))
+ *
+ * @param component r-value pointer to a new component
+******************************************************************///
+template <typename CompT>
+void Object::AddComponent(CompT*&& component)
+{
+    AddComponent(std::unique_ptr<CompT>(component));
+}
+
 
 
 

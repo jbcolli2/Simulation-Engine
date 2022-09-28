@@ -16,23 +16,24 @@
 namespace seng
 {
 
+
+Scene::Scene()
+{
+    m_materialList = std::unordered_map<std::string, std::unique_ptr<Material>>();
+    m_objects = std::vector<std::unique_ptr<Object>>();
+}
+
+
+
 /***************** StartUp  ******************
  * @brief Call startup on all systems.
 ******************************************************************///
 void Scene::StartUp()
 {
     m_ambientIntensity = .2f;
-    for(Object* object : m_objects)
+    for(auto& object : m_objects)
     {
         object->StartUp();
-    }
-    for(System* system : m_systems)
-    {
-        system->StartUp();
-    }
-    for(System* system : m_physSystems)
-    {
-        system->StartUp();
     }
 }
 
@@ -47,15 +48,9 @@ void Scene::StartUp()
 ******************************************************************///
 void Scene::Update(float deltaTime)
 {
-    for(Object* object : m_objects)
+    for(auto& object : m_objects)
     {
         object->Update(deltaTime);
-    }
-
-
-    for(System* system : m_systems)
-    {
-        system->Update(deltaTime);
     }
 }
 
@@ -67,10 +62,14 @@ void Scene::UpdatePhysics(float deltaTime)
 
     while(m_physTimer > m_physTimeStep)
     {
-        for(System* system : m_physSystems)
+        for(auto& object : m_objects)
         {
-            system->Update(m_physTimeStep);
+            object->FixedUpdate(m_physTimeStep);
         }
+//        for(System* system : m_physSystems)
+//        {
+//            system->Update(m_physTimeStep);
+//        }
 
         m_physTimer -= m_physTimeStep;
     }
@@ -79,46 +78,33 @@ void Scene::UpdatePhysics(float deltaTime)
 
 
 
-/***************** ShutDown  ******************
- * @brief Clean up objects before they are deleted in SceneManager Shutdown.
-******************************************************************///
-void Scene::ShutDown()
+
+
+
+
+
+
+void Scene::AddObject(std::unique_ptr<Object>&& object)
 {
-    for(System* system : m_systems)
-    {
-        system->ShutDown();
-    }
-    for(System* system : m_physSystems)
-    {
-        system->ShutDown();
-    }
-
-    for(Object* object : m_objects)
-    {
-        delete object;
-    }
-    for(auto& material : m_materialList)
-    {
-        delete material.second;
-    }
-}
-
-
-
-
-
-
-void Scene::AddObject(Object* object)
-{
-    m_objects.push_back(object);
     if(object->HasComponent<Camera>())
     {
-        m_cameras.push_back(object);
+        m_cameras.push_back(object.get());
     }
     if(object->HasComponent<DirLight>() || object->HasComponent<PointLight>())
     {
-        m_lights.push_back(object);
+        m_lights.push_back(object.get());
     }
+    m_objects.push_back(std::move(object));
+}
+
+void Scene::AddMaterial(const std::string& name, std::unique_ptr<Material>&& material)
+{
+    m_materialList[name] = std::move(material);
+}
+
+void Scene::AddMaterial(const std::string& name, Material*&& material)
+{
+    AddMaterial(name, std::unique_ptr<Material>(material));
 }
 
 
@@ -137,9 +123,15 @@ void Scene::AddObject(Object* object)
  *
  * @returns Main camera
 ******************************************************************///
-Camera* Scene::GetMainCamera()
+Camera& Scene::GetMainCamera()
 {
     return m_cameras[0]->GetComponent<Camera>();
+}
+
+
+Material* Scene::GetMaterial(std::string id)
+{
+    return m_materialList[id].get();
 }
 
 

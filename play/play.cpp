@@ -9,24 +9,26 @@
 
 
 
-class Move
+class Base
 {
 protected:
     float speed{1.f};
 
 public:
-    float& Speed() {return speed;};
-    void virtual Print() {std::cout << "Speed = " << speed << std::endl;}
+    float Speed() {return speed;};
 };
 
 
-class D : public Move
+class Derived : public Base
 {
 public:
-    void Print() override {std::cout << "Derived speed";};
+    void Print()  {std::cout << "Derived speed";};
 };
 
-
+void print(Base*&& base)
+{
+    std::cout << "x = " << base->Speed() << std::endl;
+}
 
 
 
@@ -38,9 +40,12 @@ int main()
 //        return 0;
 //    }
 
-    D derived{};
-    std::cout << "Speed is " << derived.Speed() << std::endl;
-    derived.Print();
+    Base* pB = new Base();
+
+
+    print(pB);
+
+
 
 
 }

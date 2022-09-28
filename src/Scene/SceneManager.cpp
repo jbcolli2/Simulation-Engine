@@ -52,16 +52,17 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //***********************************************************
 
     ///////////////// Create Meshes and Materials ///////////
-    SolidMaterial* blueMat = new SolidMaterial();
+    std::unique_ptr<SolidMaterial> blueMat{new SolidMaterial()};
     blueMat->m_diffuse = glm::vec3(0.2f, 0.f, 0.9f);
     blueMat->m_roughness = 16;
-    m_scene.AddMaterial("Solid:Blue", blueMat);
-    SolidMaterial *whiteMat = new SolidMaterial();
+    m_scene.AddMaterial("Solid:Blue", std::move(blueMat));
+    std::unique_ptr<SolidMaterial> whiteMat{new SolidMaterial()};
     whiteMat->m_diffuse = glm::vec3(.7f, 0.7f, 0.7f);
-    m_scene.AddMaterial("Solid:While", whiteMat);
-    TextureMaterial* crateTex = new TextureMaterial("../assets/textures/container2.png", 0);
+    m_scene.AddMaterial("Solid:White", std::move(whiteMat));
+    std::unique_ptr<TextureMaterial> crateTex{new TextureMaterial("../assets/textures/container2.png", 0)};
     crateTex->m_roughness = 16;
-    m_scene.AddMaterial("Tex:Crate", crateTex);
+    m_scene.AddMaterial("Tex:Crate", std::move(crateTex));
+
 
 
 
@@ -69,15 +70,14 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //***********************************************************
     //       Renderable Objects
     //***********************************************************
-    Object* obj;
-    obj = new Object();
-    obj->AddComponent(new Primitive(PrimitiveType::SPHERE, blueMat));
+    std::unique_ptr<Object> obj = std::make_unique<Object>();
+    obj->AddComponent(new Primitive(PrimitiveType::SPHERE, m_scene.GetMaterial("Solid:Blue")));
     obj->GetTransform().position = glm::vec3(-.5f, -.5f, -1.f);
     obj->GetTransform().scale = glm::vec3(.3f);
-    m_scene.AddObject(obj);
+    m_scene.AddObject(std::move(obj));
 
-    obj = new Object();
-    obj->AddComponent(new RodCloth(blueMat));
+//    obj = new Object();
+//    obj->AddComponent(new RodCloth(blueMat));
 
 
 
@@ -85,34 +85,30 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
 
 
     /////////////////    Create camera    ///////////////////////
-    Object *camera = new Object();
+    auto camera = std::make_unique<Object>();
     camera->AddComponent(new Camera(displayManager));
-    Camera *cam = camera->GetComponent<Camera>();
-    cam->SetDirection(0, 0);
-    cam->m_position = glm::vec3(0.5f, 0.5f, 1.5f);
-    camera->AddComponent(new CameraController(*displayManager, *cam));
-    m_scene.AddObject(camera);
+    Camera& cam = camera->GetComponent<Camera>();
+    cam.SetDirection(0, 0);
+    cam.m_position = glm::vec3(0.5f, 0.5f, 1.5f);
+    camera->AddComponent(new CameraController(*displayManager, cam));
+    m_scene.AddObject(std::move(camera));
 
     /////////////////    Create lights    ///////////////////////
-    Object *dirLight = new Object();
+    auto dirLight = std::make_unique<Object>();
     dirLight->AddComponent(new DirLight());
-    dirLight->GetComponent<DirLight>()->m_direction = glm::vec3(-.5, -.75, -.3);
-    m_scene.AddObject(dirLight);
+    dirLight->GetComponent<DirLight>().m_direction = glm::vec3(-.5, -.75, -.3);
+    m_scene.AddObject(std::move(dirLight));
 
-    Object *ptLight = new Object();
+    auto ptLight = std::make_unique<Object>();
     Transform& transform = ptLight->GetTransform();
-    transform.scale = glm::vec3(.1f);
+    ptLight->GetTransform().scale = glm::vec3(.1f);
     ptLight->AddComponent(new PointLight(glm::vec3(1.f, .5f, 1.f)));
-    ptLight->GetComponent<PointLight>()->m_specularIntensity = .3f;
-    ptLight->GetComponent<PointLight>()->m_diffuseIntensity = .5f;
-    ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, whiteMat));
-    ptLight->AddComponent(new MovePtLight(*ptLight->GetComponent<PointLight>()));
-    m_scene.AddObject(ptLight);
+    ptLight->GetComponent<PointLight>().m_specularIntensity = .3f;
+    ptLight->GetComponent<PointLight>().m_diffuseIntensity = .5f;
+    ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, m_scene.GetMaterial("Solid:White")));
+    ptLight->AddComponent(new MovePtLight(ptLight->GetComponent<PointLight>()));
+    m_scene.AddObject(std::move(ptLight));
 
-
-    //***********************************************************
-    //       Add Systems to Scene
-    //***********************************************************
 
 
 
