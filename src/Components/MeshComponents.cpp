@@ -378,4 +378,19 @@ void scaleToUnit(Vert3x3x2f& v)
     v.b = v.z;
 }
 
+
+
+
+
+
+
+//***********************************************************
+//       RodCloth Methods
+//***********************************************************
+RodCloth::RodCloth(int numXNodes, int numYNodes, float mass, unsigned int numIterations) :
+    m_Nx(numXNodes), m_Ny(numYNodes), m_mass(mass), m_numConstraintIterations(numIterations)
+{
+
+}
+
 } // seng

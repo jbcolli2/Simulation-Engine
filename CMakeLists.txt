@@ -47,7 +47,7 @@ set(SRC_ENGINE src/Engine/SimEngine.cpp src/Engine/DisplayManager.cpp src/Scene/
 set(SRC_OBJECTS src/Engine/Object.cpp src/Engine/ComponentManager.cpp src/Rendering/Material.h src/Scene/Scene.cpp src/Components/Camera.h
         src/Components/Camera.cpp src/Systems/System.h src/Components/Lights.cpp
         src/Components/Lights.h src/Rendering/Material.cpp #[[src/Scene/GridMesh.cpp src/Systems/FixedGridMesh.cpp]]
-         #[[src/Systems/ClothRod.cpp]] src/Components/MeshComponents.cpp src/Components/MeshComponents.h)
+         #[[src/Systems/RodCloth.cpp]] src/Components/MeshComponents.cpp src/Components/MeshComponents.h)
 set(SRC_RENDER src/Rendering/Renderer.cpp src/Rendering/Shader.cpp src/Rendering/Mesh.cpp)
 
 add_compile_definitions(GL_SILENCE_DEPRECATION)

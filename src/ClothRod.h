@@ -35,14 +35,14 @@ struct Node
 //***********************************************************
 //       System for rod-based cloth simulation
 //***********************************************************
-class RodCloth : public System
+class ClothRod : public System
 {
 private:
     // Dimensions of the GridMesh
     int m_Nx{0}, m_Ny{0};
     // Position data for each mass in the cloth
-    std::vector<Node> m_nodes;
-    // Adjacency data of each node.  Indices same as for m_nodes, each entry holds vector of
+    std::vector<Node> m_masses;
+    // Adjacency data of each node.  Indices same as for m_masses, each entry holds vector of
     //    index to adjacent nodes.
    std::vector< std::vector<int> > m_adjNodes;
    std::vector<int> m_shuffleIndex{};
@@ -67,14 +67,14 @@ private:
 
 
 public:
-    RodCloth(GridMesh* gridMesh);
+    ClothRod(GridMesh* gridMesh);
 
     void StartUp() override;
 
     void Update(float deltaTime) override;
 
     void ShutDown() override;
-}; // End RodCloth class
+}; // End ClothRod class
 
 
 
@@ -83,7 +83,7 @@ public:
 
 
 //***********************************************************
-//       Debug RodCloth
+//       Debug ClothRod
 //***********************************************************
 
 #define X 0

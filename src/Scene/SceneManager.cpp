@@ -76,8 +76,8 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     obj->GetTransform().scale = glm::vec3(.3f);
     m_scene.AddObject(obj);
 
-    obj = new Object();
-    obj->AddComponent(new RodCloth(blueMat));
+//    obj = new Object();
+//    obj->AddComponent(new RodCloth(blueMat));
 
 
 
@@ -120,7 +120,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //***********************************************************
     //       MeshData systems
     //***********************************************************
-//    ClothRod* clothRodSys = new ClothRod(cloth->GetComponent<RodCloth>()->m_gridMesh);
+//    RodCloth* clothRodSys = new RodCloth(cloth->GetComponent<RodCloth>()->m_gridMesh);
 //    m_scene.AddPhysicsSystem(clothRodSys);
 
     m_scene.StartUp();
