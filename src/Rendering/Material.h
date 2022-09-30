@@ -30,6 +30,8 @@ public:
 
     virtual void SetupMaterial(Shader& shader) = 0;
     virtual void ResetMaterial(Shader& shader){};
+
+    static std::unique_ptr<Material> m_defaultMaterial;
 };
 
 

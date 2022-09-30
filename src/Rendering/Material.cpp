@@ -7,7 +7,9 @@
 namespace seng
 {
 
-
+std::unique_ptr<Material> Material::m_defaultMaterial{std::make_unique<SolidMaterial>(
+        glm::vec3{.7f, 0.f, .4f}, glm::vec3{1.f}, 16
+        )};
 
 /***************** SetupMaterial  ******************
  * @brief Set the uniforms for the color in the passed shader.

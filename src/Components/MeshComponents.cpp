@@ -2,6 +2,8 @@
 // Created by jcollin2 on 9/4/22.
 //
 
+#include <random>
+
 #include "MeshComponents.h"
 #include "Rendering/Mesh.h"
 
@@ -384,13 +386,5 @@ void scaleToUnit(Vert3x3x2f& v)
 
 
 
-//***********************************************************
-//       RodCloth Methods
-//***********************************************************
-RodCloth::RodCloth(int numXNodes, int numYNodes, float mass, unsigned int numIterations) :
-    m_Nx(numXNodes), m_Ny(numYNodes), m_mass(mass), m_numConstraintIterations(numIterations)
-{
-
-}
 
 } // seng
