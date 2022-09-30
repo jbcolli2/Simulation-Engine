@@ -5,20 +5,16 @@
 #ifndef SIM_ENGINE_PHYSICSCOMPONENTS_H
 #define SIM_ENGINE_PHYSICSCOMPONENTS_H
 
+
+#include "Misc/MeshCommon.h"
+
+#include "Engine/Component.h"
+
+
 namespace seng
 {
 
-//***********************************************************
-//       Node class for masses in cloth
-//***********************************************************
-struct Node
-{
-    glm::vec3 currentPosition;
-    glm::vec3 prevPosition;
-    std::vector<int> adjIndices;
-    bool fixedFlag{false};
-};
-
+class Material;
 class Mesh;
 //***********************************************************
 //       System for rod-based cloth simulation
@@ -30,14 +26,15 @@ private:
     int m_Nx{0}, m_Ny{0};                               // Dimensions of the GridMesh
     float m_mass{1.f};                                  // Mass of all nodes making up the cloth
     int m_numConstraintIterations{5};                   // Number of iterations to use when projecting the constraints
-    std::function<void(int, int, std::vector<Node>&)> m_initializer;     // Function pointer to definite initial state of cloth
+    std::function<std::array<float,2>(int, int, std::vector<Node>&)> m_initializer;     // Function pointer to definite initial state of cloth
     Material* m_material;                               // Material used to render the cloth
 
     std::vector<Node> m_nodes{};                          // State data for each node in the cloth
     std::vector<int> m_shuffleIndex{};                  // Shuffled indices to access the nodes in random order
 
 
-    float m_rodLength{1.f};                             // Cache the length of all axis-aligned rods connecting masses
+    float m_rodLengthX{1.f};                             // Cache the length of all axis-aligned rods connecting masses
+    float m_rodLengthY{1.f};
     // TODO: Change to allow for different lenghts in each direction
     // TODO: Add diagonal rod length
 
@@ -48,7 +45,8 @@ private:
 
 
     // pointer to the grid mesh
-    Mesh& m_mesh;
+    DynamicGridMesh m_gridMesh;
+    unsigned int m_meshVBO{0};
 
     int mat2VecIdx(int ii, int jj)
     {
@@ -67,16 +65,19 @@ private:
     void Integrate(float deltaTime);
     void ProjectConstraints();
 
-    void InitializeMeshElements();
-    void SetVertexData();
 
 
 public:
-    RodCloth(int numXNodes, int numYNodes, std::function<void(int, int, std::vector<Node>&)> initializer, Material* material, float mass = 1.f, unsigned int numIterations = 5);
+    RodCloth(int numXNodes, int numYNodes, std::function<std::array<float,2>(int, int, std::vector<Node>&)> initializer, Material* material, float mass = 1.f, unsigned int numIterations = 5);
 
     void StartUp() override;
 
     void Update(float deltaTime) override;
+
+    //***********************************************************
+    //       Initializer functions for Cloth
+    //***********************************************************
+    static std::function<std::array<float,2>(int, int, std::vector<Node>&)> m_fixAtTopEnds;
 
 }; // End RodCloth class
 

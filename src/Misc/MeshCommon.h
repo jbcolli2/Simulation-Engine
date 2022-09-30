@@ -23,7 +23,7 @@ struct Node
 
 
 
-
+class MeshData;
 class DynamicGridMesh
 {
 private:
@@ -108,7 +108,7 @@ public:
      * @brief Generate the vao/vbo/ebo for this mesh.  Fill the vbo with trash, but fill the ebo
      *      with the correct indices for a square mesh.  Return all handles though output parameters.
     ******************************************************************///
-    void GenerateBuffers(unsigned int& vao, unsigned int& vbo, unsigned int& ebo);
+    void GenerateBuffers(MeshData& meshdata);
 
     /***************** ReloadVBO  ******************
      * @brief As position of the vertices change, update m_vertices and then load the data
@@ -119,6 +119,10 @@ public:
      *              member to update position of the vertices.
     ******************************************************************///
     void ReloadVBO(unsigned int vbo, const std::vector<Node>& nodes);
+
+
+    int GetNumVertices() {return m_vertices.size();};
+    int GetNumElements() {return 6*(m_Nx-1)*(m_Ny-1);};
 };
 
 } // seng

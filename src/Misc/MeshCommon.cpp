@@ -4,6 +4,8 @@
 
 #include "MeshCommon.h"
 
+#include "Rendering/Mesh.h"
+
 namespace seng
 {
 
@@ -111,7 +113,7 @@ void DynamicGridMesh::computeNormals()
 }
 
 
-void DynamicGridMesh::GenerateBuffers(unsigned int& vao, unsigned int& vbo, unsigned int& ebo)
+void DynamicGridMesh::GenerateBuffers(MeshData& meshData)
 {
     // Create element vector
     std::vector<unsigned int> elements(6*(m_Nx-1)*(m_Ny-1));
@@ -133,7 +135,9 @@ void DynamicGridMesh::GenerateBuffers(unsigned int& vao, unsigned int& vbo, unsi
         }
     }
 
-    GenAndLoadVAO(vao, vbo, ebo, m_vertices, elements, GL_DYNAMIC_DRAW);
+    GenAndLoadVAO(meshData.m_vao, meshData.m_vbo, meshData.m_ebo, m_vertices, elements, GL_DYNAMIC_DRAW);
+    meshData.m_numVertices = m_vertices.size();
+    meshData.m_numIndices = elements.size();
 }
 
 
