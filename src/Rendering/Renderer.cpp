@@ -82,7 +82,7 @@ void Renderer::Render()
             Mesh& mesh = obj->GetComponent<Mesh>();
             mesh.UpdateModelMatrix();
             m_currentShader->setUniformMatrix4f("model", mesh.m_model);
-            for(MeshData* meshdata : mesh.m_meshes)
+            for(const auto& meshdata : mesh.m_meshes)
             {
                 meshdata->Render(*m_currentShader);
             }

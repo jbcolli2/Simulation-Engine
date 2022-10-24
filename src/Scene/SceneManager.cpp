@@ -118,7 +118,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //       MeshData systems
     //***********************************************************
     auto cloth = std::make_unique<Object>();
-    cloth->AddComponent(new RodCloth(10, 10, RodCloth::m_fixAtTopEnds, m_scene.GetMaterial("Solid:Blue")));
+    cloth->AddComponent(new RodCloth(10, 10, RodCloth::m_fixAtTopEnds, m_scene.GetMaterial("Tex:Crate"), 1.f, 20));
     m_scene.AddObject(std::move(cloth));
 
     m_scene.StartUp();

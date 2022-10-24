@@ -70,7 +70,7 @@ void Primitive::StartUp()
     }
     Mesh& mesh = parentObject->GetComponent<Mesh>();
     mesh.m_meshes.clear();
-    mesh.m_meshes.push_back(new MeshData());
+    mesh.m_meshes.push_back(std::make_unique<MeshData>());
     MeshData& meshData = *mesh.m_meshes[0];
     meshData.m_material = m_material;
 

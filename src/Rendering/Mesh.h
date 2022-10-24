@@ -32,6 +32,12 @@ public:
 
     // Ctor
     MeshData() = default;
+    ~MeshData()
+    {
+        glDeleteVertexArrays(1, &m_vao);
+        glDeleteBuffers(1, &m_vbo);
+        glDeleteBuffers(1, &m_ebo);
+    }
 
     void Render(Shader& shader);
 
@@ -45,25 +51,6 @@ public:
 
 
 
-//class GridMesh;
-///***************** RodCloth  ******************
-// * @brief Holds data for cloth simulation using rods.
-//******************************************************************///
-//class RodCloth : public Component
-//{
-//public:
-//    GridMesh* m_gridMesh{nullptr};
-//    int m_numNodesX{-1}, m_numNodesY{-1};
-//    float m_mass{1.f};
-//
-//    RodCloth(int Nx, int Ny)
-//    {
-//        m_gridMesh = new GridMesh(Nx, Ny);
-//        m_numNodesX = Nx;
-//        m_numNodesY = Ny;
-//    }
-//};
-
 
 /***************** Mesh Component  ******************
  * @brief Contains vector of MeshData objects and model matrix.
@@ -74,7 +61,7 @@ class Mesh : public Component
 {
 public:
     Mesh() = default;
-    std::vector<MeshData*> m_meshes;
+    std::vector<std::unique_ptr<MeshData>> m_meshes;
     glm::mat4 m_model;
 
     /***************** UpdateModelMatrix  ******************
