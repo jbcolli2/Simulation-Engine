@@ -75,7 +75,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     obj->AddComponent(new Primitive(PrimitiveType::SPHERE, m_scene.GetMaterial("Solid:Blue")));
     obj->GetTransform().position = glm::vec3(-.5f, -.5f, -1.f);
     obj->GetTransform().scale = glm::vec3(.3f);
-    m_scene.AddObject(std::move(obj));
+    m_scene.AddObject(std::move(obj), "sphere");
 
 //    obj = new Object();
 //    obj->AddComponent(new RodCloth(blueMat));
@@ -92,13 +92,13 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     cam.SetDirection(0, 0);
     cam.m_position = glm::vec3(0.5f, 0.5f, 1.5f);
     camera->AddComponent(new CameraController(*displayManager, cam));
-    m_scene.AddObject(std::move(camera));
+    m_scene.AddObject(std::move(camera), "mainCamera");
 
     /////////////////    Create lights    ///////////////////////
     auto dirLight = std::make_unique<Object>();
     dirLight->AddComponent(new DirLight());
     dirLight->GetComponent<DirLight>().m_direction = glm::vec3(-.5, -.75, -.3);
-    m_scene.AddObject(std::move(dirLight));
+    m_scene.AddObject(std::move(dirLight), "Direction Light");
 
     auto ptLight = std::make_unique<Object>();
     Transform& transform = ptLight->GetTransform();
@@ -108,7 +108,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     ptLight->GetComponent<PointLight>().m_diffuseIntensity = .5f;
     ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, m_scene.GetMaterial("Solid:White")));
     ptLight->AddComponent(new MovePtLight(ptLight->GetComponent<PointLight>()));
-    m_scene.AddObject(std::move(ptLight));
+    m_scene.AddObject(std::move(ptLight), "Point Light 1");
 
 
 
@@ -119,7 +119,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //***********************************************************
     auto cloth = std::make_unique<Object>();
     cloth->AddComponent(new RodCloth(10, 10, RodCloth::m_fixAtTopEnds, m_scene.GetMaterial("Tex:Crate"), 1.f, 20));
-    m_scene.AddObject(std::move(cloth));
+    m_scene.AddObject(std::move(cloth), "Cloth");
 
     m_scene.StartUp();
 

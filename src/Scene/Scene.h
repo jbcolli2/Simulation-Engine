@@ -21,13 +21,14 @@ class Material;
 class Scene
 {
 private:
+    std::unordered_map<std::string, int> objectID{};
     std::unordered_map<std::string, std::unique_ptr<Material>> m_materialList;
 
-    std::vector<Object*> m_lights{};
-    std::vector<Object*> m_cameras{};
-    std::vector<std::unique_ptr<Object>> m_objects;
+    std::vector<Object*> m_lights{};                        // Convinience list of all light objects
+    std::vector<Object*> m_cameras{};                       // Convinence  list of all camera objects
+    std::vector<std::unique_ptr<Object>> m_objects;         // List of all objects in scene, even lights and cameras
 
-    float m_physTimer{0.f};
+    float m_physTimer{0.f};                                 // Use to keep fixed time step for physics objects
 
 
 
@@ -74,7 +75,7 @@ public:
      *
      * @param object Object to add.
     ******************************************************************///
-    void AddObject(std::unique_ptr<Object>&& object);
+    void AddObject(std::unique_ptr<Object>&& object, std::string idName);
 
 
     /***************** AddMaterial  ******************
@@ -121,6 +122,15 @@ public:
      * @returns Raw pointer to material owned by scene.
     ******************************************************************///
     Material* GetMaterial(std::string id);
+
+    /***************** FindObjectByID  ******************
+     * @brief Returns reference to object by it's string id.
+     *
+     * @param id Unique identifier for the object.
+     *
+     * @returns Reference to object.
+    ******************************************************************///
+    Object& FindObjectByID(std::string id);
 
 
     friend class Renderer;

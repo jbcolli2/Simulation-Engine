@@ -84,8 +84,9 @@ void Scene::UpdatePhysics(float deltaTime)
 
 
 
-void Scene::AddObject(std::unique_ptr<Object>&& object)
+void Scene::AddObject(std::unique_ptr<Object>&& object, std::string idName)
 {
+    assert(objectID.find(idName) == objectID.end() && "Already have object with that id.");
     if(object->HasComponent<Camera>())
     {
         m_cameras.push_back(object.get());
@@ -95,6 +96,7 @@ void Scene::AddObject(std::unique_ptr<Object>&& object)
         m_lights.push_back(object.get());
     }
     m_objects.push_back(std::move(object));
+    objectID[idName] = m_objects.size() - 1;
 }
 
 void Scene::AddMaterial(const std::string& name, std::unique_ptr<Material>&& material)
@@ -132,6 +134,11 @@ Camera& Scene::GetMainCamera()
 Material* Scene::GetMaterial(std::string id)
 {
     return m_materialList[id].get();
+}
+
+Object& Scene::FindObjectByID(std::string id)
+{
+    return *m_objects[objectID[id]];
 }
 
 
