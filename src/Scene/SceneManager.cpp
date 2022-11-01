@@ -46,8 +46,92 @@ void SceneManager::Update(float deltaTime, float physDeltaTime)
 }
 
 
+
+/***************** AddObject Factory Methods  ******************
+ * @brief Create object on the heap and add it to the scene.
+******************************************************************///
+void SceneManager::AddEmptyObject(std::string id, Transform transform)
+{
+    auto object = std::make_unique<Object>();
+    object->SetTransform(transform);
+    m_scene.AddObject(std::move(object), id);
+}
+
+void SceneManager::AddCube(std::string id, std::string materialID, Transform transform)
+{
+    auto object = std::make_unique<Object>();
+    object->SetTransform(transform);
+    object->AddComponent(new Primitive(PrimitiveType::CUBE, m_scene.GetMaterial(materialID)));
+    m_scene.AddObject(std::move(object), id);
+}
+
+void SceneManager::AddPlane(std::string id, std::string materialID, Transform transform)
+{
+    auto object = std::make_unique<Object>();
+    object->SetTransform(transform);
+    object->AddComponent(new Primitive(PrimitiveType::PLANE, m_scene.GetMaterial(materialID)));
+    m_scene.AddObject(std::move(object), id);
+}
+
+void SceneManager::AddSphere(std::string id, std::string materialID, unsigned int subdivideIters, Transform transform)
+{
+    auto object = std::make_unique<Object>();
+    object->SetTransform(transform);
+    object->AddComponent(new Primitive(PrimitiveType::SPHERE, m_scene.GetMaterial(materialID),
+                                       subdivideIters));
+    m_scene.AddObject(std::move(object), id);
+}
+
+void
+SceneManager::AddPointLight(std::string id, glm::vec3 position, bool movable, float diffIntensity, float specIntensity,
+                            glm::vec3 color)
+{
+    auto object = std::make_unique<Object>();
+    object->AddComponent(new PointLight(position, color));
+    object->GetComponent<PointLight>().m_diffuseIntensity = diffIntensity;
+    object->GetComponent<PointLight>().m_specularIntensity = specIntensity;
+    if(movable)
+        object->AddComponent(new MovePtLight(object->GetComponent<PointLight>()));
+
+    m_scene.AddObject(std::move(object), id);
+}
+
+void SceneManager::AddDirLight(std::string id, glm::vec3 direction, float diffIntensity, float specIntensity,
+                               glm::vec3 color)
+{
+    auto object = std::make_unique<Object>();
+    object->AddComponent(new DirLight(direction, color));
+    object->GetComponent<DirLight>().m_diffuseIntensity = diffIntensity;
+    object->GetComponent<DirLight>().m_specularIntensity = specIntensity;
+
+    m_scene.AddObject(std::move(object), id);
+
+}
+
+void SceneManager::AddCamera(std::string id, glm::vec3 position, glm::vec3 direction, bool controllable)
+{
+    auto object = std::make_unique<Object>();
+    object->AddComponent(new Camera(position, direction, *m_displayManager));
+    if(controllable)
+        object->AddComponent(new CameraController(*m_displayManager, object->GetComponent<Camera>()));
+
+    m_scene.AddObject(std::move(object), id);
+}
+
+
+
+
+
+
+
+
+
+//***********************************************************
+//       Primitive Scene
+//***********************************************************
 int PrimScene1::StartUp(DisplayManager* displayManager)
 {
+    SceneManager::StartUp(displayManager);
     //***********************************************************
     //       Add objects to Scene
     //***********************************************************
@@ -71,14 +155,17 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //***********************************************************
     //       Renderable Objects
     //***********************************************************
-    std::unique_ptr<Object> obj = std::make_unique<Object>();
-    obj->AddComponent(new Primitive(PrimitiveType::SPHERE, m_scene.GetMaterial("Solid:Blue")));
-    obj->GetTransform().position = glm::vec3(-.5f, -.5f, -1.f);
-    obj->GetTransform().scale = glm::vec3(.3f);
-    m_scene.AddObject(std::move(obj), "sphere");
+    Transform trans;
+    trans.position = glm::vec3(-.5f, -.5f, -1.f);
+    trans.scale = glm::vec3(.3f);
+    AddCube("Sphere", "Solid:Blue", trans);
 
-//    obj = new Object();
-//    obj->AddComponent(new RodCloth(blueMat));
+    trans = Transform();
+    trans.position = glm::vec3(.8f, .1f, -.4f);
+    trans.scale = glm::vec3(.5f);
+    AddCube("Cube", "Tex:Crate", trans);
+
+
 
 
 
@@ -86,29 +173,17 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
 
 
     /////////////////    Create camera    ///////////////////////
-    auto camera = std::make_unique<Object>();
-    camera->AddComponent(new Camera(displayManager));
-    Camera& cam = camera->GetComponent<Camera>();
-    cam.SetDirection(0, 0);
-    cam.m_position = glm::vec3(0.5f, 0.5f, 1.5f);
-    camera->AddComponent(new CameraController(*displayManager, cam));
-    m_scene.AddObject(std::move(camera), "mainCamera");
+    AddCamera("MainCamera", glm::vec3(.5f, .5f, 2.5f));
 
     /////////////////    Create lights    ///////////////////////
-    auto dirLight = std::make_unique<Object>();
-    dirLight->AddComponent(new DirLight());
-    dirLight->GetComponent<DirLight>().m_direction = glm::vec3(-.5, -.75, -.3);
-    m_scene.AddObject(std::move(dirLight), "Direction Light");
+    AddDirLight("Direction Light", glm::vec3(-.5f, -.75f, -.3f));
 
-    auto ptLight = std::make_unique<Object>();
-    Transform& transform = ptLight->GetTransform();
-    ptLight->GetTransform().scale = glm::vec3(.1f);
-    ptLight->AddComponent(new PointLight(glm::vec3(1.f, .5f, 1.f)));
-    ptLight->GetComponent<PointLight>().m_specularIntensity = .3f;
-    ptLight->GetComponent<PointLight>().m_diffuseIntensity = .5f;
-    ptLight->AddComponent(new Primitive(PrimitiveType::CUBE, m_scene.GetMaterial("Solid:White")));
-    ptLight->AddComponent(new MovePtLight(ptLight->GetComponent<PointLight>()));
-    m_scene.AddObject(std::move(ptLight), "Point Light 1");
+    AddPointLight("Point Light 1", glm::vec3(1.f, .5f, 1.f), true);
+    m_scene.FindObjectByID("Point Light 1").AddComponent(new Primitive(PrimitiveType::CUBE,
+                                                                       m_scene.GetMaterial("Solid:White")));
+    trans = Transform();
+    trans.scale = glm::vec3(.1f);
+    m_scene.FindObjectByID("Point Light 1").SetTransform(trans);
 
 
 
@@ -119,7 +194,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //***********************************************************
     auto cloth = std::make_unique<Object>();
     cloth->AddComponent(new RodCloth(10, 10, RodCloth::m_fixAtTopEnds, m_scene.GetMaterial("Tex:Crate"), 1.f, 20));
-    m_scene.AddObject(std::move(cloth), "Cloth");
+//    m_scene.AddObject(std::move(cloth), "Cloth");
 
     m_scene.StartUp();
 

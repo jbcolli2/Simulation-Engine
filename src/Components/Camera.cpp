@@ -11,17 +11,17 @@ namespace seng
 const std::string Camera::positionUniformName{"cameraPosition"};
 
 
-Camera::Camera(DisplayManager* displayManager)
+Camera::Camera(DisplayManager& displayManager)
 {
     setView();
-    m_proj = glm::perspective(m_fov, displayManager->m_aspectRatio, m_nearField, m_farField);
+    m_proj = glm::perspective(m_fov, displayManager.m_aspectRatio, m_nearField, m_farField);
 }
 
-Camera::Camera(const glm::vec3& position, const glm::vec3& direction, DisplayManager* displayManager) :
+Camera::Camera(const glm::vec3& position, const glm::vec3& direction, DisplayManager& displayManager) :
     m_position(position), m_direction(direction)
 {
     setView();
-    m_proj = glm::perspective(m_fov, displayManager->m_aspectRatio, m_nearField, m_farField);
+    m_proj = glm::perspective(m_fov, displayManager.m_aspectRatio, m_nearField, m_farField);
 }
 
 

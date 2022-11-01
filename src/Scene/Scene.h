@@ -21,11 +21,11 @@ class Material;
 class Scene
 {
 private:
-    std::unordered_map<std::string, int> objectID{};
+    std::unordered_map<std::string, int> m_objectID{};
     std::unordered_map<std::string, std::unique_ptr<Material>> m_materialList;
 
-    std::vector<Object*> m_lights{};                        // Convinience list of all light objects
-    std::vector<Object*> m_cameras{};                       // Convinence  list of all camera objects
+    std::vector<unsigned int> m_lights{};                        // Convinience list of all light objects
+    std::vector<unsigned int> m_cameras{};                       // Convinence  list of all camera objects
     std::vector<std::unique_ptr<Object>> m_objects;         // List of all objects in scene, even lights and cameras
 
     float m_physTimer{0.f};                                 // Use to keep fixed time step for physics objects

@@ -43,6 +43,22 @@ public:
     ******************************************************************///
     void Update(float deltaTime, float physDeltaTime);
 
+
+
+    /***************** Object Factory Methods  ******************
+     * @brief Theses create objects on the heap, add the proper components and set them up based on
+     *      parameters of the method.  Then adds them to the scene.
+    ******************************************************************///
+    void AddEmptyObject(std::string id, Transform transform = Transform());
+    void AddCube(std::string id, std::string materialID = "", Transform transform = Transform());
+    void AddPlane(std::string id, std::string materialID = "", Transform transform = Transform());
+    void AddSphere(std::string id, std::string materialID = "", unsigned int subdivideIters = 4, Transform transform = Transform());
+    void AddPointLight(std::string id, glm::vec3 position, bool movable, float diffIntensity = .7f, float specIntensity = .5f,
+                       glm::vec3 color = glm::vec3(1.f));
+    void AddDirLight(std::string id, glm::vec3 direction, float diffIntensity = .7f, float specIntensity = .5f,
+                     glm::vec3 color = glm::vec3(1.f));
+    void AddCamera(std::string id, glm::vec3 position, glm::vec3 direction = glm::vec3(0.f, 0.f, -1.f), bool controllable = true);
+
 }; //End SceneManager
 
 

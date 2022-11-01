@@ -16,7 +16,7 @@ namespace seng
 //***********************************************************
 void SetCubeVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
 void SetPlaneVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
-void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
+void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements, unsigned int subdivideIters);
 
 
 void Subdivide(int iterations, std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
@@ -39,6 +39,7 @@ private:
     /////////////  Members of Primitive  ///////////////////
     PrimitiveType m_primitiveType;      // Type of primitive (CUBE, PLANE, ...)
     Material* m_material;               // Material to use on the primitive.  Only one material to be used.
+    unsigned int m_subdivideIterations; // Number of times to subdivide for those that use it (i.e. sphere)
 
     // Static VAO/VBO for each primitive
     // Use same VAO for each primitive created in game
@@ -78,7 +79,8 @@ private:
 
 
 public:
-    Primitive(PrimitiveType primitiveType, Material* material) : m_primitiveType(primitiveType), m_material(material) {};
+    Primitive(PrimitiveType primitiveType, Material* material,  unsigned int subdivideIterations = 4) :
+    m_primitiveType(primitiveType), m_material(material), m_subdivideIterations(subdivideIterations) {};
     void StartUp() override;
 };
 

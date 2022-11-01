@@ -58,8 +58,8 @@ public:
     /***************** Camera ctor  ******************
      * @brief Set the right vector and then set view matrix.
     ******************************************************************///
-    Camera(DisplayManager* displayManager);
-    Camera(const glm::vec3& position, const glm::vec3& direction, DisplayManager* displayManager);
+    Camera(DisplayManager& displayManager);
+    Camera(const glm::vec3& position, const glm::vec3& direction, DisplayManager& displayManager);
 
     void IncrementDirection(float yawInc, float pitchInc);
 

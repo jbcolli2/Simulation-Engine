@@ -116,7 +116,7 @@ void main()
     }
 
     // Compute the value of the fragment
-    vec3 result = ambientIntensity*solidMat.diffuse;
+    vec3 result = ambientIntensity*diff;
 
     if(useDirLight)
     {

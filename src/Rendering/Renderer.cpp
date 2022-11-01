@@ -50,7 +50,7 @@ void Renderer::Render()
     glClearColor(.1, .1, .1, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Camera& mainCamera = scene.m_cameras[0]->GetComponent<Camera>();
+    Camera& mainCamera = scene.m_objects[scene.m_cameras[0]]->GetComponent<Camera>();
 
     // Fill UBO with view and proj matrices
     glBindBuffer(GL_UNIFORM_BUFFER, m_uboVP);
@@ -62,8 +62,9 @@ void Renderer::Render()
     /////////////  Set Camera and Lights in Shader  ///////////////////
     m_currentShader->setUniform1f("ambientIntensity", scene.m_ambientIntensity);
     m_currentShader->setUniform3f("cameraPosition", mainCamera.m_position.x, mainCamera.m_position.y, mainCamera.m_position.z);
-    for(Object* light : scene.m_lights)
+    for(unsigned int lightIndex : scene.m_lights)
     {
+        Object* light = scene.m_objects[lightIndex].get();
         if(light->HasComponent<PointLight>())
         {
             light->GetComponent<PointLight>().SetUniforms(*m_currentShader);

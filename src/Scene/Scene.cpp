@@ -31,8 +31,7 @@ Scene::Scene()
 void Scene::StartUp()
 {
     m_ambientIntensity = .2f;
-    for(auto& object : m_objects)
-    {
+    for (auto& object: m_objects) {
         object->StartUp();
     }
 }
@@ -48,22 +47,18 @@ void Scene::StartUp()
 ******************************************************************///
 void Scene::Update(float deltaTime)
 {
-    for(auto& object : m_objects)
-    {
+    for (auto& object: m_objects) {
         object->Update(deltaTime);
     }
 }
-
 
 
 void Scene::UpdatePhysics(float deltaTime)
 {
     m_physTimer += deltaTime;
 
-    while(m_physTimer > m_physTimeStep)
-    {
-        for(auto& object : m_objects)
-        {
+    while (m_physTimer > m_physTimeStep) {
+        for (auto& object: m_objects) {
             object->FixedUpdate(m_physTimeStep);
         }
 //        for(System* system : m_physSystems)
@@ -76,27 +71,20 @@ void Scene::UpdatePhysics(float deltaTime)
 }
 
 
-
-
-
-
-
-
-
-
 void Scene::AddObject(std::unique_ptr<Object>&& object, std::string idName)
 {
-    assert(objectID.find(idName) == objectID.end() && "Already have object with that id.");
-    if(object->HasComponent<Camera>())
-    {
-        m_cameras.push_back(object.get());
-    }
-    if(object->HasComponent<DirLight>() || object->HasComponent<PointLight>())
-    {
-        m_lights.push_back(object.get());
-    }
+    assert(m_objectID.find(idName) == m_objectID.end() && "Already have object with that id.");
     m_objects.push_back(std::move(object));
-    objectID[idName] = m_objects.size() - 1;
+    unsigned int objectIndex = m_objects.size() - 1;
+    m_objectID[idName] = objectIndex;
+    Object& tempObject = *m_objects[objectIndex];
+
+    if (tempObject.HasComponent<Camera>()) {
+        m_cameras.push_back(objectIndex);
+    }
+    if (tempObject.HasComponent<DirLight>() || tempObject.HasComponent<PointLight>()) {
+        m_lights.push_back(objectIndex);
+    }
 }
 
 void Scene::AddMaterial(const std::string& name, std::unique_ptr<Material>&& material)
@@ -127,18 +115,25 @@ void Scene::AddMaterial(const std::string& name, Material*&& material)
 ******************************************************************///
 Camera& Scene::GetMainCamera()
 {
-    return m_cameras[0]->GetComponent<Camera>();
+    return m_objects[m_cameras[0]]->GetComponent<Camera>();
 }
 
 
 Material* Scene::GetMaterial(std::string id)
 {
-    return m_materialList[id].get();
+    try
+    {
+        return m_materialList.at(id).get();
+    }
+    catch(std::out_of_range)
+    {
+        return Material::m_defaultMaterial.get();
+    }
 }
 
 Object& Scene::FindObjectByID(std::string id)
 {
-    return *m_objects[objectID[id]];
+    return *m_objects[m_objectID[id]];
 }
 
 

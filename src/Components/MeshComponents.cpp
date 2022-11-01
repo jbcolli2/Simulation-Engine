@@ -102,7 +102,7 @@ void Primitive::FillVertexData(PrimitiveType primitiveType)
             SetPlaneVertexData(vertices, elements);
             break;
         case PrimitiveType::SPHERE:
-            SetSphereVertexData(vertices, elements);
+            SetSphereVertexData(vertices, elements, m_subdivideIterations);
             break;
         default:
             break;
@@ -223,7 +223,7 @@ void SetPlaneVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned 
 
 
 
-void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements)
+void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements, unsigned int subdivideIters)
 {
     const float PI = 3.1415926f;
     const float H_ANGLE = PI / 180 * 72;    // 72 degree = 360 / 5
@@ -286,7 +286,7 @@ void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned
             11, 10, 6
     };
 
-    Subdivide(4, vertices, elements);
+    Subdivide(subdivideIters, vertices, elements);
 
 
 }
