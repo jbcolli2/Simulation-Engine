@@ -29,7 +29,7 @@ void main()
 //    gl_Position = vec4(aPosition, 1.0f);
 
     vertexOut.FragPos = vec3(model*vec4(aPosition, 1.0));
-    mat3 invTransModel = mat3(inverse(transpose(model)));
+    mat3 invTransModel = mat3(transpose(inverse(model)));
     vertexOut.Normal = invTransModel*aNormal;
     vertexOut.TexCoord = aUV;
 }

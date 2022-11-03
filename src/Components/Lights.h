@@ -62,8 +62,8 @@ private:
 public:
     glm::vec3 m_direction{.1f, -1.f, -.1f};
     glm::vec3 m_color{1.f};
-    float m_diffuseIntensity{.7f};
-    float m_specularIntensity{.5f};
+    float m_diffuseIntensity{.3f};
+    float m_specularIntensity{.2f};
 
     DirLight() = default;
     DirLight(const glm::vec3& direction, const glm::vec3& color = glm::vec3(1.f)) :

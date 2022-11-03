@@ -141,9 +141,15 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     blueMat->m_diffuse = glm::vec3(0.2f, 0.f, 0.9f);
     blueMat->m_roughness = 16;
     m_scene.AddMaterial("Solid:Blue", std::move(blueMat));
+
     std::unique_ptr<SolidMaterial> whiteMat{new SolidMaterial()};
     whiteMat->m_diffuse = glm::vec3(.7f, 0.7f, 0.7f);
     m_scene.AddMaterial("Solid:White", std::move(whiteMat));
+
+    std::unique_ptr<SolidMaterial> mat{new SolidMaterial()};
+    mat->m_diffuse = glm::vec3(.4f, 0.23f, 0.1f);
+    m_scene.AddMaterial("Solid:Brown", std::move(mat));
+
     std::unique_ptr<TextureMaterial> crateTex{new TextureMaterial("../assets/textures/container2.png", 0)};
     crateTex->m_roughness = 16;
     m_scene.AddMaterial("Tex:Crate", std::move(crateTex));
@@ -156,6 +162,11 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //       Renderable Objects
     //***********************************************************
     Transform trans;
+    trans = Transform();
+    trans.position = glm::vec3(0.f, -1.f, 0.f);
+    trans.scale = glm::vec3(10.f, 0.f, 10.f);
+    AddPlane("Floor", "Solid:Brown", trans);
+
     trans.position = glm::vec3(-.5f, -.5f, -1.f);
     trans.scale = glm::vec3(.3f);
     AddCube("Sphere", "Solid:Blue", trans);
@@ -164,6 +175,8 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     trans.position = glm::vec3(.8f, .1f, -.4f);
     trans.scale = glm::vec3(.5f);
     AddCube("Cube", "Tex:Crate", trans);
+
+
 
 
 

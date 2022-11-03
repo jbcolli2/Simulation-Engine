@@ -73,6 +73,9 @@ struct PointLight
     float specIntensity;
 };
 uniform PointLight pointLight;
+#define CONST_ATTEN 1.0
+#define LIN_ATTEN 0.35
+#define QUAD_ATTEN .44
 
 
 vec3 PointLightContrib(PointLight pointLight, vec3 light2Frag, vec3 cam2Frag, vec3 normal,
@@ -151,13 +154,16 @@ vec3 DirLightContrib(DirLight dirLight, vec3 cam2Frag, vec3 normal, vec3 diff, v
 vec3 PointLightContrib(PointLight pointLight, vec3 light2Frag, vec3 cam2Frag, vec3 normal, vec3 diff, vec3 spec, float rough)
 {
 
-    light2Frag = light2Frag;
+    float light2FragDist = length(light2Frag);
+    float attenuation = 1.0/(CONST_ATTEN + light2FragDist*LIN_ATTEN + light2FragDist*light2FragDist*QUAD_ATTEN);
+
+    light2Frag = normalize(light2Frag);
     float phongAngleCoeff = max(dot(normal, -light2Frag), 0.0);
     vec3 diffuseColor = phongAngleCoeff*pointLight.color*diff;
 
     float specCoeff = specularAngleCoeff(light2Frag, -cam2Frag, normal, rough);
     vec3 specularColor = specCoeff*pointLight.color*spec;
 
-    return pointLight.diffIntensity*diffuseColor + pointLight.specIntensity*specularColor;
+    return attenuation*(pointLight.diffIntensity*diffuseColor + pointLight.specIntensity*specularColor);
 }
 
