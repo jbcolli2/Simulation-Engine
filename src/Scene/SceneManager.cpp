@@ -172,7 +172,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     AddCube("Sphere", "Solid:Blue", trans);
 
     trans = Transform();
-    trans.position = glm::vec3(.8f, .1f, -.4f);
+    trans.position = glm::vec3(1.8f, .1f, -.4f);
     trans.scale = glm::vec3(.5f);
     AddCube("Cube", "Tex:Crate", trans);
 
@@ -207,7 +207,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //***********************************************************
     auto cloth = std::make_unique<Object>();
     cloth->AddComponent(new RodCloth(10, 10, RodCloth::m_fixAtTopEnds, m_scene.GetMaterial("Tex:Crate"), 1.f, 20));
-//    m_scene.AddObject(std::move(cloth), "Cloth");
+    m_scene.AddObject(std::move(cloth), "Cloth");
 
     m_scene.StartUp();
 

@@ -102,9 +102,16 @@ void RodCloth::StartUp()
 
 void RodCloth::Update(float deltaTime)
 {
+    //***********************************************************
+    //       DEMO
+    //***********************************************************
+    timer += deltaTime;
     Integrate(deltaTime);
     ProjectConstraints();
     m_gridMesh.ReloadVBO(m_meshVBO, m_nodes);
+
+    if(timer > restTime + pushTime)
+        timer = 0.0f;
 }
 
 
@@ -185,7 +192,10 @@ void RodCloth::Integrate(float deltaTime)
             continue;
 
         glm::vec3 forces = m_mass*m_g;
-        if(Input::GetInstance().KeyPress(GLFW_KEY_SPACE) && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx > 1)
+//        if(Input::GetInstance().KeyPress(GLFW_KEY_SPACE) && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx > 1)
+//            forces += glm::vec3(0.f, 0.f, 1.3f);
+
+        if(timer < restTime+pushTime && timer >  restTime && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx > 1)
             forces += glm::vec3(0.f, 0.f, 1.3f);
 
         glm::vec3 oldCurrentPos = m_nodes[nodeIdx].currentPosition;

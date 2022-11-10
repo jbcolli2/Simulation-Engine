@@ -25,7 +25,7 @@ private:
 
     int m_Nx{0}, m_Ny{0};                               // Dimensions of the GridMesh
     float m_mass{1.f};                                  // Mass of all nodes making up the cloth
-    int m_numConstraintIterations{5};                   // Number of iterations to use when projecting the constraints
+    int m_numConstraintIterations{10};                   // Number of iterations to use when projecting the constraints
     std::function<std::array<float,2>(int, int, std::vector<Node>&)> m_initializer;     // Function pointer to definite initial state of cloth
     Material* m_material;                               // Material used to render the cloth
 
@@ -66,6 +66,12 @@ private:
     void ProjectConstraints();
 
 
+    //***********************************************************
+    //       DEMO
+    //***********************************************************
+    float timer = 0.f;
+    float restTime = .5f;
+    float pushTime = 1.5f;
 
 public:
     RodCloth(int numXNodes, int numYNodes, std::function<std::array<float,2>(int, int, std::vector<Node>&)> initializer, Material* material, float mass = 1.f, unsigned int numIterations = 5);
