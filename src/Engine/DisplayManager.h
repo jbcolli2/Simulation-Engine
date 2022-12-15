@@ -38,6 +38,19 @@ public:
          * @brief Terminate the window.  Clean up any window related resources that were created.
     ******************************************************************///
     void ShutDown();
+
+
+
+
+    /***************** GetScreenDimensions  ******************
+     * @brief Sets output variables with screen dimensions.  Actually recomputes these
+     *      through call to GLFW API, as with Mac these can be different from what was
+     *      set due to the retina display.
+     *
+     * @param width Pointer to variable to hold screen width
+     * @param height Pointer to variable to hold screen height
+    ******************************************************************///
+    void GetScreenDimensions(int* width, int* height);
 }; // End DisplayManager definition
 
 

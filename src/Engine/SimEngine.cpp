@@ -27,7 +27,9 @@ int SimEngine::StartUp(int width, int height)
     m_sceneManager = new PrimScene1();
     m_sceneManager->StartUp(&m_displayManager);
 
-    if(!m_renderer.StartUp(m_sceneManager))
+    int screenWidth, screenHeight;
+    m_displayManager.GetScreenDimensions(&screenWidth, &screenHeight);
+    if(!m_renderer.StartUp(m_sceneManager, screenWidth, screenHeight))
     {
         std::cout << "Failed to startup renderer\n";
         return 0;

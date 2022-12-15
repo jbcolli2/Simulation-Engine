@@ -56,3 +56,11 @@ void seng::DisplayManager::ShutDown()
     glfwTerminate();
     m_window = nullptr;
 }
+
+
+
+
+void seng::DisplayManager::GetScreenDimensions(int* width, int* height)
+{
+    glfwGetFramebufferSize(m_window, width, height);
+}

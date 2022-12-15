@@ -54,6 +54,19 @@ glEnableVertexAttribArray(2);
 
 };
 
+template<>
+void SetVertexAttribs<Vert3x2f>()
+{
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vert3x2f), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vert3x2f), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+
+
+};
+
 
 unsigned int GenAndLoadTBO(const std::string& path, bool sRGB)
 {
@@ -87,7 +100,8 @@ unsigned int GenAndLoadTBO(const std::string& path, bool sRGB)
         glGenTextures(1, &texID);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texID);
-
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, textureFormat, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 

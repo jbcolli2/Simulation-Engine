@@ -173,7 +173,15 @@ struct Vert3x3x2f
             x(x), y(y), z(z), r(r), g(g), b(b), s(s), t(t) {};
 };
 
+struct Vert3x2f
+{
+    float x,y,z;
+    float s,t;
 
+    explicit Vert3x2f(float x = 0.f, float y = 0.f, float z = 0.f,
+                        float s = 0.f, float t = 0.f) :
+            x(x), y(y), z(z), s(s), t(t) {};
+};
 
 
 
@@ -222,7 +230,7 @@ void GenAndLoadVAO(unsigned int& vao, unsigned int& vbo, const std::vector<VertT
     glGenBuffers(1, &vbo);
 
     LoadDataToVBO(vbo, vertices);
-    SetVertexAttribs<Vert3x3x2f>();
+    SetVertexAttribs<VertT>();
 
     glBindVertexArray(0);
 }
@@ -240,7 +248,7 @@ void GenAndLoadVAO(unsigned int& vao, unsigned int& vbo, unsigned int& ebo, cons
     LoadDataToVBO(vbo, vertices);
     LoadDataToEBO(ebo, elements);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    SetVertexAttribs<Vert3x3x2f>();
+    SetVertexAttribs<VertT>();
 
     glBindVertexArray(0);
 }
