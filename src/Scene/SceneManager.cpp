@@ -156,7 +156,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     m_scene.AddMaterial("Tex:Crate", std::move(crateTex));
 
     stbi_set_flip_vertically_on_load(true);
-    std::unique_ptr<TextureMaterial> coordTex{new TextureMaterial("../assets/textures/CoordTex2.jpeg", 0)};
+    std::unique_ptr<TextureMaterial> coordTex{new TextureMaterial("../assets/textures/CoordTex.jpeg", 0)};
     coordTex->m_roughness = 16;
     m_scene.AddMaterial("Tex:Coord", std::move(coordTex));
     stbi_set_flip_vertically_on_load(false);

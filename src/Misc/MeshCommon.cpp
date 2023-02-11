@@ -9,6 +9,23 @@
 namespace seng
 {
 
+
+template<>
+void SetVertexAttribs<Vert3x3x2f>()
+{
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+};
+
+
+
 glm::vec3 DynamicGridMesh::computeTriangleNormal(int vertIdx, int edge0VertIdx, int edge1VertIdx)
 {
     int ii{-1}, jj{-1};
@@ -135,7 +152,7 @@ void DynamicGridMesh::GenerateBuffers(MeshData& meshData)
         }
     }
 
-    GenAndLoadVAO(meshData.m_vao, meshData.m_vbo, meshData.m_ebo, m_vertices, elements, GL_DYNAMIC_DRAW);
+    GenAndLoadVAO(meshData.m_vao, meshData.m_vao.m_vboID, meshData.m_vao.m_eboID, m_vertices, elements, GL_DYNAMIC_DRAW);
     meshData.m_numVertices = m_vertices.size();
     meshData.m_numIndices = elements.size();
 }
@@ -155,5 +172,35 @@ void DynamicGridMesh::ReloadVBO(unsigned int vbo, const std::vector<Node>& nodes
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, m_vertices.size()*sizeof(Vert3x3x2f), &m_vertices[0], GL_DYNAMIC_DRAW);
 }
+
+
+VAO::VAO(VAO&& otherVAO) : m_vaoID(otherVAO.m_vaoID), m_vboID(otherVAO.m_vboID), m_eboID(otherVAO.m_eboID),
+                           m_numVerts(otherVAO.m_numVerts), m_numElements(otherVAO.m_numElements)
+{
+    resetVAO();
+}
+
+VAO& VAO::operator=(VAO&& otherVAO)
+{
+    // Check for self assignment
+    if(&otherVAO == this)
+        return *this;
+
+    otherVAO.m_vaoID = m_vaoID;
+    otherVAO.m_vboID = m_vboID;
+    otherVAO.m_eboID = m_eboID;
+    otherVAO.m_numVerts = m_numVerts;
+    otherVAO.m_numElements = m_numElements;
+
+    resetVAO();
+}
+
+VAO::~VAO()
+{
+    glDeleteVertexArrays(1, &m_vaoID);
+    glDeleteBuffers(1, &m_vboID);
+    glDeleteBuffers(1, &m_eboID);
+}
+
 
 } // seng

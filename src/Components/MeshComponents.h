@@ -5,6 +5,7 @@
 #ifndef SIM_ENGINE_MESHCOMPONENTS_H
 #define SIM_ENGINE_MESHCOMPONENTS_H
 
+#include "Misc/MeshCommon.h"
 #include "Engine/Component.h"
 #include "Rendering/Mesh.h"
 

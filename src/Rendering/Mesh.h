@@ -5,6 +5,7 @@
 #ifndef PECS_RENDERER_RENDERABLE_HPP
 #define PECS_RENDERER_RENDERABLE_HPP
 
+#include "Misc/MeshCommon.h"
 #include "Engine/Component.h"
 
 #include "Rendering/Shader.h"
@@ -22,22 +23,15 @@ class Material;
 class MeshData
 {
 public:
-    unsigned int m_vao{0};
-    unsigned int m_vbo{0};
-    unsigned int m_ebo{0};
-    unsigned int m_numVertices{0};
-    unsigned int m_numIndices{0};
+    VAO m_vao;
 
     Material* m_material{};
 
     // Ctor
-    MeshData() = default;
-    ~MeshData()
-    {
-        glDeleteVertexArrays(1, &m_vao);
-        glDeleteBuffers(1, &m_vbo);
-        glDeleteBuffers(1, &m_ebo);
-    }
+    template<typename VertT, typename ElementT>
+    MeshData(std::vector<VertT> vertexList, std::vector<ElementT> elementList) : m_vao(vertexList, elementList)
+    {};
+
 
     void Render(Shader& shader);
 

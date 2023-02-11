@@ -10,6 +10,92 @@
 namespace seng
 {
 //***********************************************************
+//       MeshData Data
+//***********************************************************
+struct Vert3x3x2f
+{
+    float x,y,z;
+    float r,g,b;
+    float s,t;
+
+    explicit Vert3x3x2f(float x = 0.f, float y = 0.f, float z = 0.f, float r = 0.f, float g = 0.f, float b = 0.f,
+                        float s = 0.f, float t = 0.f) :
+            x(x), y(y), z(z), r(r), g(g), b(b), s(s), t(t) {};
+};
+
+
+/***************** SetVertexAttribs  ******************
+ * @brief Set the vertex attributes for a particular type of vertex data.  The desired
+ *      VAO must be bound before calling this.
+ *
+ * @tparam vertexType Pass in the vertex type to determine what attribute to set for the vertex buffer.
+******************************************************************///
+template <typename vertexType>
+void SetVertexAttribs();
+
+
+
+
+/***************** VAO  ******************
+ * @brief Object that represents the vertex array object in OpenGL.  Holds the handle needed for draw calls as
+ *      well as the number of vertices and elements.  Also holds the handle for the vertex buffer object and element buffer object.
+ *
+ *      Implements using RAII, so the buffers are created at initialization of this object.
+ *      Also does not allow copy semantics as that would create a copy of the buffers in OpenGL.  Implements move
+ *      semantics.
+ *
+ *      Dtor destroys the buffers.
+******************************************************************///
+class VAO
+{
+private:
+    void resetVAO()
+    {
+        m_vaoID = 0;
+        m_vboID = 0;
+        m_eboID = 0;
+        m_numVerts = 0;
+        m_numElements = 0;
+    }
+
+public:
+    unsigned int m_vaoID{0}, m_vboID{0}, m_eboID{0}, m_numVerts{0}, m_numElements{0};
+
+    template<typename VertT, typename ElementT>
+    VAO(std::vector<VertT> vertexList, std::vector<ElementT> elementList = std::vector<ElementT>(), GLenum drawStyle= GL_STATIC_DRAW);
+
+    VAO(const VAO& otherVAO) = delete;
+    VAO& operator=(const VAO& otherVAO) = delete;
+    VAO(VAO&& otherVAO);
+    VAO& operator=(VAO&& otherVAO);
+    ~VAO();
+};
+
+
+template<typename VertT, typename ElementT>
+VAO::VAO(std::vector<VertT> vertexList, std::vector<ElementT> elementList, GLenum drawStyle)
+{
+    glGenVertexArrays(1, &m_vaoID);
+    glBindVertexArray(m_vaoID);
+    glGenBuffers(1, &m_vboID);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
+    glBufferData(GL_ARRAY_BUFFER, vertexList.size()*sizeof(VertT), &vertexList[0], drawStyle);
+    if(elementList.size() > 0)
+    {
+        glGenBuffers(1, &m_eboID);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementList.size()*sizeof(ElementT), &elementList[0], drawStyle);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboID);
+    }
+    SetVertexAttribs<Vert3x3x2f>();
+
+    glBindVertexArray(0);
+
+}
+
+
+//***********************************************************
 //       Node class for masses in cloth
 //***********************************************************
 struct Node

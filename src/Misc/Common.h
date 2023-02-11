@@ -159,19 +159,6 @@ inline void Vector2MatrixIdx(int vert, int Nx, int& ii, int& jj)
 
 
 
-//***********************************************************
-//       MeshData Data
-//***********************************************************
-struct Vert3x3x2f
-{
-    float x,y,z;
-    float r,g,b;
-    float s,t;
-
-    explicit Vert3x3x2f(float x = 0.f, float y = 0.f, float z = 0.f, float r = 0.f, float g = 0.f, float b = 0.f,
-               float s = 0.f, float t = 0.f) :
-            x(x), y(y), z(z), r(r), g(g), b(b), s(s), t(t) {};
-};
 
 
 
@@ -183,67 +170,7 @@ struct Vert3x3x2f
 //       OpenGL functions
 //***********************************************************
 
-/***************** SetVertexAttribs  ******************
- * @brief Set the vertex attributes for a particular type of vertex data.  The desired
- *      VAO must be bound before calling this.
- *
- * @tparam vertexType Pass in the vertex type to determine what attribute to set for the vertex buffer.
-******************************************************************///
-template <typename vertexType>
-void SetVertexAttribs();
 
-/***************** loadDataToVBO  ******************
- * @brief Load vertex data into passed vbo.  Associated VAO
- *      must first be bound before calling this function.
- *
- *      Uses GL_STATIC_DRAW for vertices if drawStyle not passed.
-******************************************************************///
-template<class VertT>
-void LoadDataToVBO(unsigned int VBO, const std::vector<VertT>& vertices, GLenum drawStyle=GL_STATIC_DRAW)
-{
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(VertT), &vertices[0], drawStyle);
-}
-
-
-template<class ElementT>
-void LoadDataToEBO(unsigned int EBO, const std::vector<ElementT>& elements, GLenum drawStyle=GL_STATIC_DRAW)
-{
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size()*sizeof(ElementT), &elements[0], drawStyle);
-}
-
-
-template<class VertT>
-void GenAndLoadVAO(unsigned int& vao, unsigned int& vbo, const std::vector<VertT>& vertices, unsigned int drawStyle=GL_STATIC_DRAW)
-{
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    glGenBuffers(1, &vbo);
-
-    LoadDataToVBO(vbo, vertices);
-    SetVertexAttribs<Vert3x3x2f>();
-
-    glBindVertexArray(0);
-}
-
-
-template<class VertT, class ElementT>
-void GenAndLoadVAO(unsigned int& vao, unsigned int& vbo, unsigned int& ebo, const std::vector<VertT>& vertices,
-                   const std::vector<ElementT>& elements, unsigned int drawStyle=GL_STATIC_DRAW)
-{
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
-
-    LoadDataToVBO(vbo, vertices);
-    LoadDataToEBO(ebo, elements);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    SetVertexAttribs<Vert3x3x2f>();
-
-    glBindVertexArray(0);
-}
 
 
 
