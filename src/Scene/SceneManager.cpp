@@ -3,6 +3,7 @@
 //
 
 #include "Misc/Common.h"
+#include "../include/stb_image.h"
 
 #include "Scene/SceneManager.h"
 #include "Engine/Object.h"
@@ -154,6 +155,12 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     crateTex->m_roughness = 16;
     m_scene.AddMaterial("Tex:Crate", std::move(crateTex));
 
+    stbi_set_flip_vertically_on_load(true);
+    std::unique_ptr<TextureMaterial> coordTex{new TextureMaterial("../assets/textures/CoordTex2.jpeg", 0)};
+    coordTex->m_roughness = 16;
+    m_scene.AddMaterial("Tex:Coord", std::move(coordTex));
+    stbi_set_flip_vertically_on_load(false);
+
 
 
 
@@ -169,12 +176,12 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
 
     trans.position = glm::vec3(-.5f, -.5f, -1.f);
     trans.scale = glm::vec3(.3f);
-    AddCube("Sphere", "Solid:Blue", trans);
+    AddSphere("Sphere", "Tex:Coord", 4, trans);
 
     trans = Transform();
     trans.position = glm::vec3(1.8f, .1f, -.4f);
     trans.scale = glm::vec3(.5f);
-    AddCube("Cube", "Tex:Crate", trans);
+    AddCube("Cube", "Tex:Coord", trans);
 
 
 

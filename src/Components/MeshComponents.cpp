@@ -241,7 +241,7 @@ void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned
     vertices[0] = Vert3x3x2f(0, 1.f, 0.f, 0, 1.f, 0);
 
     // Verts around the middle
-    y  = sinf(V_ANGLE);            // elevaton
+    y  = sinf(V_ANGLE);            // elevation
     xz = cosf(V_ANGLE);            // length on XY plane
     for(int ii = 1; ii <= 5; ++ii)
     {
@@ -286,15 +286,22 @@ void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned
             11, 10, 6
     };
 
-    Subdivide(subdivideIters, vertices, elements);
+    SubdivideMesh(subdivideIters, vertices, elements);
 
+
+    /////////////  Set UV coordinates of sphere  ///////////////////
+    for(auto& vertex : vertices)
+    {
+        vertex.s = atan2(-vertex.z, vertex.x)/PI + 0.5f;
+        vertex.t = asinf(vertex.y)/PI + 0.5f;
+    }
 
 }
 
 
 
 
-void Subdivide(int iterations, std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements)
+void SubdivideMesh(int iterations, std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements)
 {
     std::vector<Vert3x3x2f> baseVerts;
     std::vector<unsigned int> baseElements;
@@ -354,7 +361,7 @@ void Subdivide(int iterations, std::vector<Vert3x3x2f>& vertices, std::vector<un
 
 
 
-void computeHalfVertex(Vert3x3x2f& v1, Vert3x3x2f& v2, Vert3x3x2f& newV)
+void computeHalfVertex(const Vert3x3x2f& v1, const Vert3x3x2f& v2, Vert3x3x2f& newV)
 {
     newV.x = v1.x + v2.x;
     newV.y = v1.y + v2.y;

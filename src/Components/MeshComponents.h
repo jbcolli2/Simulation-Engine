@@ -19,8 +19,8 @@ void SetPlaneVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned 
 void SetSphereVertexData(std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements, unsigned int subdivideIters);
 
 
-void Subdivide(int iterations, std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
-void computeHalfVertex(Vert3x3x2f& v1, Vert3x3x2f& v2, Vert3x3x2f& newV);
+void SubdivideMesh(int iterations, std::vector<Vert3x3x2f>& vertices, std::vector<unsigned int>& elements);
+void computeHalfVertex(const Vert3x3x2f& v1, const Vert3x3x2f& v2, Vert3x3x2f& newV);
 void scaleToUnit(Vert3x3x2f& v);
 
 
