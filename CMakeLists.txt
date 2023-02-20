@@ -46,9 +46,9 @@ set(LIBS ${LIBS} GLAD)
 set(SRC_ENGINE src/Engine/SimEngine.cpp src/Engine/DisplayManager.cpp src/Scene/SceneManager.cpp src/Engine/Input.cpp)
 set(SRC_OBJECTS src/Engine/Object.cpp src/Engine/ComponentManager.cpp src/Rendering/Material.h src/Scene/Scene.cpp src/Components/Camera.h
         src/Components/Camera.cpp src/Systems/System.h src/Components/Lights.cpp
-        src/Components/Lights.h src/Rendering/Material.cpp #[[src/Scene/GridMesh.cpp src/Systems/FixedGridMesh.cpp]]
-         #[[src/Systems/RodCloth.cpp]] src/Components/MeshComponents.cpp src/Components/MeshComponents.h src/Components/PhysicsComponents.cpp src/Components/PhysicsComponents.h src/Misc/MeshCommon.cpp src/Misc/MeshCommon.h)
-set(SRC_RENDER src/Rendering/Renderer.cpp src/Rendering/Shader.cpp src/Rendering/Mesh.cpp)
+        src/Components/Lights.h src/Rendering/Material.cpp src/Components/MeshComponents.cpp src/Components/MeshComponents.h
+        src/Components/PhysicsComponents.cpp src/Components/PhysicsComponents.h src/Misc/MeshCommon.cpp)
+set(SRC_RENDER src/Rendering/Renderer.cpp src/Rendering/Shader.cpp src/Rendering/Mesh.cpp src/Misc/DynamicMeshCommon.cpp)
 
 add_compile_definitions(GL_SILENCE_DEPRECATION)
 

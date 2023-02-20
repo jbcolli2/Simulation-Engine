@@ -15,35 +15,11 @@ namespace seng
 
 
 
-std::unordered_map<PrimitiveType, unsigned int> Primitive::m_vao =
+std::unordered_map<PrimitiveType, VAO> Primitive::m_vao =
         {
-                {PrimitiveType::CUBE, 0},
-                {PrimitiveType::PLANE, 0},
-                {PrimitiveType::SPHERE, 0}
-        };
-std::unordered_map<PrimitiveType, unsigned int> Primitive::m_vbo =
-        {
-                {PrimitiveType::CUBE, 0},
-                {PrimitiveType::PLANE, 0},
-                {PrimitiveType::SPHERE, 0}
-        };
-std::unordered_map<PrimitiveType, unsigned int> Primitive::m_ebo =
-        {
-                {PrimitiveType::CUBE, 0},
-                {PrimitiveType::PLANE, 0},
-                {PrimitiveType::SPHERE, 0}
-        };
-std::unordered_map<PrimitiveType, unsigned int> Primitive::m_numVerts =
-        {
-                {PrimitiveType::CUBE, 0},
-                {PrimitiveType::PLANE, 0},
-                {PrimitiveType::SPHERE, 0}
-        };
-std::unordered_map<PrimitiveType, unsigned int> Primitive::m_numIndices =
-        {
-                {PrimitiveType::CUBE, 0},
-                {PrimitiveType::PLANE, 0},
-                {PrimitiveType::SPHERE, 0}
+                {PrimitiveType::CUBE, VAO(std::vector<Vert3x3x2f>(), std::vector<int>())},
+                {PrimitiveType::PLANE, VAO(std::vector<Vert3x3x2f>(), std::vector<int>())},
+                {PrimitiveType::SPHERE, VAO(std::vector<Vert3x3x2f>(), std::vector<int>())}
         };
 
 
@@ -64,33 +40,32 @@ std::unordered_map<PrimitiveType, unsigned int> Primitive::m_numIndices =
 ******************************************************************///
 void Primitive::StartUp()
 {
-    if(!parentObject->HasComponent<Mesh>())
+    // If Primitive already created, send data to mesh component
+    if(m_vao[m_primitiveType].isEmpty())
     {
-        parentObject->AddComponent(new Mesh());
+        GeneratePrimitiveMesh(m_primitiveType);
     }
+
+    if(parentObject->HasComponent<Mesh>())
+    {
+        assert("Object can't have two components that need Mesh component");
+    }
+
+    parentObject->AddComponent(new Mesh());
     Mesh& mesh = parentObject->GetComponent<Mesh>();
-    mesh.m_meshes.clear();
-    mesh.m_meshes.push_back(std::make_unique<MeshData>());
+    mesh.m_meshes.push_back(std::make_unique<MeshData>(m_vao[m_primitiveType]));
     MeshData& meshData = *mesh.m_meshes[0];
     meshData.m_material = m_material;
-
-    // If Primitive already created, send data to mesh component
-    if(m_vao[m_primitiveType] == 0)
-    {
-        FillVertexData(m_primitiveType);
-    }
-
-    TransferToMeshData(m_primitiveType, meshData);
 }
 
 
-/***************** FillVertexData  ******************
+/***************** GeneratePrimitiveMesh  ******************
  * @brief Use parameter to determine which free function to call to return the vertex list
  *      for the primitive.
  *
  * @param primitiveType Type of primitive to create.
 ******************************************************************///
-void Primitive::FillVertexData(PrimitiveType primitiveType)
+void Primitive::GeneratePrimitiveMesh(PrimitiveType primitiveType)
 {
     std::vector<Vert3x3x2f> vertices{};
     std::vector<unsigned int> elements{};
@@ -107,9 +82,8 @@ void Primitive::FillVertexData(PrimitiveType primitiveType)
         default:
             break;
     }
-    GenAndLoadVAO(m_vao[primitiveType], m_vbo[primitiveType], m_ebo[primitiveType], vertices, elements);
-    m_numVerts[primitiveType] = vertices.size();
-    m_numIndices[primitiveType] = elements.size();
+
+    m_primitiveMesh[primitiveType] = MeshData(vertices, elements);
 }
 
 

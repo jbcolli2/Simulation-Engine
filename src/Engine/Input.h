@@ -57,6 +57,9 @@ private:
     float m_mouseX, m_mouseY;
     // Whether left/right mouse button pressed
     std::array<unsigned int, 4> m_mouseButtonState;
+
+
+    Input() = default;
 public:
 
 
@@ -122,7 +125,7 @@ public:
 private:
     // Hide or delete all constructors to make this a singleton
     // TODO: How can I write this input system without using singleton pattern?
-    Input() = default;
+
     Input(const Input&) = delete;
     void operator=(const Input&) = delete;
     Input(Input&&) = delete;

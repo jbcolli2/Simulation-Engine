@@ -53,70 +53,70 @@ void SceneManager::Update(float deltaTime, float physDeltaTime)
 ******************************************************************///
 void SceneManager::AddEmptyObject(std::string id, Transform transform)
 {
-    auto object = std::make_unique<Object>();
+    auto object = std::make_unique<Object>(id);
     object->SetTransform(transform);
-    m_scene.AddObject(std::move(object), id);
+    m_scene.AddObject(std::move(object));
 }
 
 void SceneManager::AddCube(std::string id, std::string materialID, Transform transform)
 {
-    auto object = std::make_unique<Object>();
+    auto object = std::make_unique<Object>(id);
     object->SetTransform(transform);
     object->AddComponent(new Primitive(PrimitiveType::CUBE, m_scene.GetMaterial(materialID)));
-    m_scene.AddObject(std::move(object), id);
+    m_scene.AddObject(std::move(object));
 }
 
 void SceneManager::AddPlane(std::string id, std::string materialID, Transform transform)
 {
-    auto object = std::make_unique<Object>();
+    auto object = std::make_unique<Object>(id);
     object->SetTransform(transform);
     object->AddComponent(new Primitive(PrimitiveType::PLANE, m_scene.GetMaterial(materialID)));
-    m_scene.AddObject(std::move(object), id);
+    m_scene.AddObject(std::move(object));
 }
 
 void SceneManager::AddSphere(std::string id, std::string materialID, unsigned int subdivideIters, Transform transform)
 {
-    auto object = std::make_unique<Object>();
+    auto object = std::make_unique<Object>(id);
     object->SetTransform(transform);
     object->AddComponent(new Primitive(PrimitiveType::SPHERE, m_scene.GetMaterial(materialID),
                                        subdivideIters));
-    m_scene.AddObject(std::move(object), id);
+    m_scene.AddObject(std::move(object));
 }
 
 void
 SceneManager::AddPointLight(std::string id, glm::vec3 position, bool movable, float diffIntensity, float specIntensity,
                             glm::vec3 color)
 {
-    auto object = std::make_unique<Object>();
+    auto object = std::make_unique<Object>(id);
     object->AddComponent(new PointLight(position, color));
     object->GetComponent<PointLight>().m_diffuseIntensity = diffIntensity;
     object->GetComponent<PointLight>().m_specularIntensity = specIntensity;
     if(movable)
         object->AddComponent(new MovePtLight(object->GetComponent<PointLight>()));
 
-    m_scene.AddObject(std::move(object), id);
+    m_scene.AddObject(std::move(object));
 }
 
 void SceneManager::AddDirLight(std::string id, glm::vec3 direction, float diffIntensity, float specIntensity,
                                glm::vec3 color)
 {
-    auto object = std::make_unique<Object>();
+    auto object = std::make_unique<Object>(id);
     object->AddComponent(new DirLight(direction, color));
     object->GetComponent<DirLight>().m_diffuseIntensity = diffIntensity;
     object->GetComponent<DirLight>().m_specularIntensity = specIntensity;
 
-    m_scene.AddObject(std::move(object), id);
+    m_scene.AddObject(std::move(object));
 
 }
 
 void SceneManager::AddCamera(std::string id, glm::vec3 position, glm::vec3 direction, bool controllable)
 {
-    auto object = std::make_unique<Object>();
+    auto object = std::make_unique<Object>(id);
     object->AddComponent(new Camera(position, direction, *m_displayManager));
     if(controllable)
         object->AddComponent(new CameraController(*m_displayManager, object->GetComponent<Camera>()));
 
-    m_scene.AddObject(std::move(object), id);
+    m_scene.AddObject(std::move(object));
 }
 
 

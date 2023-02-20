@@ -9,6 +9,7 @@
 #include "PhysicsComponents.h"
 #include "Rendering/Mesh.h"
 #include "Engine/Input.h"
+#include "DynamicMeshCommon.h"
 
 namespace seng
 {
@@ -97,7 +98,7 @@ void RodCloth::StartUp()
     m_gridMesh.GenerateBuffers(meshData);
 
     m_meshVBO = meshData.m_vbo;
-    m_gridMesh.ReloadVBO(m_meshVBO, m_nodes);
+    m_gridMesh.UpdateVerticesAndReloadVBO(m_meshVBO, m_nodes, <#initializer#>);
 }
 
 void RodCloth::Update(float deltaTime)
@@ -108,7 +109,7 @@ void RodCloth::Update(float deltaTime)
     timer += deltaTime;
     Integrate(deltaTime);
     ProjectConstraints();
-    m_gridMesh.ReloadVBO(m_meshVBO, m_nodes);
+    m_gridMesh.UpdateVerticesAndReloadVBO(m_meshVBO, m_nodes, <#initializer#>);
 
     if(timer > restTime + pushTime)
         timer = 0.0f;

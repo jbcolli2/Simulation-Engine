@@ -71,8 +71,9 @@ void Scene::UpdatePhysics(float deltaTime)
 }
 
 
-void Scene::AddObject(std::unique_ptr<Object>&& object, std::string idName)
+void Scene::AddObject(std::unique_ptr<Object>&& object)
 {
+    std::string idName = object->GetId();
     assert(m_objectID.find(idName) == m_objectID.end() && "Already have object with that id.");
     m_objects.push_back(std::move(object));
     unsigned int objectIndex = m_objects.size() - 1;

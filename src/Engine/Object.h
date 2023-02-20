@@ -34,6 +34,9 @@ public:
 class Object
 {
 private:
+    // String identifier for object
+    std::string m_identifier;
+
     // all the components that make up the object
     std::unordered_map<const char*, std::unique_ptr<Component>> m_components;
 
@@ -45,12 +48,14 @@ private:
 
 public:
     // TODO: Implement rule of 5 for Object
-    Object() = default;
+    Object(const std::string& id) : m_identifier(id){};
 
     /***************** Object dtor  ******************
      * @brief Loop through all components in the object and delete them.
     ******************************************************************///
     ~Object();
+
+    std::string GetId() {return m_identifier;};
 
     /***************** StartUp  ******************
      * @brief Call StartUp on all components.

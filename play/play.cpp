@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <vector>
 
 //#include "Misc/Common.h"
 
@@ -22,10 +23,22 @@ private:
 class Derived : public Base
 {
 public:
-    void print() override
+    std::vector<int> vec{};
+    Derived(int a, int b)
     {
-        std::cout << "Make private method public, hah\n";
-    };
+        vec = std::vector<int>{a, b};
+        std::cout << "Create Derived...\n";
+    }
+
+    void print()
+    {
+        std::cout << "size = " << vec.size() << std::endl;
+    }
+
+    ~Derived()
+    {
+        std::cout << "Destroy Derived...\n";
+    }
 };
 
 
@@ -40,8 +53,10 @@ int main()
 //        return 0;
 //    }
 
-    Derived* b = new Derived();
-    b->print();
+    std::unordered_map<std::string, std::unique_ptr<Derived>> map;
 
+    std::unique_ptr<Derived> p{new Derived(1,1)};
+
+    p.reset();
 
 }

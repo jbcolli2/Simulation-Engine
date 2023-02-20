@@ -10,23 +10,66 @@
 namespace seng
 {
 
-void MeshData::Render(Shader& shader)
+
+VAO* VAOManager::CreateVAO(std::string vaoKey, std::vector<Vert3x3x2f> vertList, std::vector<unsigned int> elementList)
 {
-    m_material->SetupMaterial(shader);
-    glBindVertexArray(m_vao.m_vaoID);
-    if(m_vao.m_eboID != 0)
-    {
-        glDrawElements(GL_TRIANGLES, m_vao.m_numElements, GL_UNSIGNED_INT, 0);
+    assert(m_vaoList.find(vaoKey) == m_vaoList.end() && "Key already exists in VAOManager!!!");
+
+    //TODO: Add drawstyle option to the constructor
+    m_vaoList[vaoKey] = std::unique_ptr<VAO>{new VAO(vertList, elementList)};
+}
+
+VAO* VAOManager::GetVAO(std::string vaoKey)
+{
+    try {
+        return m_vaoList.at(vaoKey).get();
     }
-    else
+    catch(std::out_of_range e)
     {
-        glDrawArrays(GL_TRIANGLES, 0, m_vao.m_numVerts);
+        return nullptr;
     }
-    m_material->ResetMaterial(shader);
+}
+
+void VAOManager::DestroyVAO(std::string vaoKey)
+{
+    try {
+        m_vaoList.at(vaoKey).reset()
+    }
+    catch (std::out_of_range e)
+    {
+        assert("Trying to destroy vao from Manager with incorrect key");
+    }
 }
 
 
 
+
+
+
+
+
+//***********************************************************
+//       Mesh Methods
+//***********************************************************
+void Mesh::Render(Shader& shader)
+{
+    for(const MeshData& meshdata : m_meshes)
+    {
+        VAO* thisVAO = meshdata.m_vao;
+        meshdata.m_material.SetupMaterial(shader);
+        glBindVertexArray(thisVAO->m_vaoID);
+        if(thisVAO->m_eboID != 0)
+        {
+            glDrawElements(GL_TRIANGLES, thisVAO->m_numElements, GL_UNSIGNED_INT, 0);
+        }
+        else
+        {
+            glDrawArrays(GL_TRIANGLES, 0, thisVAO->m_numVerts);
+        }
+        meshdata.m_material.ResetMaterial(shader);
+    }
+
+}
 
 
 
