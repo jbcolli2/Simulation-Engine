@@ -42,13 +42,16 @@ VAO& VAO::operator=(VAO&& otherVAO)
     if(&otherVAO == this)
         return *this;
 
-    otherVAO.m_vaoID = m_vaoID;
-    otherVAO.m_vboID = m_vboID;
-    otherVAO.m_eboID = m_eboID;
-    otherVAO.m_numVerts = m_numVerts;
-    otherVAO.m_numElements = m_numElements;
 
-    resetVAO();
+    m_vaoID = otherVAO.m_vaoID;
+    m_vboID = otherVAO.m_vboID;
+    m_eboID = otherVAO.m_eboID;
+    m_numVerts = otherVAO.m_numVerts;
+    m_numElements = otherVAO.m_numElements;
+
+    otherVAO.resetVAO();
+
+    return *this;
 }
 
 VAO::~VAO()

@@ -62,27 +62,49 @@ private:
 public:
     unsigned int m_vaoID{0}, m_vboID{0}, m_eboID{0}, m_numVerts{0}, m_numElements{0};
 
+    // Create an empty VAO
+    VAO() = default;
+
     template<typename VertT, typename ElementT>
     VAO(std::vector<VertT> vertexList = std::vector<VertT>(), std::vector<ElementT> elementList = std::vector<ElementT>(), GLenum drawStyle= GL_STATIC_DRAW);
 
+    // Delete the Copy Semantics
     VAO(const VAO& otherVAO) = delete;
     VAO& operator=(const VAO& otherVAO) = delete;
+
+    // Move Semantics
     VAO(VAO&& otherVAO);
     VAO& operator=(VAO&& otherVAO);
+
+    // Dtor
     ~VAO();
 
 
 
-    bool isEmpty()
+    bool IsEmpty()
     {
         return m_numVerts == 0;
+    }
+
+
+    /***************** PrintData  ******************
+     * @brief A pretty-print of all the vao data.  For debugging purposes.
+     *
+     *      TODO: Add a stretch parameter to control how wide the print is.
+    ******************************************************************///
+    void PrintData()
+    {
+        std::string space = "       ";
+        std::cout << "=====  VAO  |  VBO  |  EBO  |  #Vert  |  #Elements  =====\n";
+        std::cout << "        " << m_vaoID << space << m_vboID << space << m_eboID << space << m_numVerts << space << "    " <<  m_numElements << "\n";
     }
 
 };
 
 
 template<typename VertT, typename ElementT>
-VAO::VAO(std::vector<VertT> vertexList, std::vector<ElementT> elementList, GLenum drawStyle)
+VAO::VAO(std::vector<VertT> vertexList, std::vector<ElementT> elementList, GLenum drawStyle) :
+    m_numVerts(vertexList.size()), m_numElements(elementList.size())
 {
     glGenVertexArrays(1, &m_vaoID);
     glBindVertexArray(m_vaoID);

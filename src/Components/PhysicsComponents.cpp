@@ -9,7 +9,6 @@
 #include "PhysicsComponents.h"
 #include "Rendering/Mesh.h"
 #include "Engine/Input.h"
-#include "DynamicMeshCommon.h"
 
 namespace seng
 {
@@ -85,20 +84,15 @@ void RodCloth::StartUp()
     InitializeAdjNodes();
 
     // Create or clear Mesh component
-    if(!parentObject->HasComponent<Mesh>())
+    if(parentObject->HasComponent<Mesh>())
     {
-        parentObject->AddComponent(new Mesh());
+        assert("Trying to add mesh in RodCloth when object already has Mesh component");
     }
+    parentObject->AddComponent(new Mesh());
     Mesh& mesh = parentObject->GetComponent<Mesh>();
-    mesh.m_meshes.clear();
-    mesh.m_meshes.push_back(std::make_unique<MeshData>());
-    MeshData& meshData = *mesh.m_meshes[0];
-    meshData.m_material = m_material;
+    mesh.AddMeshDataNewVAO(std::vector<Vert3x3x2f>(m_gridMesh.GetNumVertices()), std::vector<unsigned int>(m_gridMesh.GetNumElements()), *m_material);
 
-    m_gridMesh.GenerateBuffers(meshData);
-
-    m_meshVBO = meshData.m_vbo;
-    m_gridMesh.UpdateVerticesAndReloadVBO(m_meshVBO, m_nodes, <#initializer#>);
+    m_gridMesh.UpdateVerticesAndReloadVBO(m_nodes, mesh);
 }
 
 void RodCloth::Update(float deltaTime)
@@ -109,7 +103,7 @@ void RodCloth::Update(float deltaTime)
     timer += deltaTime;
     Integrate(deltaTime);
     ProjectConstraints();
-    m_gridMesh.UpdateVerticesAndReloadVBO(m_meshVBO, m_nodes, <#initializer#>);
+    m_gridMesh.UpdateVerticesAndReloadVBO(m_nodes, this->parentObject->GetComponent<Mesh>());
 
     if(timer > restTime + pushTime)
         timer = 0.0f;

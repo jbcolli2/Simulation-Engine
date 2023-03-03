@@ -17,6 +17,8 @@ VAO* VAOManager::CreateVAO(std::string vaoKey, std::vector<Vert3x3x2f> vertList,
 
     //TODO: Add drawstyle option to the constructor
     m_vaoList[vaoKey] = std::unique_ptr<VAO>{new VAO(vertList, elementList)};
+    printVAOList();
+    return m_vaoList[vaoKey].get();
 }
 
 VAO* VAOManager::GetVAO(std::string vaoKey)
@@ -33,7 +35,8 @@ VAO* VAOManager::GetVAO(std::string vaoKey)
 void VAOManager::DestroyVAO(std::string vaoKey)
 {
     try {
-        m_vaoList.at(vaoKey).reset()
+        m_vaoList.at(vaoKey).reset();
+        printVAOList();
     }
     catch (std::out_of_range e)
     {
@@ -42,10 +45,18 @@ void VAOManager::DestroyVAO(std::string vaoKey)
 }
 
 
-
-
-
-
+void VAOManager::printVAOList()
+{
+    std::string spacer = "---------------------------------------------------------";
+    std::cout << "============== VAOManager List ==========================\n";
+    for(auto iter = m_vaoList.begin(); iter != m_vaoList.end(); iter++)
+    {
+        std::cout << "Key = " << iter->first << "\n";
+        iter->second->PrintData();
+        std::cout << spacer << "\n";
+    }
+    std::cout << "============== End VAOManager List ======================\n\n";
+}
 
 
 //***********************************************************

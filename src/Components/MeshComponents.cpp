@@ -15,13 +15,25 @@ namespace seng
 
 
 
-std::unordered_map<PrimitiveType, VAO> Primitive::m_vao =
+std::unordered_map<PrimitiveType, std::string> Primitive::m_primitiveVAOKey =
         {
-                {PrimitiveType::CUBE, VAO(std::vector<Vert3x3x2f>(), std::vector<int>())},
-                {PrimitiveType::PLANE, VAO(std::vector<Vert3x3x2f>(), std::vector<int>())},
-                {PrimitiveType::SPHERE, VAO(std::vector<Vert3x3x2f>(), std::vector<int>())}
+                {PrimitiveType::CUBE, std::string()},
+                {PrimitiveType::PLANE, std::string()},
+                {PrimitiveType::SPHERE, std::string()}
         };
-
+std::unordered_map<PrimitiveType, std::vector<Vert3x3x2f>> Primitive::m_primitiveVertList =
+        {
+                {PrimitiveType::CUBE, std::vector<Vert3x3x2f>()},
+                {PrimitiveType::PLANE, std::vector<Vert3x3x2f>()},
+                {PrimitiveType::SPHERE, std::vector<Vert3x3x2f>()}
+        };
+std::unordered_map<PrimitiveType, std::vector<unsigned int>> Primitive::m_primitiveElementList =
+        {
+                {PrimitiveType::CUBE, std::vector<unsigned int>()},
+                {PrimitiveType::PLANE, std::vector<unsigned int>()},
+                {PrimitiveType::SPHERE, std::vector<unsigned int>()}
+        };
+unsigned int Primitive::m_subdivideIterations{4};
 
 
 
@@ -41,7 +53,7 @@ std::unordered_map<PrimitiveType, VAO> Primitive::m_vao =
 void Primitive::StartUp()
 {
     // If Primitive already created, send data to mesh component
-    if(m_vao[m_primitiveType].isEmpty())
+    if(m_primitiveVAOKey[m_primitiveType].empty())
     {
         GeneratePrimitiveMesh(m_primitiveType);
     }
@@ -53,9 +65,8 @@ void Primitive::StartUp()
 
     parentObject->AddComponent(new Mesh());
     Mesh& mesh = parentObject->GetComponent<Mesh>();
-    mesh.m_meshes.push_back(std::make_unique<MeshData>(m_vao[m_primitiveType]));
-    MeshData& meshData = *mesh.m_meshes[0];
-    meshData.m_material = m_material;
+    mesh.AddMeshDataExistingVAO(m_primitiveVAOKey[m_primitiveType], m_primitiveVertList[m_primitiveType],
+                                m_primitiveElementList[m_primitiveType], *m_material);
 }
 
 
@@ -71,19 +82,27 @@ void Primitive::GeneratePrimitiveMesh(PrimitiveType primitiveType)
     std::vector<unsigned int> elements{};
     switch (primitiveType) {
         case PrimitiveType::CUBE:
-            SetCubeVertexData(vertices, elements);
+            m_primitiveVAOKey[PrimitiveType::CUBE] = "VAO_Cube";
+            SetCubeVertexData(m_primitiveVertList[PrimitiveType::CUBE], m_primitiveElementList[PrimitiveType::CUBE]);
             break;
         case PrimitiveType::PLANE:
-            SetPlaneVertexData(vertices, elements);
+            m_primitiveVAOKey[PrimitiveType::PLANE] = "VAO_Plane";
+            SetPlaneVertexData(m_primitiveVertList[PrimitiveType::PLANE], m_primitiveElementList[PrimitiveType::PLANE]);
             break;
         case PrimitiveType::SPHERE:
-            SetSphereVertexData(vertices, elements, m_subdivideIterations);
+            m_primitiveVAOKey[PrimitiveType::SPHERE] = "VAO_Sphere";
+            SetSphereVertexData(m_primitiveVertList[PrimitiveType::SPHERE], m_primitiveElementList[PrimitiveType::SPHERE], m_subdivideIterations);
             break;
         default:
             break;
     }
 
-    m_primitiveMesh[primitiveType] = MeshData(vertices, elements);
+    VAOManager::GetInstance().CreateVAO(m_primitiveVAOKey[primitiveType], m_primitiveVertList[primitiveType], m_primitiveElementList[primitiveType]);
+}
+
+void Primitive::SetSubdivideIterations(unsigned int subdivideIterations)
+{
+    m_subdivideIterations = subdivideIterations;
 }
 
 

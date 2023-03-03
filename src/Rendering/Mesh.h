@@ -28,6 +28,13 @@ private:
     std::unordered_map<std::string, std::unique_ptr<VAO>> m_vaoList{};
 
     VAOManager() = default;
+    
+    /***************** printVAOList  ******************
+     * @brief For Debugging purposes.
+     * 
+     * @returns 
+    ******************************************************************///
+    void printVAOList();
 public:
 
    static VAOManager& GetInstance()
@@ -164,7 +171,7 @@ public:
     MeshData& GetSingleMeshData(int index)
     {
         assert(index < m_meshes.size() && "Mesh::GetSingleMeshData index out of bounds");
-        return *m_meshes[index];
+        return m_meshes[index];
     }
 
     /***************** GetAllMeshData  ******************
@@ -172,9 +179,18 @@ public:
      *
      * @returns m_meshes
     ******************************************************************///
-    std::vector<std::unique_ptr<MeshData>>& GetAllMeshData()
+    std::vector<MeshData>& GetAllMeshData()
     {
         return m_meshes;
+    }
+
+
+    void UpdateMeshData(const std::vector<Vert3x3x2f>& vertData, int numVerts, unsigned int meshDataIndex)
+    {
+        glBindVertexArray(m_meshes[meshDataIndex].m_vao->m_vaoID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_meshes[meshDataIndex].m_vao->m_vboID);
+        glBufferData(GL_ARRAY_BUFFER, numVerts * sizeof(Vert3x3x2f), &vertData[0], GL_DYNAMIC_DRAW);
+        glBindVertexArray(0);
     }
     
     /***************** UpdateModelMatrix  ******************

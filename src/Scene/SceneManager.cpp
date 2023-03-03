@@ -78,8 +78,7 @@ void SceneManager::AddSphere(std::string id, std::string materialID, unsigned in
 {
     auto object = std::make_unique<Object>(id);
     object->SetTransform(transform);
-    object->AddComponent(new Primitive(PrimitiveType::SPHERE, m_scene.GetMaterial(materialID),
-                                       subdivideIters));
+    object->AddComponent(new Primitive(PrimitiveType::SPHERE, m_scene.GetMaterial(materialID)));
     m_scene.AddObject(std::move(object));
 }
 
@@ -212,9 +211,9 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //***********************************************************
     //       MeshData systems
     //***********************************************************
-    auto cloth = std::make_unique<Object>();
+    auto cloth = std::make_unique<Object>("Cloth");
     cloth->AddComponent(new RodCloth(10, 10, RodCloth::m_fixAtTopEnds, m_scene.GetMaterial("Tex:Crate"), 1.f, 20));
-    m_scene.AddObject(std::move(cloth), "Cloth");
+    m_scene.AddObject(std::move(cloth));
 
     m_scene.StartUp();
 

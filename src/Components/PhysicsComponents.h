@@ -9,7 +9,7 @@
 #include "Misc/MeshCommon.h"
 
 #include "Engine/Component.h"
-#include "DynamicMeshCommon.h"
+#include "Misc/DynamicMeshCommon.h"
 
 
 namespace seng

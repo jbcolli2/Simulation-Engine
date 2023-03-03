@@ -18,9 +18,9 @@ class DynamicGridMesh
 {
 private:
     int m_Nx{0}, m_Ny{0};                               // Number of vertices in x and y axes
-    std::__1::vector<Vert3x3x2f> m_vertices;                 //Rendering vertex list
+    std::vector<Vert3x3x2f> m_vertices;                 //Rendering vertex list
 
-    std::__1::unordered_map<int, glm::vec3> m_cachedNormals{}; // Cache the normal of each triangle as it is computed
+    std::unordered_map<int, glm::vec3> m_cachedNormals{}; // Cache the normal of each triangle as it is computed
 
 
 
@@ -96,7 +96,7 @@ private:
 
 
 public:
-    DynamicGridMesh(int Nx, int Ny) : m_Nx(Nx), m_Ny(Ny), m_vertices{std::__1::vector<seng::Vert3x3x2f>(Nx * Ny)}
+    DynamicGridMesh(int Nx, int Ny) : m_Nx(Nx), m_Ny(Ny), m_vertices{std::vector<Vert3x3x2f>(Nx * Ny)}
     {};
 
     /***************** UpdateVerticesAndReloadVBO  ******************
@@ -107,7 +107,7 @@ public:
      * @param nodes Data of the vertex nodes from a physical component like cloth.  Data will have currentPosition
      *              member to update position of the vertices.
     ******************************************************************///
-    void UpdateVerticesAndReloadVBO(unsigned int vbo, const std::vector<Node>& nodes, Mesh& mesh);
+    void UpdateVerticesAndReloadVBO(const std::vector<Node>& nodes, Mesh& mesh);
 
 
     int GetNumVertices()

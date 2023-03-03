@@ -113,7 +113,7 @@ void DynamicGridMesh::computeNormals()
 }
 
 
-void DynamicGridMesh::UpdateVerticesAndReloadVBO(unsigned int vbo, const std::vector<Node>& nodes, Mesh& mesh)
+void DynamicGridMesh::UpdateVerticesAndReloadVBO(const std::vector<Node>& nodes, Mesh& mesh)
 {
     // Update vertex positions
     for (int vertIdx = 0; vertIdx < nodes.size(); vertIdx++) {
@@ -126,8 +126,7 @@ void DynamicGridMesh::UpdateVerticesAndReloadVBO(unsigned int vbo, const std::ve
     computeNormals();
 
     // Reload VBO buffer with new vertex data
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vert3x3x2f), &m_vertices[0], GL_DYNAMIC_DRAW);
+    mesh.UpdateMeshData(m_vertices, m_vertices.size(), 0);
 }
 
 
