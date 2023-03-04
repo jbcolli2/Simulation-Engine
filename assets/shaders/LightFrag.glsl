@@ -22,7 +22,7 @@ uniform bool usePointLight;
 
 float specularAngleCoeff(vec3 light2Frag, vec3 frag2Cam, vec3 normal, float roughness)
 {
-    vec3 reflectLightOnFrag = normalize(reflect(light2Frag, normal));
+    vec3 reflectLightOnFrag = normalize(reflect(light2Frag, normalize(normal)));
     return pow(max(dot(reflectLightOnFrag, frag2Cam), 0.0), roughness);
 }
 

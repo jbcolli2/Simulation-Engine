@@ -115,6 +115,8 @@ public:
 
     int GetNumElements()
     { return 6 * (m_Nx - 1) * (m_Ny - 1); };
+
+    void SetGridUVCoords();
 };
 
 } // Namespace seng

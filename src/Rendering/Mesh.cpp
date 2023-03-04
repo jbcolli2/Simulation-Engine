@@ -13,11 +13,10 @@ namespace seng
 
 VAO* VAOManager::CreateVAO(std::string vaoKey, std::vector<Vert3x3x2f> vertList, std::vector<unsigned int> elementList)
 {
-    assert(m_vaoList.find(vaoKey) == m_vaoList.end() && "Key already exists in VAOManager!!!");
+    assert(m_vaoList.find(vaoKey) == m_vaoList.end() && "VAO key already exists in VAOManager!!!");
 
     //TODO: Add drawstyle option to the constructor
     m_vaoList[vaoKey] = std::unique_ptr<VAO>{new VAO(vertList, elementList)};
-    printVAOList();
     return m_vaoList[vaoKey].get();
 }
 

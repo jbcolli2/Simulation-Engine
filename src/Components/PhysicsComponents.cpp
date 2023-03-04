@@ -90,7 +90,26 @@ void RodCloth::StartUp()
     }
     parentObject->AddComponent(new Mesh());
     Mesh& mesh = parentObject->GetComponent<Mesh>();
-    mesh.AddMeshDataNewVAO(std::vector<Vert3x3x2f>(m_gridMesh.GetNumVertices()), std::vector<unsigned int>(m_gridMesh.GetNumElements()), *m_material);
+    std::vector<unsigned int> elements = std::vector<unsigned int>(m_gridMesh.GetNumElements());
+    int elementIdx = 0;
+    for(int jj = 0; jj < m_Ny - 1; ++jj)
+    {
+        for(int ii = 0; ii < m_Nx - 1; ++ii)
+        {
+            elements[elementIdx] = ii + jj*m_Nx;
+            elements[elementIdx+1] = ii + 1 + jj*m_Nx;
+            elements[elementIdx+2] = ii + (jj+1)*m_Nx;
+
+            elements[elementIdx+3] = ii + 1 + jj*m_Nx;
+            elements[elementIdx+4] = ii + 1 + (jj+1)*m_Nx;
+            elements[elementIdx+5] = ii + (jj+1)*m_Nx;
+
+            elementIdx += 6;
+        }
+    }
+    m_gridMesh.SetGridUVCoords();
+
+    mesh.AddMeshDataNewVAO(std::vector<Vert3x3x2f>(m_gridMesh.GetNumVertices()), elements, *m_material);
 
     m_gridMesh.UpdateVerticesAndReloadVBO(m_nodes, mesh);
 }
@@ -190,8 +209,8 @@ void RodCloth::Integrate(float deltaTime)
 //        if(Input::GetInstance().KeyPress(GLFW_KEY_SPACE) && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx > 1)
 //            forces += glm::vec3(0.f, 0.f, 1.3f);
 
-        if(timer < restTime+pushTime && timer >  restTime && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx > 1)
-            forces += glm::vec3(0.f, 0.f, 1.3f);
+//        if(timer < restTime+pushTime && timer >  restTime && nodeIdx % m_Nx < m_Nx - 2 && nodeIdx % m_Nx > 1)
+//            forces += glm::vec3(0.f, 0.f, 1.3f);
 
         glm::vec3 oldCurrentPos = m_nodes[nodeIdx].currentPosition;
         m_nodes[nodeIdx].currentPosition = 2.f*m_nodes[nodeIdx].currentPosition - m_nodes[nodeIdx].prevPosition;

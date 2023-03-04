@@ -130,4 +130,19 @@ void DynamicGridMesh::UpdateVerticesAndReloadVBO(const std::vector<Node>& nodes,
 }
 
 
+void DynamicGridMesh::SetGridUVCoords()
+{
+    unsigned int vertexIndex = 0;
+    for(int ii = 0; ii < m_Ny; ++ii)
+    {
+        for(int jj = 0; jj < m_Nx; ++jj)
+        {
+            m_vertices[vertexIndex].s = static_cast<float>(jj)/(m_Nx-1);
+            m_vertices[vertexIndex].t = static_cast<float>(ii)/(m_Ny-1);
+            vertexIndex++;
+        }
+    }
+}
+
+
 } // Namespace seng

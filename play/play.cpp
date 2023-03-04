@@ -8,7 +8,16 @@
 
 //#include "Misc/Common.h"
 
-
+class Shader
+{
+public:
+    int m_id{0};
+    Shader(int id) : m_id(id){};
+    void Print()
+    {
+        std::cout << "id = " << m_id << std::endl;
+    }
+};
 
 class Base
 {
@@ -17,8 +26,20 @@ private:
     {
         std::cout << "Base print\n";
     };
-};
 
+public:
+    static Shader* m_shader;
+    void SetShader(const Shader& shader)
+    {
+        if(m_shader != nullptr)
+        {
+            std::cout << "WARNING: Trying to set Shader twice on a Material!!!\n";
+            return;
+        }
+        m_shader = &const_cast<Shader&>(shader);
+    }
+};
+Shader* Base::m_shader = nullptr;
 
 class Derived : public Base
 {
@@ -53,10 +74,14 @@ int main()
 //        return 0;
 //    }
 
-    std::unordered_map<std::string, std::unique_ptr<Derived>> map;
+    Shader sh{4};
+    Shader sh2{7};
+    Base b;
+    b.SetShader(sh);
+    b.m_shader->Print();
 
-    std::unique_ptr<Derived> p{new Derived(1,1)};
-
-    p.reset();
+    Base b2;
+    b2.SetShader(sh2);
+    b2.m_shader->Print();
 
 }
