@@ -132,6 +132,17 @@ Material* Scene::GetMaterial(std::string id)
     }
 }
 
+std::vector<Material*> Scene::GetAllMaterials()
+{
+    std::vector<Material*> materialList;
+    for(auto& material : m_materialList)
+    {
+        materialList.push_back(material.second.get());
+    }
+
+    return materialList;
+}
+
 Object& Scene::FindObjectByID(std::string id)
 {
     return *m_objects[m_objectID[id]];

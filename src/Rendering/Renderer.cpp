@@ -23,9 +23,25 @@ int Renderer::StartUp(SceneManager* sceneManager)
 {
     m_sceneManager = sceneManager;
 
-    m_solidShader = Shader{"../assets/shaders/PosNormUVVert.glsl", "../assets/shaders/SolidColorFrag.glsl"};
-    m_phongShader = Shader{"../assets/shaders/PosNormUVVert.glsl", "../assets/shaders/LightFrag.glsl"};
-    m_currentShader = &m_phongShader;
+    // Setup all shaders
+    auto materialList = m_sceneManager->m_scene.GetAllMaterials();
+    for(auto material : materialList)
+    {
+        ShaderType shaderType = material->m_shaderType;
+        try
+        {
+            Shader* shaderPtr = m_shaderTable.at(shaderType).get();
+            material->m_shader = shaderPtr;
+        }
+        catch(std::out_of_range e)
+        {
+            m_shaderTable[shaderType] = std::make_unique<Shader>(Shader::m_vertexShaderFile[shaderType],
+                                                                 Shader::m_fragShaderFile[shaderType]);
+            material->m_shader = m_shaderTable[shaderType].get();
+        }
+    }
+
+    m_currentShader = nullptr;
 
     ///////////////// Uniform buffers for view/proj matrices ///////////////////////////////////////
     glGenBuffers(1, &m_uboVP);
@@ -58,6 +74,7 @@ void Renderer::Render()
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(mainCamera.m_proj));
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+    m_currentShader = m_shaderTable[ShaderType::VPASS_FLIT].get();
     m_currentShader->startProgram();
     /////////////  Set Camera and Lights in Shader  ///////////////////
     m_currentShader->setUniform1f("ambientIntensity", scene.m_ambientIntensity);
@@ -81,9 +98,17 @@ void Renderer::Render()
         if(obj->HasComponent<Mesh>())
         {
             Mesh& mesh = obj->GetComponent<Mesh>();
+
+            Shader* nextShader = mesh.GetShader();
+            if(nextShader != m_currentShader)
+            {
+                m_currentShader = nextShader;
+                m_currentShader->startProgram();
+            }
+
             mesh.UpdateModelMatrix();
             m_currentShader->setUniformMatrix4f("model", mesh.m_model);
-            mesh.Render(*m_currentShader);
+            mesh.Render();
          }
     }
     m_currentShader->stopProgram();

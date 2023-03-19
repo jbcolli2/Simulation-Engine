@@ -23,6 +23,16 @@
 
 namespace seng
 {
+
+enum class ShaderType
+{
+    VPASS_FCOLOR,
+    VPASS_FLIT,
+    VPASS_FDEBUG
+};
+
+
+
 class PointLight;
 class Shader;
 class PointLightShader
@@ -126,6 +136,7 @@ private:
     const static std::string m_ambientStr;
     const static std::string m_camPositionStr;
 
+
     /***************** deepCopy  ******************
      * @brief Copy over all but components for move semantics.
      *
@@ -134,6 +145,11 @@ private:
     void deepCopy(Shader& other);
 
 public:
+    /////////////  Shader Filenames  ///////////////////
+    static std::unordered_map<ShaderType, std::string> m_vertexShaderFile;
+    static std::unordered_map<ShaderType, std::string> m_fragShaderFile;
+
+
     //***********************************************************
     //       Shader Components
     //***********************************************************

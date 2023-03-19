@@ -184,6 +184,11 @@ public:
         return m_meshes;
     }
 
+    Shader* GetShader()
+    {
+        return m_meshes[0].m_material.m_shader;
+    }
+
 
     void UpdateMeshData(const std::vector<Vert3x3x2f>& vertData, int numVerts, unsigned int meshDataIndex)
     {
@@ -211,7 +216,7 @@ public:
 
 
 
-    void Render(Shader& shader);
+    void Render();
 };
 
 

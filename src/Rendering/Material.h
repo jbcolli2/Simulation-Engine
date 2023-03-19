@@ -26,10 +26,13 @@ class Material
 {
 
 public:
+    ShaderType m_shaderType;
+    Shader* m_shader{nullptr};
+
     virtual ~Material() = default;
 
-    virtual void SetupMaterial(Shader& shader) = 0;
-    virtual void ResetMaterial(Shader& shader){};
+    virtual void SetupMaterial() = 0;
+    virtual void ResetMaterial(){};
 
     static std::unique_ptr<Material> m_defaultMaterial;
 };
@@ -49,10 +52,16 @@ public:
     /***************** SolidMaterial ctor  ******************
      * @brief Set the color properties.
     ******************************************************************///
-    SolidMaterial() = default;
+    SolidMaterial()
+    {
+        m_shaderType = ShaderType::VPASS_FLIT;
+    }
 
     SolidMaterial(const glm::vec3& diffuse, const glm::vec3& specular, unsigned int roughness) :
-            m_diffuse(diffuse), m_specular(specular), m_roughness(roughness) {};
+            m_diffuse(diffuse), m_specular(specular), m_roughness(roughness)
+            {
+                m_shaderType = ShaderType::VPASS_FLIT;
+            };
 
 
     /***************** SetupMaterial  ******************
@@ -62,7 +71,7 @@ public:
      *
      * @param shader Shader that holds the uniforms for color.
     ******************************************************************///
-    void SetupMaterial(Shader& shader) override;
+    void SetupMaterial() override;
 
 
     /***************** ResetMaterial  ******************
@@ -70,7 +79,7 @@ public:
      *
      * @param shader Shader objects containing flag uniforms.
     ******************************************************************///
-    void ResetMaterial(Shader& shader) override;
+    void ResetMaterial() override;
 
 
 };
@@ -89,15 +98,18 @@ public:
     float m_roughness{1.f};
 
 
-    TextureMaterial() = default;
+    TextureMaterial()
+    {
+        m_shaderType = ShaderType::VPASS_FLIT;
+    }
     TextureMaterial(const std::string& path, unsigned int texUnit, const glm::vec3& specColor = glm::vec3(1.f),
                     float roughness = 1.f);
 
 
-    void SetupMaterial(Shader &shader) override;
+    void SetupMaterial() override;
 
 
-    void ResetMaterial(Shader& shader) override;
+    void ResetMaterial() override;
 };
 
 } //end namespace seng

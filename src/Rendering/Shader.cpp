@@ -16,6 +16,19 @@ using namespace seng;
 
 
 //***********************************************************
+//       Shader Filenames
+//***********************************************************
+std::unordered_map<ShaderType, std::string> Shader::m_vertexShaderFile
+        {{ShaderType::VPASS_FCOLOR, "../assets/shaders/PosNormUVVert.glsl"},
+         {ShaderType::VPASS_FLIT,   "../assets/shaders/PosNormUVVert.glsl"},
+         {ShaderType::VPASS_FDEBUG, "../assets/shaders/PosNormUVVert.glsl"}};
+std::unordered_map<ShaderType, std::string> Shader::m_fragShaderFile
+        {{ShaderType::VPASS_FCOLOR, "../assets/shaders/SolidColorFrag.glsl"},
+         {ShaderType::VPASS_FLIT,   "../assets/shaders/LightFrag.glsl"},
+         {ShaderType::VPASS_FDEBUG, "../assets/shaders/LightFrag.glsl"}};
+
+
+//***********************************************************
 //       PointLight Shader Implementation
 //***********************************************************
 const std::string PointLightShader::m_flagStr = "usePointLight";

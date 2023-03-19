@@ -122,6 +122,8 @@ public:
     ******************************************************************///
     Material* GetMaterial(std::string id);
 
+    std::vector<Material*> GetAllMaterials();
+
     /***************** FindObjectByID  ******************
      * @brief Returns reference to object by it's string id.
      *

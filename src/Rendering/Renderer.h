@@ -26,6 +26,11 @@ private:
 
     // Managers
     SceneManager* m_sceneManager{nullptr};
+
+
+    /////////////  Shaders  ///////////////////
+    std::unordered_map<ShaderType, std::unique_ptr<Shader>> m_shaderTable{};
+
 public:
     Renderer() = default;
 

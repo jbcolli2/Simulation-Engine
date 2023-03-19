@@ -175,7 +175,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
 
     trans.position = glm::vec3(-.5f, -.5f, -1.f);
     trans.scale = glm::vec3(.3f);
-    AddSphere("Sphere", "Tex:Coord", 4, trans);
+    AddSphere("Sphere", "Solid:Blue", 4, trans);
 
     trans = Transform();
     trans.position = glm::vec3(1.8f, .1f, -.4f);
@@ -209,7 +209,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
 
 
     //***********************************************************
-    //       MeshData systems
+    //       Add Cloth
     //***********************************************************
     auto cloth = std::make_unique<Object>("Cloth");
     cloth->AddComponent(new RodCloth(10, 10, RodCloth::m_fixAtTopEnds, m_scene.GetMaterial("Tex:Coord"), 1.f, 20));

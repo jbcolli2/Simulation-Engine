@@ -18,15 +18,15 @@ std::unique_ptr<Material> Material::m_defaultMaterial{std::make_unique<SolidMate
  *
  * @param shader Shader that holds the uniforms for color.
 ******************************************************************///
-void SolidMaterial::SetupMaterial(Shader& shader)
+void SolidMaterial::SetupMaterial()
 {
-    shader.m_solidMatComp.SetUniform(*this);
+    m_shader->m_solidMatComp.SetUniform(*this);
 }
 
 
-void SolidMaterial::ResetMaterial(Shader& shader)
+void SolidMaterial::ResetMaterial()
 {
-    shader.m_solidMatComp.ResetUniform();
+    m_shader->m_solidMatComp.ResetUniform();
 }
 
 
@@ -37,23 +37,25 @@ TextureMaterial::TextureMaterial(const std::string& path, unsigned int texUnit, 
                                  float roughness) :
     m_specColor(specColor), m_roughness(roughness)
 {
+    m_shaderType = ShaderType::VPASS_FLIT;
+
     m_diffTexture.m_fileName = path;
     m_diffTexture.m_texUnit = texUnit;
     m_diffTexture.m_tbo = GenAndLoadTBO(path);
 
 }
 
-void TextureMaterial::SetupMaterial(Shader& shader)
+void TextureMaterial::SetupMaterial()
 {
     glActiveTexture(GL_TEXTURE0 + m_diffTexture.m_texUnit);
     glBindTexture(GL_TEXTURE_2D, m_diffTexture.m_tbo);
-    shader.m_textureMatComp.SetUniform(*this);
+    m_shader->m_textureMatComp.SetUniform(*this);
 }
 
 
-void TextureMaterial::ResetMaterial(Shader& shader)
+void TextureMaterial::ResetMaterial()
 {
-    shader.m_textureMatComp.ResetUniform();
+    m_shader->m_textureMatComp.ResetUniform();
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

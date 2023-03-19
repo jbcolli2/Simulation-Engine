@@ -61,12 +61,12 @@ void VAOManager::printVAOList()
 //***********************************************************
 //       Mesh Methods
 //***********************************************************
-void Mesh::Render(Shader& shader)
+void Mesh::Render()
 {
     for(const MeshData& meshdata : m_meshes)
     {
         VAO* thisVAO = meshdata.m_vao;
-        meshdata.m_material.SetupMaterial(shader);
+        meshdata.m_material.SetupMaterial();
         glBindVertexArray(thisVAO->m_vaoID);
         if(thisVAO->m_eboID != 0)
         {
@@ -76,7 +76,7 @@ void Mesh::Render(Shader& shader)
         {
             glDrawArrays(GL_TRIANGLES, 0, thisVAO->m_numVerts);
         }
-        meshdata.m_material.ResetMaterial(shader);
+        meshdata.m_material.ResetMaterial();
     }
 
 }
