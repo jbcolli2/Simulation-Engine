@@ -5,6 +5,7 @@
 #ifndef SIM_ENGINE_MESHCOMMON_H
 #define SIM_ENGINE_MESHCOMMON_H
 #include "Misc/Common.h"
+#include "assimp/vector3.h"
 
 
 namespace seng

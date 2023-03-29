@@ -3,6 +3,7 @@
 //
 
 #include "Scene/Scene.h"
+#include "../include/stb_image.h"
 
 #include "Engine/Object.h"
 #include "Systems/System.h"
@@ -11,7 +12,7 @@
 #include "Components/Camera.h"
 
 #include "Rendering/Mesh.h"
-#include "Rendering/Material.h"
+#include "Rendering/Assets.h"
 
 namespace seng
 {
@@ -71,6 +72,34 @@ void Scene::UpdatePhysics(float deltaTime)
 }
 
 
+
+
+//***********************************************************
+//       Load Assets
+//***********************************************************
+void Scene::LoadTexture(const std::string& textureID, const std::string& path, bool flip)
+{
+    if(flip)
+        stbi_set_flip_vertically_on_load(flip);
+
+    AddMaterial(textureID, new TextureMaterial(path, 0));
+
+    if(flip)
+        stbi_set_flip_vertically_on_load(false);
+}
+
+
+
+
+void Scene::LoadModel(const std::string& modelID, const std::string& path)
+{
+    AddModelAsset(modelID, new ModelAsset(path));
+}
+
+
+//***********************************************************
+//       Add things to the scene
+//***********************************************************
 void Scene::AddObject(std::unique_ptr<Object>&& object)
 {
     std::string idName = object->GetId();
@@ -96,6 +125,16 @@ void Scene::AddMaterial(const std::string& name, std::unique_ptr<Material>&& mat
 void Scene::AddMaterial(const std::string& name, Material*&& material)
 {
     AddMaterial(name, std::unique_ptr<Material>(material));
+}
+
+void Scene::AddModelAsset(const std::string& name, std::unique_ptr<ModelAsset> model)
+{
+    m_modelList[name] = std::move(model);
+}
+
+void Scene::AddModelAsset(const std::string& name, ModelAsset*&& model)
+{
+    AddModelAsset(name, std::unique_ptr<ModelAsset>(model));
 }
 
 
@@ -141,6 +180,17 @@ std::vector<Material*> Scene::GetAllMaterials()
     }
 
     return materialList;
+}
+
+std::vector<ModelAsset*> Scene::GetAllModels()
+{
+    std::vector<ModelAsset*> modelList;
+    for(auto& model : m_modelList)
+    {
+        modelList.push_back(model.second.get());
+    }
+
+    return modelList;
 }
 
 Object& Scene::FindObjectByID(std::string id)

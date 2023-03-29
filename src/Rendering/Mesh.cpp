@@ -4,7 +4,7 @@
 
 
 #include "Rendering/Mesh.h"
-#include "Rendering/Material.h"
+#include "Rendering/Assets.h"
 
 
 namespace seng

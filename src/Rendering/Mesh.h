@@ -9,7 +9,7 @@
 #include "Engine/Component.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/Material.h"
+#include "Rendering/Assets.h"
 
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>

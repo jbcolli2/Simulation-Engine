@@ -7,7 +7,7 @@
 
 #include "Misc/Common.h"
 #include "Rendering/Shader.h"
-
+#include "Assets.h"
 
 
 namespace seng
@@ -38,6 +38,8 @@ public:
     void ShutDown(){};
 
     void Render();
+
+    void SetMaterialShader(Material* material);
 };
 
 } // End namespace seng

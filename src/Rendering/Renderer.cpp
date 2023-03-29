@@ -4,7 +4,7 @@
 
 #include "Renderer.h"
 #include "Rendering/Mesh.h"
-#include "Rendering/Material.h"
+#include "Rendering/Assets.h"
 
 #include "Components/Camera.h"
 #include "Components/Lights.h"
@@ -27,17 +27,16 @@ int Renderer::StartUp(SceneManager* sceneManager)
     auto materialList = m_sceneManager->m_scene.GetAllMaterials();
     for(auto material : materialList)
     {
-        ShaderType shaderType = material->m_shaderType;
-        try
+        SetMaterialShader(material);
+    }
+
+    auto modelList = m_sceneManager->m_scene.GetAllModels();
+    for(auto model : modelList)
+    {
+        auto modelMaterialList = model->GetAllMaterials();
+        for(auto material : modelMaterialList)
         {
-            Shader* shaderPtr = m_shaderTable.at(shaderType).get();
-            material->m_shader = shaderPtr;
-        }
-        catch(std::out_of_range e)
-        {
-            m_shaderTable[shaderType] = std::make_unique<Shader>(Shader::m_vertexShaderFile[shaderType],
-                                                                 Shader::m_fragShaderFile[shaderType]);
-            material->m_shader = m_shaderTable[shaderType].get();
+            SetMaterialShader(material);
         }
     }
 
@@ -53,9 +52,21 @@ int Renderer::StartUp(SceneManager* sceneManager)
     return 1;
 }
 
-
-
-
+void Renderer::SetMaterialShader(Material* material)
+{
+    ShaderType shaderType = material->m_shaderType;
+    try
+    {
+        Shader* shaderPtr = m_shaderTable.at(shaderType).get();
+        material->m_shader = shaderPtr;
+    }
+    catch(std::out_of_range e)
+    {
+        m_shaderTable[shaderType] = std::__1::make_unique<Shader>(Shader::m_vertexShaderFile[shaderType],
+                                                                  Shader::m_fragShaderFile[shaderType]);
+        material->m_shader = m_shaderTable[shaderType].get();
+    }
+}
 
 
 void Renderer::Render()

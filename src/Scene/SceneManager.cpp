@@ -8,7 +8,7 @@
 #include "Scene/SceneManager.h"
 #include "Engine/Object.h"
 
-#include "Rendering/Material.h"
+#include "Rendering/Assets.h"
 
 #include "Components/MeshComponents.h"
 #include "Components/Lights.h"
@@ -132,11 +132,17 @@ void SceneManager::AddCamera(std::string id, glm::vec3 position, glm::vec3 direc
 int PrimScene1::StartUp(DisplayManager* displayManager)
 {
     SceneManager::StartUp(displayManager);
-    //***********************************************************
-    //       Add objects to Scene
-    //***********************************************************
 
-    ///////////////// Create Meshes and Materials ///////////
+    //***********************************************************
+    //       Load Assets
+    //***********************************************************
+    m_scene.LoadTexture("Tex:Crate", "../assets/textures/container2.png");
+    m_scene.LoadTexture("Tex:Coord", "../assets/textures/CoordTex.jpeg", true);
+    m_scene.LoadModel("Mod:Backpack", "../assets/models/backpack/backpack.obj");
+
+    //***********************************************************
+    //       Create New Materials and add to Scene
+    //***********************************************************
     std::unique_ptr<SolidMaterial> blueMat{new SolidMaterial()};
     blueMat->m_diffuse = glm::vec3(0.2f, 0.f, 0.9f);
     blueMat->m_roughness = 16;
@@ -150,15 +156,6 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     mat->m_diffuse = glm::vec3(.4f, 0.23f, 0.1f);
     m_scene.AddMaterial("Solid:Brown", std::move(mat));
 
-    std::unique_ptr<TextureMaterial> crateTex{new TextureMaterial("../assets/textures/container2.png", 0)};
-    crateTex->m_roughness = 16;
-    m_scene.AddMaterial("Tex:Crate", std::move(crateTex));
-
-    stbi_set_flip_vertically_on_load(true);
-    std::unique_ptr<TextureMaterial> coordTex{new TextureMaterial("../assets/textures/CoordTex.jpeg", 0)};
-    coordTex->m_roughness = 16;
-    m_scene.AddMaterial("Tex:Coord", std::move(coordTex));
-    stbi_set_flip_vertically_on_load(false);
 
 
 
@@ -180,7 +177,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     trans = Transform();
     trans.position = glm::vec3(1.8f, .1f, -.4f);
     trans.scale = glm::vec3(.5f);
-    AddCube("Cube", "Tex:Coord", trans);
+    AddCube("Cube", "Solid:Brown", trans);
 
 
 
@@ -212,7 +209,7 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //       Add Cloth
     //***********************************************************
     auto cloth = std::make_unique<Object>("Cloth");
-    cloth->AddComponent(new RodCloth(10, 10, RodCloth::m_fixAtTopEnds, m_scene.GetMaterial("Tex:Coord"), 1.f, 20));
+    cloth->AddComponent(new RodCloth(10, 10, RodCloth::m_fixAtTopEnds, m_scene.GetMaterial("Solid:Blue"), 1.f, 20));
     m_scene.AddObject(std::move(cloth));
 
     m_scene.StartUp();

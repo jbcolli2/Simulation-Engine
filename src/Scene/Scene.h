@@ -7,7 +7,7 @@
 
 #include "Misc/Common.h"
 
-#include "Rendering/Material.h"
+#include "Rendering/Assets.h"
 
 
 
@@ -22,6 +22,7 @@ class Scene
 private:
     std::unordered_map<std::string, int> m_objectID{};
     std::unordered_map<std::string, std::unique_ptr<Material>> m_materialList;
+    std::unordered_map<std::string, std::unique_ptr<ModelAsset>> m_modelList;
 
     std::vector<unsigned int> m_lights{};                        // Convenience list of all light objects
     std::vector<unsigned int> m_cameras{};                       // Convenience  list of all camera objects
@@ -64,6 +65,17 @@ public:
     void ShutDown(){};
 
 
+
+
+    //***********************************************************
+    //       Load Assets
+    //***********************************************************
+    void LoadTexture(const std::string& textureID, const std::string& path, bool flip = false);
+    void LoadModel(const std::string& modelID, const std::string& path);
+
+
+
+
     //***********************************************************
     //       Adders
     //***********************************************************
@@ -96,7 +108,15 @@ public:
     ******************************************************************///
     void AddMaterial(const std::string& name, Material*&& material);
 
-
+    /***************** AddModelAsset  ******************
+     * @brief Adds a ModelAsset object to the list of model assets stored in the scene.
+     *
+     * @param name string id
+     * @param model Pointer to the model asset.  Either a unique_ptr or raw pointer.  If unique_ptr, then
+     *      ownership is transfered to scene.  If raw pointer, then a unique_ptr is created from raw pointer.
+    ******************************************************************///
+    void AddModelAsset(const std::string& name, std::unique_ptr<ModelAsset> model);
+    void AddModelAsset(const std::string& name, ModelAsset*&& model);
 
 
 
@@ -123,6 +143,7 @@ public:
     Material* GetMaterial(std::string id);
 
     std::vector<Material*> GetAllMaterials();
+    std::vector<ModelAsset*> GetAllModels();
 
     /***************** FindObjectByID  ******************
      * @brief Returns reference to object by it's string id.

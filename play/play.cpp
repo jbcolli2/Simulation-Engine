@@ -38,6 +38,11 @@ public:
         }
         m_shader = &const_cast<Shader&>(shader);
     }
+
+    void show()
+    {
+        std::cout << "Print Base\n";
+    }
 };
 Shader* Base::m_shader = nullptr;
 
@@ -63,7 +68,12 @@ public:
 };
 
 
+Base* MakeBase()
+{
+    Base* base = new Derived(4,4);
 
+    return base;
+}
 
 
 int main()
@@ -74,14 +84,8 @@ int main()
 //        return 0;
 //    }
 
-    Shader sh{4};
-    Shader sh2{7};
-    Base b;
-    b.SetShader(sh);
-    b.m_shader->Print();
+    Base* base = MakeBase();
 
-    Base b2;
-    b2.SetShader(sh2);
-    b2.m_shader->Print();
+    base->show();
 
 }

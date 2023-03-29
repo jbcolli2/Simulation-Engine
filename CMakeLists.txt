@@ -18,10 +18,11 @@ message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 set(GLFW3_ROOT ./)
 find_package(GLFW3 3.3 REQUIRED)
 message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
-set(ASSIMP_INCLUDE_DIR ./)
-set(ASSIMP_LIBRARY ./)
+#set(ASSIMP_INCLUDE_DIR ./include)
+set(ASSIMP_LIBRARY ./lib)
 find_package(ASSIMP REQUIRED)
 message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
+MESSAGE(STATUS "ASSIMP LIBRARY is ${assimp_LIBRARIES}")
 
 #find_package(OpenGL REQUIRED)
 #message("OpenGL found in ${OpenGL_INCLUDE_DIR}")
@@ -33,7 +34,7 @@ FIND_LIBRARY(CoreVideo_LIBRARY CoreVideo)
 MARK_AS_ADVANCED(COCOA_LIBRARY OpenGL_LIBRARY)
 
 # add glfw to library list
-set(LIBS ${LIBS} ${GLFW3_LIBRARY} ${OpenGL_LIBRARY} ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${CoreVideo_LIBRARY} )
+set(LIBS ${LIBS} ${GLFW3_LIBRARY} ${OpenGL_LIBRARY} ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${CoreVideo_LIBRARY} ${assimp_LIBRARIES} )
 
 
 
@@ -44,9 +45,9 @@ set(LIBS ${LIBS} GLAD)
 
 # Source files
 set(SRC_ENGINE src/Engine/SimEngine.cpp src/Engine/DisplayManager.cpp src/Scene/SceneManager.cpp src/Engine/Input.cpp)
-set(SRC_OBJECTS src/Engine/Object.cpp src/Engine/ComponentManager.cpp src/Rendering/Material.h src/Scene/Scene.cpp src/Components/Camera.h
+set(SRC_OBJECTS src/Engine/Object.cpp src/Engine/ComponentManager.cpp src/Rendering/Assets.h src/Scene/Scene.cpp src/Components/Camera.h
         src/Components/Camera.cpp src/Systems/System.h src/Components/Lights.cpp
-        src/Components/Lights.h src/Rendering/Material.cpp src/Components/MeshComponents.cpp src/Components/MeshComponents.h
+        src/Components/Lights.h src/Rendering/Assets.cpp src/Components/MeshComponents.cpp src/Components/MeshComponents.h
         src/Components/PhysicsComponents.cpp src/Components/PhysicsComponents.h src/Misc/MeshCommon.cpp)
 set(SRC_RENDER src/Rendering/Renderer.cpp src/Rendering/Shader.cpp src/Rendering/Mesh.cpp src/Misc/DynamicMeshCommon.cpp)
 

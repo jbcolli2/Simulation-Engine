@@ -10,7 +10,7 @@
 #include "Shader.h"
 #include "Components/Lights.h"
 
-#include "Rendering/Material.h"
+#include "Rendering/Assets.h"
 
 using namespace seng;
 
