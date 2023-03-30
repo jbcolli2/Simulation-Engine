@@ -109,20 +109,22 @@ void ModelAsset::LoadMesh(aiMesh* mesh, const aiScene* scene)
     // Load vertex data
     for(int ii = 0; ii < mesh->mNumVertices; ++ii)
     {
-        vertexData.push_back(Vert3x3x2f(mesh->mVertices[ii].x, mesh->mVertices[ii].y, mesh->mVertices[ii].z,
+        vertexData[ii] = Vert3x3x2f(mesh->mVertices[ii].x, mesh->mVertices[ii].y, mesh->mVertices[ii].z,
                                         mesh->mNormals[ii].x, mesh->mNormals[ii].y, mesh->mNormals[ii].z,
-                                        mesh->mTextureCoords[0][ii].x, mesh->mTextureCoords[0][ii].y));
+                                        mesh->mTextureCoords[0][ii].x, mesh->mTextureCoords[0][ii].y);
     }
     m_vertMeshData.push_back(vertexData);
 
     // Load index data
+    int elementIdx = 0;
     for(int ii = 0; ii < mesh->mNumFaces; ++ii)
     {
         aiFace face = mesh->mFaces[ii];
         for(int jj = 0; jj < face.mNumIndices; ++jj)
         {
-            elementData.push_back(face.mIndices[jj]);
+            elementData[elementIdx+jj] = face.mIndices[jj];
         }
+        elementIdx += face.mNumIndices;
     }
     m_elementMeshData.push_back(elementData);
 
@@ -182,7 +184,7 @@ int ModelAsset::LoadMaterial(const aiMaterial* meshMaterial)
 }
 
 
-std::vector<Material*> ModelAsset::GetAllMaterials()
+std::vector<Material*> ModelAsset::GetAllMaterials() const
 {
     std::vector<Material*> materialList(m_loadedMaterials.size());
 

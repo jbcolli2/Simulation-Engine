@@ -386,5 +386,24 @@ void scaleToUnit(Vert3x3x2f& v)
 
 
 
+//***********************************************************
+//       Model Component
+//***********************************************************
+void Model::StartUp()
+{
+    if(parentObject->HasComponent<Mesh>())
+    {
+        assert("Model Component: Object can't have two components that need Mesh component");
+    }
+
+    parentObject->AddComponent(new Mesh());
+    Mesh& mesh = parentObject->GetComponent<Mesh>();
+
+    for(int ii = 0; ii < m_modelAsset.m_vertMeshData.size(); ++ii)
+    {
+        mesh.AddMeshDataNewVAO(m_modelAsset.m_vertMeshData[ii], m_modelAsset.m_elementMeshData[ii], *m_modelAsset.GetMaterialByIndex(ii));
+    }
+}
+
 
 } // seng

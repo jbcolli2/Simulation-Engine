@@ -178,7 +178,12 @@ public:
     /***************** GetAllMaterials  ******************
      * @brief Returns a vector containing all the materials used for this model.
     ******************************************************************///
-    std::vector<Material*> GetAllMaterials();
+    std::vector<Material*>GetAllMaterials() const;
+
+    Material* GetMaterialByIndex(int ii) const
+    {
+        return m_loadedMaterials[m_materialMeshData[ii]].get();
+    }
 
 private:
     std::string m_directory{};

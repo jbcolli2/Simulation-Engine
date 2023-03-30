@@ -91,9 +91,15 @@ void Scene::LoadTexture(const std::string& textureID, const std::string& path, b
 
 
 
-void Scene::LoadModel(const std::string& modelID, const std::string& path)
+void Scene::LoadModel(const std::string& modelID, const std::string& path, bool flip)
 {
+    if(flip)
+        stbi_set_flip_vertically_on_load(flip);
+
     AddModelAsset(modelID, new ModelAsset(path));
+
+    if(flip)
+        stbi_set_flip_vertically_on_load(false);
 }
 
 
@@ -168,6 +174,19 @@ Material* Scene::GetMaterial(std::string id)
     catch(std::out_of_range)
     {
         return Material::m_defaultMaterial.get();
+    }
+}
+
+ModelAsset* Scene::GetModel(const std::string& id)
+{
+    try
+    {
+        return m_modelList.at(id).get();
+    }
+    catch (std::out_of_range)
+    {
+        assert("Scene::GetModel:  Model ID not present in Scene");
+        return nullptr;
     }
 }
 

@@ -33,6 +33,14 @@ enum class PrimitiveType
     SPHERE
 };
 
+
+
+
+//***********************************************************
+//       Primitive Mesh Component
+//***********************************************************
+
+
 class Material;
 class Primitive : public Component
 {
@@ -77,6 +85,20 @@ public:
 
 
 
+
+//***********************************************************
+//       Model Mesh Component
+//***********************************************************
+class Model : public Component
+{
+private:
+    const ModelAsset& m_modelAsset;
+
+public:
+    Model(const ModelAsset& modelAsset) : m_modelAsset(modelAsset) {};
+
+    void StartUp() override;
+};
 
 
 

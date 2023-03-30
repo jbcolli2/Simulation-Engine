@@ -51,14 +51,14 @@ void SceneManager::Update(float deltaTime, float physDeltaTime)
 /***************** AddObject Factory Methods  ******************
  * @brief Create object on the heap and add it to the scene.
 ******************************************************************///
-void SceneManager::AddEmptyObject(std::string id, Transform transform)
+void SceneManager::AddEmptyObject(std::string id, const Transform& transform)
 {
     auto object = std::make_unique<Object>(id);
     object->SetTransform(transform);
     m_scene.AddObject(std::move(object));
 }
 
-void SceneManager::AddCube(std::string id, std::string materialID, Transform transform)
+void SceneManager::AddCube(std::string id, std::string materialID, const Transform& transform)
 {
     auto object = std::make_unique<Object>(id);
     object->SetTransform(transform);
@@ -66,7 +66,7 @@ void SceneManager::AddCube(std::string id, std::string materialID, Transform tra
     m_scene.AddObject(std::move(object));
 }
 
-void SceneManager::AddPlane(std::string id, std::string materialID, Transform transform)
+void SceneManager::AddPlane(std::string id, std::string materialID, const Transform& transform)
 {
     auto object = std::make_unique<Object>(id);
     object->SetTransform(transform);
@@ -74,11 +74,20 @@ void SceneManager::AddPlane(std::string id, std::string materialID, Transform tr
     m_scene.AddObject(std::move(object));
 }
 
-void SceneManager::AddSphere(std::string id, std::string materialID, unsigned int subdivideIters, Transform transform)
+void SceneManager::AddSphere(std::string id, std::string materialID, unsigned int subdivideIters, const Transform& transform)
 {
     auto object = std::make_unique<Object>(id);
     object->SetTransform(transform);
     object->AddComponent(new Primitive(PrimitiveType::SPHERE, m_scene.GetMaterial(materialID)));
+    m_scene.AddObject(std::move(object));
+}
+
+
+void SceneManager::AddModel(std::string id, std::string modelID, const Transform& transform)
+{
+    auto object = std::make_unique<Object>(id);
+    object->SetTransform(transform);
+    object->AddComponent(new Model(*m_scene.GetModel(modelID)));
     m_scene.AddObject(std::move(object));
 }
 
@@ -138,7 +147,8 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
     //***********************************************************
     m_scene.LoadTexture("Tex:Crate", "../assets/textures/container2.png");
     m_scene.LoadTexture("Tex:Coord", "../assets/textures/CoordTex.jpeg", true);
-    m_scene.LoadModel("Mod:Backpack", "../assets/models/backpack/backpack.obj");
+//    m_scene.LoadModel("Mod:Backpack", "../assets/models/backpack/backpack.obj", true);
+    m_scene.LoadModel("Mod:Glass", "../assets/models/cocktail glass/cocktail glass.obj");
 
     //***********************************************************
     //       Create New Materials and add to Scene
@@ -176,8 +186,10 @@ int PrimScene1::StartUp(DisplayManager* displayManager)
 
     trans = Transform();
     trans.position = glm::vec3(1.8f, .1f, -.4f);
-    trans.scale = glm::vec3(.5f);
-    AddCube("Cube", "Tex:Crate", trans);
+    trans.scale = glm::vec3(.1f);
+    AddModel("Glass", "Mod:Glass", trans);
+
+
 
 
 

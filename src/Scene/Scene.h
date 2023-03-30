@@ -71,7 +71,7 @@ public:
     //       Load Assets
     //***********************************************************
     void LoadTexture(const std::string& textureID, const std::string& path, bool flip = false);
-    void LoadModel(const std::string& modelID, const std::string& path);
+    void LoadModel(const std::string& modelID, const std::string& path, bool flip = false);
 
 
 
@@ -141,6 +141,7 @@ public:
      * @returns Raw pointer to material owned by scene.
     ******************************************************************///
     Material* GetMaterial(std::string id);
+    ModelAsset* GetModel(const std::string& id);
 
     std::vector<Material*> GetAllMaterials();
     std::vector<ModelAsset*> GetAllModels();
