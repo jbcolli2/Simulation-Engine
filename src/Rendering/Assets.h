@@ -154,7 +154,7 @@ class ModelAsset
 public:
     std::vector< std::vector<Vert3x3x2f> > m_vertMeshData;          // Vertex data for each mesh
     std::vector< std::vector<unsigned int> > m_elementMeshData;     // Element data for each mesh
-    std::vector< std::unique_ptr<Material> > m_materialMeshData;    // Material used on each mesh
+    std::vector< int > m_materialMeshData;    // Index into
 
 
 
@@ -169,6 +169,10 @@ public:
     ******************************************************************///
     ModelAsset(const std::string& filename);
 
+    ~ModelAsset()
+    {
+        int x = 0;
+    }
 
 
     /***************** GetAllMaterials  ******************
@@ -178,6 +182,8 @@ public:
 
 private:
     std::string m_directory{};
+    std::vector<std::unique_ptr<Material>> m_loadedMaterials{};  // Stores all the materials used by the mesh
+    std::unordered_map<std::string, int> m_loadedTexPaths{};     // Key is texture filename, value is index into loadedMaterials for that texture
     /***************** LoadMesh  ******************
      * @brief Loads one particular mesh from the .obj file into an array of vertex info and element info.
      *      Also generates the material for this mesh.  Adds all this info to the members in the ModelAsset.
@@ -185,14 +191,21 @@ private:
     void LoadMesh(aiMesh* mesh, const aiScene* scene);
 
     /***************** LoadMaterial  ******************
-     * @brief Loads the material for a particular mesh in the assimp heirarchy.
+     * @brief Loads the material for a particular mesh in the assimp heirarchy.  If texture has not already been loaded
+     *      a TextureMaterial is created and added to m_loadedMaterials.  SolidMaterial is always added new, even if it is the same
+     *      as a texture already created.
+     *
+     *      Return index to the material in m_loadedMaterials
+     *
      *      It is assumed that there is at most 1 texture per mesh.  Only the diffuse texture is checked to determine
      *      if there is a texture associated with the mesh.
      *
      *      If no texture is found, a SolidMaterial is created and the diffuse, specular, and shininess properties
      *      are obtained from the .obj file.
+     *
+     * @return Index into m_loadedMaterials for the material for this mesh.
     ******************************************************************///
-    Material* LoadMaterial(const aiMaterial* meshMaterial);
+    int LoadMaterial(const aiMaterial* meshMaterial);
 };
 
 

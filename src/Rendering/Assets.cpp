@@ -84,7 +84,7 @@ ModelAsset::ModelAsset(const std::string& filepath)
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-    // Checkfor loading errors
+    // Check for loading errors
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
        !scene->mRootNode)
     {
@@ -104,7 +104,7 @@ void ModelAsset::LoadMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vert3x3x2f> vertexData(mesh->mNumVertices);
     std::vector<unsigned int> elementData(mesh->mNumFaces*3);
-    Material* material;
+    int materialIdx;
 
     // Load vertex data
     for(int ii = 0; ii < mesh->mNumVertices; ++ii)
@@ -128,31 +128,42 @@ void ModelAsset::LoadMesh(aiMesh* mesh, const aiScene* scene)
 
     // Generate material
     const aiMaterial* meshMaterial = scene->mMaterials[mesh->mMaterialIndex];
-    material = LoadMaterial(meshMaterial);
-    m_materialMeshData.push_back(std::unique_ptr<Material>(material));
+    materialIdx = LoadMaterial(meshMaterial);
+    m_materialMeshData.push_back(materialIdx);
 }
 
 
-Material* ModelAsset::LoadMaterial(const aiMaterial* meshMaterial)
+int ModelAsset::LoadMaterial(const aiMaterial* meshMaterial)
 {
-    Material* material;
+    int materialIdx;
 
     // Yes there is a texture
     if(meshMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
     {
-         aiString* texturePath;
-         aiReturn ret = meshMaterial->GetTexture(aiTextureType_DIFFUSE, 0, texturePath);
+         aiString texturePath;
+         aiReturn ret = meshMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
          assert(ret == AI_SUCCESS && "Assimp Error: Error loading texture");
 
-         aiColor3D aiSpecularColor;
-         meshMaterial->Get(AI_MATKEY_COLOR_SPECULAR, aiSpecularColor);
-         glm::vec3 specularColor{aiSpecularColor.r, aiSpecularColor.g, aiSpecularColor.b};
-         float roughness{1.f};
-         meshMaterial->Get(AI_MATKEY_SHININESS, roughness);
+         std::string strTexturePath = std::string(texturePath.C_Str());
+         // If this texture file has already been loaded
+         try
+         {
+             int matIdx = m_loadedTexPaths.at(strTexturePath);
+             return matIdx;
+         }
+         catch(std::out_of_range e)
+         {
+             aiColor3D aiSpecularColor;
+             meshMaterial->Get(AI_MATKEY_COLOR_SPECULAR, aiSpecularColor);
+             glm::vec3 specularColor{aiSpecularColor.r, aiSpecularColor.g, aiSpecularColor.b};
+             float roughness{1.f};
+             meshMaterial->Get(AI_MATKEY_SHININESS, roughness);
 
-         std::string fullpath = m_directory + "/" + std::string(texturePath->C_Str());
-         material = new TextureMaterial(m_directory + "/" + std::string(texturePath->C_Str()), 0, specularColor, roughness);
-
+             std::string fullpath = m_directory + "/" + strTexturePath;
+             m_loadedMaterials.push_back(std::unique_ptr<Material>(new TextureMaterial(fullpath, 0, specularColor, roughness)));
+             m_loadedTexPaths[strTexturePath] = m_loadedMaterials.size() - 1;
+             return m_loadedMaterials.size() - 1;  // Index of newly added texture
+         }
     }
     // No, there is no texture
     else
@@ -165,21 +176,20 @@ Material* ModelAsset::LoadMaterial(const aiMaterial* meshMaterial)
         float roughness{1.f};
         meshMaterial->Get(AI_MATKEY_SHININESS, roughness);
 
-        material = new SolidMaterial(diffuseColor, specularColor, roughness);
+        m_loadedMaterials.push_back(std::unique_ptr<Material>(new SolidMaterial(diffuseColor, specularColor, roughness)));
+        return m_loadedMaterials.size() - 1;  // Index of newly added texture
     }
-
-    return material;
 }
 
 
 std::vector<Material*> ModelAsset::GetAllMaterials()
 {
-    std::vector<Material*> materialList(m_materialMeshData.size());
+    std::vector<Material*> materialList(m_loadedMaterials.size());
 
-    for(int ii = 0; ii < m_materialMeshData.size(); ++ii)
+    for(int ii = 0; ii < m_loadedMaterials.size(); ++ii)
     {
-        if(m_materialMeshData[ii].get() != nullptr)
-            materialList[ii] = m_materialMeshData[ii].get();
+        if(m_loadedMaterials[ii].get() != nullptr)
+            materialList[ii] = m_loadedMaterials[ii].get();
     }
 
     return materialList;
