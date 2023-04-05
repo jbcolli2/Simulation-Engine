@@ -70,8 +70,8 @@ public:
     // Create an empty VAO
     VAO() = default;
 
-    template<typename VertT, typename ElementT>
-    VAO(std::vector<VertT> vertexList = std::vector<VertT>(), std::vector<ElementT> elementList = std::vector<ElementT>(), GLenum drawStyle= GL_STATIC_DRAW);
+    template<typename VertT>
+    VAO(std::vector<VertT> vertexList = std::vector<VertT>(), std::vector<unsigned int> elementList = std::vector<unsigned int>(), GLenum drawStyle= GL_STATIC_DRAW);
 
     // Delete the Copy Semantics
     VAO(const VAO& otherVAO) = delete;

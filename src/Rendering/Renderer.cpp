@@ -18,56 +18,31 @@ using namespace seng;
 //***********************************************************
 //       Texture Quad
 //***********************************************************
-TextureQuad::TextureQuad()
-{
-    m_vertices = std::vector<Vert3x2f>{
-            Vert3x2f(-1.f, 1.0f, 0.0f, 0.f, 1.f),
-            Vert3x2f(-1.f, -1.f, 0.0f, 0.f, 0.f),
-            Vert3x2f(1.f, -1.f, 0.0f, 1.f, 0.f),
 
-            Vert3x2f(-1.f, 1.f, 0.0f, 0.f, 1.f),
-            Vert3x2f(1.f, -1.f, 0.0f, 1.f, 0.f),
-            Vert3x2f(1.f, 1.f, 0.0f, 1.f, 1.f)
+
+void ScreenTexture::StartUp()
+{
+    m_vertices = std::vector<Vert3x3x2f>{
+            Vert3x3x2f(-1.f, 1.0f, 0.0f, 0.f, 0.f, 0.f, 0.f, 1.f),
+            Vert3x3x2f(-1.f, -3.f, 0.0f, 0.f, 0.f, 0.f, 0.f, -1.f),
+            Vert3x3x2f(3.f, 1.f, 0.0f, 0.f, 0.f, 0.f, 2.f, 1.f)
     };
+
+    m_vao = VAO(m_vertices);
 }
 
-void TextureQuad::StartUp()
+
+
+
+void ScreenTexture::Render(unsigned int tbo)
 {
-    GenAndLoadVAO(m_vao, m_vbo, m_vertices);
-}
-
-TextureQuad::~TextureQuad()
-{
-    glDeleteVertexArrays(1, &m_vao);
-    glDeleteBuffers(1, &m_vbo);
-}
-
-TextureQuad::TextureQuad(TextureQuad&& other) : m_vao(other.m_vao), m_vbo(other.m_vbo),
-                                                m_vertices(other.m_vertices)
-{
-    other.m_vao = 0;
-    other.m_vbo = 0;
-}
-
-TextureQuad& TextureQuad::operator=(TextureQuad&& other)
-{
-    m_vao = other.m_vao;
-    m_vbo = other.m_vbo;
-    m_vertices = other.m_vertices;
-
-    other.m_vao = 0;
-    other.m_vbo = 0;
-
-    return *this;
-}
-
-void TextureQuad::Render(unsigned int tbo)
-{
-    glBindVertexArray(m_vao);
+    m_shader.startProgram();
+    glBindVertexArray(m_vao.m_vaoID);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tbo);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLES, 0, m_vertices.size());
     glBindVertexArray(0);
+    m_shader.stopProgram(); 
 }
 
 
@@ -202,11 +177,18 @@ void Renderer::SetMaterialShader(Material* material)
 
 void Renderer::Render()
 {
-    Scene& scene = m_sceneManager->m_scene;
     ///////////////// Clear color buffer ///////////////////////////////////////
     glEnable(GL_DEPTH_TEST);
     glClearColor(.1, .1, .1, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    DrawScene();
+}
+
+
+void Renderer::DrawScene()
+{
+    Scene& scene = m_sceneManager->m_scene;
 
     Camera& mainCamera = scene.m_objects[scene.m_cameras[0]]->GetComponent<Camera>();
 
@@ -251,10 +233,8 @@ void Renderer::Render()
             mesh.UpdateModelMatrix();
             m_currentShader->setUniformMatrix4f("model", mesh.m_model);
             mesh.Render();
-         }
+        }
     }
     m_currentShader->stopProgram();
 
 }
-
-
