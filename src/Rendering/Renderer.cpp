@@ -11,6 +11,7 @@
 
 #include "Engine/Object.h"
 
+#include "Engine/DisplayManager.h"
 #include "Scene/SceneManager.h"
 
 using namespace seng;
@@ -80,7 +81,7 @@ void FBAttachmentF16::Setup(unsigned int bufferWidth, unsigned int bufferHeight)
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 void FBAttachmentF16::Attach()
 {
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_id);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_id, 0);
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -205,9 +206,19 @@ void FrameBuffer::Release()
 
 
 
-int Renderer::StartUp(SceneManager* sceneManager)
+
+
+
+
+
+//***********************************************************
+//       Renderer Code
+//***********************************************************
+//------------------------------------------------------------------------------------------------------------------------------------------------
+int Renderer::StartUp(DisplayManager* displayManager, SceneManager* sceneManager)
 {
     m_sceneManager = sceneManager;
+    m_displayManager = displayManager;
 
     // Setup all shaders
     auto materialList = m_sceneManager->m_scene.GetAllMaterials();
@@ -235,9 +246,17 @@ int Renderer::StartUp(SceneManager* sceneManager)
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uboVP);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+    int width, height;
+    glfwGetFramebufferSize(m_displayManager->m_window, &width, &height);
+    hdrFB.StartUp(width, height);
+
     return 1;
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
 void Renderer::SetMaterialShader(Material* material)
 {
     ShaderType shaderType = material->m_shaderType;
@@ -253,8 +272,11 @@ void Renderer::SetMaterialShader(Material* material)
         material->m_shader = m_shaderTable[shaderType].get();
     }
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
 void Renderer::Render()
 {
     ///////////////// Clear color buffer ///////////////////////////////////////
@@ -262,10 +284,18 @@ void Renderer::Render()
     glClearColor(.1, .1, .1, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    hdrFB.Bind();
     DrawScene();
+    hdrFB.Release();
+
+    m_screenTex.Render(hdrFB.GetPrimaryID());
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
 void Renderer::DrawScene()
 {
     Scene& scene = m_sceneManager->m_scene;
@@ -318,3 +348,4 @@ void Renderer::DrawScene()
     m_currentShader->stopProgram();
 
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------

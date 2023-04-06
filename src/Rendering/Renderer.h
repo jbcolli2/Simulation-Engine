@@ -128,6 +128,7 @@ public:
 //       Renderer Class
 //***********************************************************
 class SceneManager;
+class DisplayManager;
 class Renderer
 {
 private:
@@ -140,6 +141,7 @@ private:
 
     // Managers
     SceneManager* m_sceneManager{nullptr};
+    DisplayManager* m_displayManager{nullptr};
 
 
     /////////////  Shaders  ///////////////////
@@ -147,10 +149,13 @@ private:
 
     void SetMaterialShader(Material* material);
 
+    FrameBuffer hdrFB{new FBAttachmentF16(), new FBAttachmentRenderDepth};
+    ScreenTexture m_screenTex{"../assets/shaders/Vert_ScreenPass.glsl", "../assets/shaders/Frag_HDR.glsl"};
+
 public:
     Renderer() = default;
 
-    int StartUp(SceneManager* sceneManager);
+    int StartUp(DisplayManager* displayManager, SceneManager* sceneManager);
     void ShutDown(){};
 
     void Render();

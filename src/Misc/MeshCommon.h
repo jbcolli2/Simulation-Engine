@@ -107,8 +107,8 @@ public:
 };
 
 
-template<typename VertT, typename ElementT>
-VAO::VAO(std::vector<VertT> vertexList, std::vector<ElementT> elementList, GLenum drawStyle) :
+template<typename VertT>
+VAO::VAO(std::vector<VertT> vertexList, std::vector<unsigned int> elementList, GLenum drawStyle) :
     m_numVerts(vertexList.size()), m_numElements(elementList.size())
 {
     glGenVertexArrays(1, &m_vaoID);
@@ -121,7 +121,7 @@ VAO::VAO(std::vector<VertT> vertexList, std::vector<ElementT> elementList, GLenu
     {
         glGenBuffers(1, &m_eboID);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementList.size()*sizeof(ElementT), &elementList[0], drawStyle);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementList.size()*sizeof(unsigned int), &elementList[0], drawStyle);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboID);
     }
     SetVertexAttribs<VertT>();

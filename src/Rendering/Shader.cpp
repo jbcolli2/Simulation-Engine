@@ -19,13 +19,13 @@ using namespace seng;
 //       Shader Filenames
 //***********************************************************
 std::unordered_map<ShaderType, std::string> Shader::m_vertexShaderFile
-        {{ShaderType::VPASS_FCOLOR, "../assets/shaders/PosNormUVVert.glsl"},
-         {ShaderType::VPASS_FLIT,   "../assets/shaders/PosNormUVVert.glsl"},
-         {ShaderType::VPASS_FDEBUG, "../assets/shaders/PosNormUVVert.glsl"}};
+        {{ShaderType::VPASS_FCOLOR, "../assets/shaders/Vert_MVPPass.glsl"},
+         {ShaderType::VPASS_FLIT,   "../assets/shaders/Vert_MVPPass.glsl"},
+         {ShaderType::VPASS_FDEBUG, "../assets/shaders/Vert_MVPPass.glsl"}};
 std::unordered_map<ShaderType, std::string> Shader::m_fragShaderFile
-        {{ShaderType::VPASS_FCOLOR, "../assets/shaders/SolidColorFrag.glsl"},
-         {ShaderType::VPASS_FLIT,   "../assets/shaders/LightFrag.glsl"},
-         {ShaderType::VPASS_FDEBUG, "../assets/shaders/LightFrag.glsl"}};
+        {{ShaderType::VPASS_FCOLOR, "../assets/shaders/Frag_SolidColor.glsl"},
+         {ShaderType::VPASS_FLIT,   "../assets/shaders/Frag_Phong.glsl"},
+         {ShaderType::VPASS_FDEBUG, "../assets/shaders/Frag_Phong.glsl"}};
 
 
 //***********************************************************

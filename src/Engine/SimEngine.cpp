@@ -27,7 +27,9 @@ int SimEngine::StartUp(int width, int height)
     m_sceneManager = new PrimScene1();
     m_sceneManager->StartUp(&m_displayManager);
 
-    if(!m_renderer.StartUp(m_sceneManager))
+    m_renderer = new Renderer();
+
+    if(!m_renderer->StartUp(&m_displayManager, m_sceneManager))
     {
         std::cout << "Failed to startup renderer\n";
         return 0;
@@ -44,9 +46,10 @@ void SimEngine::ShutDown()
 {
     m_displayManager.ShutDown();
     m_sceneManager->ShutDown();
-    m_renderer.ShutDown();
+    m_renderer->ShutDown();
 
     delete m_sceneManager;
+    delete m_renderer;
 }
 
 
@@ -80,7 +83,7 @@ void SimEngine::Run()
 
         m_sceneManager->Update(deltaTime, deltaTime);
 
-        m_renderer.Render();
+        m_renderer->Render();
 
         glfwSwapBuffers(m_displayManager.m_window);
     }

@@ -25,7 +25,7 @@ class SimEngine
 private:
     DisplayManager m_displayManager{};
     SceneManager* m_sceneManager{};
-    Renderer m_renderer{};
+    Renderer* m_renderer{};
 
 public:
     SimEngine() {};
