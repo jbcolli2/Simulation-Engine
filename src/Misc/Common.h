@@ -176,6 +176,8 @@ inline void Vector2MatrixIdx(int vert, int Nx, int& ii, int& jj)
 
 unsigned int GenAndLoadTBO(const std::string& filename, bool sRGB = false);
 
+void PrintFramebufferStatus(unsigned int fbStatus);
+
 
 
 

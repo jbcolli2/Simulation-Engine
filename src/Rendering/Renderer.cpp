@@ -67,13 +67,12 @@ void FBAttachmentF16::Setup(unsigned int bufferWidth, unsigned int bufferHeight)
     glGenTextures(1, &m_id);
     glBindTexture(GL_TEXTURE_2D, m_id);
 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, bufferWidth, bufferHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, bufferWidth, bufferHeight, 0, GL_RGBA, GL_FLOAT, NULL);
-
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -102,7 +101,7 @@ void FBAttachmentRenderDepth::Setup(unsigned int bufferWidth, unsigned int buffe
 {
     glGenRenderbuffers(1, &m_id);
     glBindRenderbuffer(GL_RENDERBUFFER, m_id);
-    glRenderbufferStorage(GL_FRAMEBUFFER, GL_DEPTH_COMPONENT, bufferWidth, bufferHeight);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, bufferWidth, bufferHeight);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -179,7 +178,12 @@ void FrameBuffer::StartUp(unsigned int bufferWidth, unsigned int bufferHeight)
 
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
         std::cout << "Framebuffer not complete!" << std::endl;
+
+        unsigned int fbStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        PrintFramebufferStatus(fbStatus);
+    }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -250,6 +254,8 @@ int Renderer::StartUp(DisplayManager* displayManager, SceneManager* sceneManager
     glfwGetFramebufferSize(m_displayManager->m_window, &width, &height);
     hdrFB.StartUp(width, height);
 
+    m_screenTex.StartUp();
+
     return 1;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------
@@ -279,15 +285,20 @@ void Renderer::SetMaterialShader(Material* material)
 //------------------------------------------------------------------------------------------------------------------------------------------------
 void Renderer::Render()
 {
-    ///////////////// Clear color buffer ///////////////////////////////////////
     glEnable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    hdrFB.Bind();
+    ///////////////// Clear color buffer ///////////////////////////////////////
     glClearColor(.1, .1, .1, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 
-    hdrFB.Bind();
+
     DrawScene();
     hdrFB.Release();
 
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_screenTex.Render(hdrFB.GetPrimaryID());
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------

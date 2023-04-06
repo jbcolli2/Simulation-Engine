@@ -127,6 +127,7 @@ public:
 //***********************************************************
 //       Renderer Class
 //***********************************************************
+//------------------------------------------------------------------------------------------------------------------------------------------------
 class SceneManager;
 class DisplayManager;
 class Renderer
@@ -149,7 +150,7 @@ private:
 
     void SetMaterialShader(Material* material);
 
-    FrameBuffer hdrFB{new FBAttachmentF16(), new FBAttachmentRenderDepth};
+    FrameBuffer hdrFB{new FBAttachmentF16(), new FBAttachmentRenderDepth()};
     ScreenTexture m_screenTex{"../assets/shaders/Vert_ScreenPass.glsl", "../assets/shaders/Frag_HDR.glsl"};
 
 public:

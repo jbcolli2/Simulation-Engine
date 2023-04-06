@@ -41,7 +41,7 @@ std::string loadFile2String(const char* path)
 //       OpenGL functions
 //***********************************************************
 
-
+//------------------------------------------------------------------------------------------------------------------------------------------------
 unsigned int GenAndLoadTBO(const std::string& path, bool sRGB)
 {
     unsigned int texID = 0;
@@ -88,6 +88,31 @@ unsigned int GenAndLoadTBO(const std::string& path, bool sRGB)
 
     return texID;
 
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
+void PrintFramebufferStatus(unsigned int fbStatus)
+{
+    if(fbStatus == GL_FRAMEBUFFER_UNDEFINED)
+        std::cout << "Framebuffer status is GL_FRAMEBUFFER_UNDEFINED\n";
+    else if(fbStatus == GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT)
+        std::cout << "Framebuffer status is GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT\n";
+    else if(fbStatus == GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT)
+        std::cout << "Framebuffer status is GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT\n";
+    else if(fbStatus == GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER)
+        std::cout << "Framebuffer status is GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER\n";
+    else if(fbStatus == GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER)
+        std::cout << "Framebuffer status is GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER\n";
+    else if(fbStatus == GL_FRAMEBUFFER_UNSUPPORTED)
+        std::cout << "Framebuffer status is GL_FRAMEBUFFER_UNSUPPORTED\n";
+    else if(fbStatus == GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE)
+        std::cout << "Framebuffer status is GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE\n";
+    else if(fbStatus == GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS)
+        std::cout << "Framebuffer status is GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS\n";
+    else
+        std::cout << "Framebuffer status is unknown\n";
 }
 
 

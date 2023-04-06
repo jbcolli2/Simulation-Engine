@@ -20,7 +20,6 @@ out vertexData
 void main()
 {
     gl_Position = vec4(aPosition, 1.0f);
-//    gl_Position = vec4(aPosition, 1.0f);
 
     vertexOut.FragPos = vec3(gl_Position);
     vertexOut.TexCoord = aUV;
