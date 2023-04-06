@@ -24,10 +24,10 @@ private:
 
     std::vector<Vert3x3x2f> m_vertices; // hold vertex info of screen triangle
 
-    Shader& m_shader;
+    Shader m_shader;
 
 public:
-    ScreenTexture(Shader& shader) : m_shader(shader) {};
+    ScreenTexture(const std::string& vertFilename, const std::string& fragFilename) : m_shader(vertFilename, fragFilename) {};
     ScreenTexture(const ScreenTexture& other) = delete;
     ScreenTexture& operator=(const ScreenTexture& other) = delete;
     ScreenTexture(ScreenTexture&& other) = delete;
@@ -39,41 +39,94 @@ public:
 
 
 
+
+
 //***********************************************************
-//       Framebuffers
+//       Attachment Class
 //***********************************************************
-class FrameBufferFP
+class Attachment
+{
+public:
+    unsigned int m_id{0};
+
+    virtual ~Attachment() = default;
+
+    virtual void Setup(unsigned int bufferWidth, unsigned int bufferHeight) = 0;
+    virtual void Attach() = 0;
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+class FBAttachmentF16 : public Attachment
+{
+public:
+    ~FBAttachmentF16() override;
+
+    void Setup(unsigned int bufferWidth, unsigned int bufferHeight) override;
+    void Attach() override;
+};
+//------------------------------------------------------------------------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
+class FBAttachmentRenderDepth : public Attachment
+{
+public:
+    ~FBAttachmentRenderDepth() override;
+
+    void Setup(unsigned int bufferWidth, unsigned int bufferHeight) override;
+    void Attach() override;
+};
+
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+//***********************************************************
+//       Framebuffer Class
+//***********************************************************
+class FrameBuffer
 {
 private:
-    unsigned int m_fbo;             // Handle for framebuffer object
-    unsigned int m_rbo;             // Handle for renderbuffer object
+    unsigned int m_fbo{0};             // Handle for framebuffer object
 
-    unsigned int m_tbo;             // handle to floating point texture
+    int m_bufferWidth{0};              // Dimensions of buffer
+    int m_bufferHeight{0};
 
-    int m_screenWidth;
-    int m_screenHeight;
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+    std::unique_ptr<Attachment> m_primaryAttachment;
+    std::unique_ptr<Attachment> m_secondaryAttachment;
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 public:
-    /***************** Ctor  ******************
-     * @brief Setup a floating point frame buffer.
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+    /***************** Framebuffer Ctor  ******************
+     * @brief Define the framebuffer by the types of attachements it has
     ******************************************************************///
-    FrameBufferFP() = default;
-    FrameBufferFP(int screenWidth, int screenHeight);
-    FrameBufferFP(const FrameBufferFP&) = delete;
-    FrameBufferFP& operator=(const FrameBufferFP&) = delete;
-    FrameBufferFP(FrameBufferFP&&);
-    FrameBufferFP& operator=(FrameBufferFP&&);
-    ~FrameBufferFP();
+    FrameBuffer(Attachment* primary, Attachment* secondary = nullptr);
+    FrameBuffer(const FrameBuffer&) = delete;
+    FrameBuffer& operator=(const FrameBuffer&) = delete;
+    FrameBuffer(FrameBuffer&&);
+    FrameBuffer& operator=(FrameBuffer&&);
+    ~FrameBuffer();
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+    void StartUp(unsigned int bufferWidth, unsigned int bufferHeight);
 
     void Bind();
     void Release();
-    unsigned int GetTBO();
+
+    unsigned int GetPrimaryID() {return m_primaryAttachment->m_id;};
+    unsigned int GetSecondaryID() {return m_secondaryAttachment->m_id;};
+
 };
 
 
 
 
 
+
+//***********************************************************
+//       Renderer Class
+//***********************************************************
 class SceneManager;
 class Renderer
 {
